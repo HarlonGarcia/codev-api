@@ -5,14 +5,17 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "tb_solution")
-public class Solution {
+@Table(name = "tb_contact")
+public class Contact {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private Contact contact;
+    private String repositoryUrl;
+
+    @Column
+    private String deployUrl;
 
 }

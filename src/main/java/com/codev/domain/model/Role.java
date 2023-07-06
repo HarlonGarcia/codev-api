@@ -5,14 +5,14 @@ import lombok.Data;
 
 @Entity
 @Data
-@Table(name = "tb_solution")
-public class Solution {
+@Table(name = "tb_role")
+public class Role {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private Contact contact;
+    private String authority;
 
 }
