@@ -51,6 +51,7 @@
       <version>1.18.28</version>
       <scope>provided</scope>
     </dependency>
+    <dependency>
       <groupId>io.quarkus</groupId>
       <artifactId>quarkus-resteasy-reactive</artifactId>
     </dependency>
