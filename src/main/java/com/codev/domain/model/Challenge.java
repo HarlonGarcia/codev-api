@@ -1,5 +1,7 @@
 package com.codev.domain.model;
 
+import com.codev.domain.dto.form.ChallengeDTOForm;
+import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -8,7 +10,7 @@ import java.util.Set;
 @Entity
 @Data
 @Table(name = "tb_challenge")
-public class Challenge {
+public class Challenge extends PanacheEntityBase {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -22,5 +24,12 @@ public class Challenge {
 
     @OneToMany(mappedBy = "challenge")
     private Set<Solution> solutions;
+
+    public Challenge(ChallengeDTOForm challengeDTOForm) {
+        this.title = challengeDTOForm.getTitle();
+        this.description = challengeDTOForm.getDescription();
+    }
+
+    public Challenge(){}
 
 }
