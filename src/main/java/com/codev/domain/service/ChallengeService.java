@@ -42,7 +42,7 @@ public class ChallengeService {
         challenge.persist();
         return challenge;
     }
-
+    
     @Transactional
     public void deactivateChallenge(Long challengeId) {
         Challenge challenge = Challenge.findById(challengeId);
