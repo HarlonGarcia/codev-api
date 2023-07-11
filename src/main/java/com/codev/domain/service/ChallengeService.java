@@ -4,7 +4,6 @@ import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.repository.ChallengeRepository;
-import com.codev.infraestructure.impl.ChallengeRepositoryImpl;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -19,7 +18,7 @@ import java.util.List;
 public class ChallengeService {
 
     @Inject
-    ChallengeRepositoryImpl challengeRepository;
+    ChallengeRepository challengeRepository;
 
     public List<ChallengeDTOView> findAllChallengeWithPaging(Integer page, Integer size) {
         return challengeRepository.findAllChallengesWithLikesAndPaging(page, size);
