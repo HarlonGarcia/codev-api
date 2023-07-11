@@ -1,4 +1,4 @@
-package com.codev.api.controller;
+package com.codev.api.resource;
 
 import jakarta.enterprise.context.ApplicationScoped;
 import org.eclipse.microprofile.health.HealthCheck;
@@ -7,7 +7,7 @@ import org.eclipse.microprofile.health.Liveness;
 
 @Liveness
 @ApplicationScoped
-public class HealthCheckController implements HealthCheck {
+public class HealthCheckResource implements HealthCheck {
 
     @Override
     public HealthCheckResponse call() {
