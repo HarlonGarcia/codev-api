@@ -5,6 +5,8 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Entity
 @Data
 @Table(name = "tb_challenge")
@@ -19,6 +21,9 @@ public class Challenge extends PanacheEntityBase {
 
     @Column
     private String description;
+
+    @OneToMany(mappedBy = "challenge")
+    private List<UserChallenge> userChallenges;
 
     public Challenge(ChallengeDTOForm challengeDTOForm) {
         this.title = challengeDTOForm.getTitle();

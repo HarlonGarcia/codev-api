@@ -31,7 +31,7 @@ public class ChallengeResource {
 
         List<ChallengeDTOView> challenges = challengeService.findAllChallengeWithPaging(page, size);
 
-        if (challenges == null)
+        if (challenges.isEmpty())
             return Response.noContent().build();
         else
             return Response.ok(challenges).build();
