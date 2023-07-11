@@ -2,7 +2,6 @@ package com.codev.api.resource;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
-import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -11,7 +10,6 @@ import jakarta.ws.rs.core.Response;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Path("challenges")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -55,6 +53,13 @@ public class ChallengeResource {
         } catch (InvocationTargetException | IllegalAccessException e) {
             return Response.ok(e.getStackTrace()).status(400).build();
         }
+    }
+
+    @DELETE
+    @Path("/{challengeId}")
+    public Response deactivateChallenge(@PathParam("challengeId") Long challengeId){
+        challengeService.deactivateChallenge(challengeId);
+        return Response.ok().build();
     }
 
 }

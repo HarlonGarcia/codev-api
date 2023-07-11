@@ -1,6 +1,7 @@
 package com.codev.domain.model;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
+import com.codev.utils.GlobalConstants;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -25,9 +26,13 @@ public class Challenge extends PanacheEntityBase {
     @OneToMany(mappedBy = "challenge")
     private List<UserChallenge> userChallenges;
 
+    @Column
+    private boolean status;
+
     public Challenge(ChallengeDTOForm challengeDTOForm) {
         this.title = challengeDTOForm.getTitle();
         this.description = challengeDTOForm.getDescription();
+        this.status = GlobalConstants.ACTIVE;
     }
 
     public Challenge(){}
