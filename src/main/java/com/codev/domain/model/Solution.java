@@ -22,4 +22,13 @@ public class Solution {
     @Column(name = "deploy_url")
     private String deployUrl;
 
+    public Solution(Long id, Challenge challenge, String repositoryUrl, String deployUrl) {
+        this.id = id;
+        this.challenge = challenge;
+        this.repositoryUrl = repositoryUrl;
+        this.deployUrl = deployUrl;
+    }
+
+    public Solution(){}
+
 }
