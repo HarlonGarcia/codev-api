@@ -1,6 +1,11 @@
 package com.codev.domain.repository;
 
-import com.codev.infraestructure.query.ChallengeRepositoryQueries;
+import com.codev.domain.dto.view.ChallengeDTOView;
 
-public interface ChallengeRepository extends ChallengeRepositoryQueries {
+import java.util.List;
+
+public interface ChallengeRepository {
+
+    List<ChallengeDTOView> findAllChallengesWithLikesAndPaging(Integer page, Integer size);
+
 }
