@@ -5,6 +5,7 @@ import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.infraestructure.impl.ChallengeRepositoryImpl;
+import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
@@ -43,4 +44,13 @@ public class ChallengeService {
         return challenge;
     }
 
+    public void deactivateChallenge(Long challengeId) {
+        Challenge challenge = Challenge.findById(challengeId);
+
+        if (challenge == null)
+            throw new EntityNotFoundException();
+
+        challenge.setStatus(GlobalConstants.DEACTIVATE);
+        challenge.persist();
+    }
 }
