@@ -29,6 +29,13 @@ public class Challenge extends PanacheEntityBase {
     @Column
     private boolean status;
 
+    @ManyToMany
+    @JoinTable(name = "tb_challenge_category",
+            joinColumns = @JoinColumn(name = "challenge_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
+
     public Challenge(ChallengeDTOForm challengeDTOForm) {
         this.title = challengeDTOForm.getTitle();
         this.description = challengeDTOForm.getDescription();
