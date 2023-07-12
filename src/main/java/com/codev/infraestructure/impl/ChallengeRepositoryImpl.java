@@ -4,6 +4,7 @@ import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.UserChallenge;
 import com.codev.domain.repository.ChallengeRepository;
+import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
@@ -39,6 +40,10 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
                 criteriaBuilder.count(userChallengeJoin.get("like"))
         );
 
+        criteriaQuery.where(
+                criteriaBuilder.equal(challengeRoot.get("status"), GlobalConstants.ACTIVE)
+        );
+
         criteriaQuery.groupBy(
                 challengeRoot.get("id"),
                 challengeRoot.get("title"),
@@ -46,10 +51,10 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         );
 
         int firstResult = page * size;
+
         return entityManager.createQuery(criteriaQuery)
                 .setFirstResult(firstResult)
                 .setMaxResults(size)
                 .getResultList();
     }
-
 }
