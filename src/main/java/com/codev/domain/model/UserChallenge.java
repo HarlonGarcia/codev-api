@@ -20,5 +20,4 @@ public class UserChallenge extends PanacheEntityBase {
     @ManyToOne
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
-
 }

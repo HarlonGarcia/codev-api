@@ -23,5 +23,4 @@ public class UserSolution extends PanacheEntityBase {
 
     @Column(name = "solution_like")
     private boolean like;
-
 }
