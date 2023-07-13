@@ -14,8 +14,8 @@ public class UserSolution extends PanacheEntityBase {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "author_id")
+    private User author;
 
     @ManyToOne
     @JoinColumn(name = "solution_id")
