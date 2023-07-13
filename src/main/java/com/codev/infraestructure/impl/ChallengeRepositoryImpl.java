@@ -35,7 +35,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         criteriaQuery.select(challengeRoot);
 
         criteriaQuery.where(
-                criteriaBuilder.equal(challengeRoot.get("status"), GlobalConstants.ACTIVE)
+                criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE)
         );
 
         int firstResult = page * size;
