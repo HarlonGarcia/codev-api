@@ -6,6 +6,9 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -36,10 +39,18 @@ public class Challenge extends PanacheEntityBase {
     )
     private List<Category> categories;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "end_date")
+    private LocalDateTime endDate;
+
     public Challenge(ChallengeDTOForm challengeDTOForm) {
         this.title = challengeDTOForm.getTitle();
         this.description = challengeDTOForm.getDescription();
         this.status = GlobalConstants.ACTIVE;
+        this.createdAt = LocalDateTime.now();
+        this.endDate = createdAt.plusMonths(1);
     }
 
     public Challenge(){}

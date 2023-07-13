@@ -21,7 +21,8 @@ public class ChallengeService {
     ChallengeRepository challengeRepository;
 
     public List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size) {
-        return challengeRepository.findAllChallengesWithPaging(page, size);
+        return challengeRepository.findAllChallengesWithPaging(page, size)
+                .stream().map(ChallengeDTOView::new).toList();
     }
 
     @Transactional
