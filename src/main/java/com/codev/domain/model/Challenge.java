@@ -22,6 +22,10 @@ public class Challenge extends PanacheEntityBase {
     @Column
     private String title;
 
+    @OneToOne
+    @JoinColumn(name = "author_id")
+    private User author;
+
     @Column
     private String description;
 
