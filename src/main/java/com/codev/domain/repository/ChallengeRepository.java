@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ChallengeRepository {
 
-    List<ChallengeDTOView> findAllChallengesWithLikesAndPaging(Integer page, Integer size);
+    List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size);
 }

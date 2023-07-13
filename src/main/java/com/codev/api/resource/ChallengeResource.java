@@ -27,7 +27,7 @@ public class ChallengeResource {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<ChallengeDTOView> challenges = challengeService.findAllChallengeWithPaging(page, size);
+        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size);
 
         return Response.ok(challenges).build();
     }

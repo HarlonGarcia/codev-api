@@ -21,7 +21,4 @@ public class UserChallenge extends PanacheEntityBase {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
-    @Column(name = "challenge_like")
-    private boolean like;
-
 }
