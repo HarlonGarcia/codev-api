@@ -51,7 +51,7 @@ public class ChallengeService {
         if (challenge == null)
             throw new EntityNotFoundException();
 
-        challenge.setStatus(GlobalConstants.DEACTIVATE);
+        challenge.setActive(GlobalConstants.DEACTIVATE);
         challenge.persist();
     }
 }
