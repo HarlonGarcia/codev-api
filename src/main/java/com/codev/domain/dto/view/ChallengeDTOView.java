@@ -3,6 +3,8 @@ package com.codev.domain.dto.view;
 import com.codev.domain.model.Challenge;
 import lombok.Data;
 
+import java.time.LocalDateTime;
+
 @Data
 public class ChallengeDTOView {
 
@@ -12,16 +14,16 @@ public class ChallengeDTOView {
 
     private String description;
 
+    private LocalDateTime createdAt;
+
+    private LocalDateTime endDate;
+
     public ChallengeDTOView(Challenge challenge) {
         this.id = challenge.getId();
         this.title = challenge.getTitle();
         this.description = challenge.getDescription();
-    }
-
-    public ChallengeDTOView(Long id, String title, String description) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
+        this.createdAt = challenge.getCreatedAt();
+        this.endDate = challenge.getEndDate();
     }
 
 }

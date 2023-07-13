@@ -1,10 +1,10 @@
 package com.codev.domain.repository;
 
-import com.codev.domain.dto.view.ChallengeDTOView;
+import com.codev.domain.model.Challenge;
 
 import java.util.List;
 
 public interface ChallengeRepository {
 
-    List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size);
+    List<Challenge> findAllChallengesWithPaging(Integer page, Integer size);
 }
