@@ -21,7 +21,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public List<ChallengeDTOView> findAllChallengesWithLikesAndPaging(Integer page, Integer size) {
+    public List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size) {
 
         if (page < 0) {
             throw new IllegalArgumentException("Page must be a positive integer.");
@@ -31,23 +31,15 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         CriteriaQuery<ChallengeDTOView> criteriaQuery = criteriaBuilder.createQuery(ChallengeDTOView.class);
 
         Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
-        Join<Challenge, UserChallenge> userChallengeJoin = challengeRoot.join("userChallenges", JoinType.LEFT);
 
         criteriaQuery.multiselect(
                 challengeRoot.get("id"),
                 challengeRoot.get("title"),
-                challengeRoot.get("description"),
-                criteriaBuilder.count(userChallengeJoin.get("like"))
+                challengeRoot.get("description")
         );
 
         criteriaQuery.where(
                 criteriaBuilder.equal(challengeRoot.get("status"), GlobalConstants.ACTIVE)
-        );
-
-        criteriaQuery.groupBy(
-                challengeRoot.get("id"),
-                challengeRoot.get("title"),
-                challengeRoot.get("description")
         );
 
         int firstResult = page * size;

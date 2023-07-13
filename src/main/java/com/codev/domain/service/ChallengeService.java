@@ -20,8 +20,8 @@ public class ChallengeService {
     @Inject
     ChallengeRepository challengeRepository;
 
-    public List<ChallengeDTOView> findAllChallengeWithPaging(Integer page, Integer size) {
-        return challengeRepository.findAllChallengesWithLikesAndPaging(page, size);
+    public List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size) {
+        return challengeRepository.findAllChallengesWithPaging(page, size);
     }
 
     @Transactional

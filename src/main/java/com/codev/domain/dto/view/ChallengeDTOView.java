@@ -12,20 +12,16 @@ public class ChallengeDTOView {
 
     private String description;
 
-    private long like;
-
     public ChallengeDTOView(Challenge challenge) {
         this.id = challenge.getId();
         this.title = challenge.getTitle();
         this.description = challenge.getDescription();
-        this.like = 0;
     }
 
-    public ChallengeDTOView(Long id, String title, String description, long like) {
+    public ChallengeDTOView(Long id, String title, String description) {
         this.id = id;
         this.title = title;
         this.description = description;
-        this.like = like;
     }
 
 }
