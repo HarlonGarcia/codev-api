@@ -2,7 +2,6 @@ package com.codev.infraestructure.impl;
 
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.model.Challenge;
-import com.codev.domain.model.UserChallenge;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
