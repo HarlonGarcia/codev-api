@@ -14,8 +14,8 @@ public class UserSolution extends PanacheEntityBase {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "participant_id")
-    private User user;
+    @JoinColumn(name = "author_id")
+    private User author;
 
     @ManyToOne
     @JoinColumn(name = "solution_id")
@@ -23,4 +23,5 @@ public class UserSolution extends PanacheEntityBase {
 
     @Column(name = "solution_like")
     private boolean like;
+
 }
