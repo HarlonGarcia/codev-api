@@ -2,7 +2,9 @@ package com.codev.api.resource;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
+import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.service.ChallengeService;
+import com.codev.domain.service.SolutionService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -19,6 +21,9 @@ public class ChallengeResource {
     @Inject
     ChallengeService challengeService;
 
+    @Inject
+    SolutionService solutionService;
+
     @GET
     public Response findAllChallengeWithPaging(
             @QueryParam("page") Integer page,
@@ -30,6 +35,13 @@ public class ChallengeResource {
         List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size);
 
         return Response.ok(challenges).build();
+    }
+
+    @GET
+    @Path("/{challengeId}/solutions")
+    public Response findAllSolutionsByChallengeId(@PathParam("challengeId") Long challengeId) {
+        List<SolutionDTOView> solutions = solutionService.findAllSolutionsByChallengeId(challengeId);
+        return Response.ok(solutions).build();
     }
 
     @POST
@@ -58,5 +70,4 @@ public class ChallengeResource {
         challengeService.deactivateChallenge(challengeId);
         return Response.ok().build();
     }
-
 }

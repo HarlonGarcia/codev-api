@@ -18,6 +18,10 @@ public class Solution extends PanacheEntityBase {
     @JoinColumn(name = "challenge_id")
     private Challenge challenge;
 
+    @ManyToOne
+    @JoinColumn(name = "author_id")
+    private User author;
+
     @Column(name = "repository_url")
     private String repositoryUrl;
 
