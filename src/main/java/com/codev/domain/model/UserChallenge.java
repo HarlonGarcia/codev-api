@@ -14,7 +14,7 @@ public class UserChallenge extends PanacheEntityBase {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "participant_id")
     private User user;
 
     @ManyToOne
