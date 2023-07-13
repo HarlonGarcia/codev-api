@@ -1,5 +1,6 @@
 package com.codev.domain.dto.view;
 
+import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.model.Challenge;
 import lombok.Data;
 
@@ -18,12 +19,15 @@ public class ChallengeDTOView {
 
     private LocalDateTime endDate;
 
+    private ChallengeStatus status;
+
     public ChallengeDTOView(Challenge challenge) {
         this.id = challenge.getId();
         this.title = challenge.getTitle();
         this.description = challenge.getDescription();
         this.createdAt = challenge.getCreatedAt();
         this.endDate = challenge.getEndDate();
+        this.status = challenge.getStatus();
     }
 
 }

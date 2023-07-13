@@ -1,6 +1,7 @@
 package com.codev.domain.model;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
+import com.codev.domain.enums.ChallengeStatus;
 import com.codev.utils.GlobalConstants;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
@@ -30,6 +31,10 @@ public class Challenge extends PanacheEntityBase {
     @Column
     private boolean active;
 
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ChallengeStatus status;
+
     @ManyToMany
     @JoinTable(name = "tb_challenge_category",
             joinColumns = @JoinColumn(name = "challenge_id"),
@@ -49,6 +54,7 @@ public class Challenge extends PanacheEntityBase {
         this.active = GlobalConstants.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.endDate = createdAt.plusMonths(1);
+        this.status = ChallengeStatus.TO_BEGIN;
     }
 
     public Challenge(){}
