@@ -9,4 +9,8 @@ public class ChallengeDTOForm {
 
     private String description;
 
+    private Long authorId;
+
+    private String imageURL;
+
 }

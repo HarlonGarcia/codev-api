@@ -53,7 +53,7 @@ public class ChallengeResource {
 
     @POST
     public Response createChallenge(ChallengeDTOForm challengeDTOForm){
-        ChallengeDTOView challengeDTOView = new ChallengeDTOView(challengeService.createChallenge(challengeDTOForm));
+        ChallengeDTOView challengeDTOView = challengeService.createChallenge(challengeDTOForm);
         return Response.ok(challengeDTOView).status(201).build();
     }
 
@@ -64,7 +64,7 @@ public class ChallengeResource {
             ChallengeDTOForm challengeDTOForm
     ){
         try {
-            ChallengeDTOView challengeDTOView = new ChallengeDTOView(challengeService.updateChallenge(challengeId, challengeDTOForm));
+            ChallengeDTOView challengeDTOView = challengeService.updateChallenge(challengeId, challengeDTOForm);
             return Response.ok(challengeDTOView).build();
         } catch (InvocationTargetException | IllegalAccessException e) {
             return Response.ok(e.getStackTrace()).status(400).build();
