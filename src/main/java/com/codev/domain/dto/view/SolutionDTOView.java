@@ -13,4 +13,11 @@ public class SolutionDTOView {
 
     private String deployUrl;
 
+    public SolutionDTOView(Long challengeId, Long authorId, String repositoryUrl, String deployUrl) {
+        this.challengeId = challengeId;
+        this.authorId = authorId;
+        this.repositoryUrl = repositoryUrl;
+        this.deployUrl = deployUrl;
+    }
+
 }

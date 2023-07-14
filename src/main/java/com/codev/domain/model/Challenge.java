@@ -3,6 +3,7 @@ package com.codev.domain.model;
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.utils.GlobalConstants;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,6 +31,7 @@ public class Challenge extends PanacheEntityBase {
     private String description;
 
     @OneToMany(mappedBy = "challenge")
+    @JsonBackReference
     private List<UserChallenge> userChallenges;
 
     @Column
