@@ -41,6 +41,9 @@ public class Challenge extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
+    @Column
+    private String imageURL;
+
     @ManyToMany
     @JoinTable(name = "tb_challenge_category",
             joinColumns = @JoinColumn(name = "challenge_id"),
@@ -57,6 +60,7 @@ public class Challenge extends PanacheEntityBase {
     public Challenge(ChallengeDTOForm challengeDTOForm) {
         this.title = challengeDTOForm.getTitle();
         this.description = challengeDTOForm.getDescription();
+        this.imageURL = challengeDTOForm.getImageURL();
         this.active = GlobalConstants.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.endDate = createdAt.plusMonths(1);

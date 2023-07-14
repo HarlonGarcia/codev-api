@@ -26,14 +26,14 @@ public class ChallengeService {
     }
 
     @Transactional
-    public Challenge createChallenge(ChallengeDTOForm challengeDTOForm) {
+    public ChallengeDTOView createChallenge(ChallengeDTOForm challengeDTOForm) {
         Challenge challenge = new Challenge(challengeDTOForm);
         challenge.persist();
-        return challenge;
+        return new ChallengeDTOView(challenge);
     }
 
     @Transactional
-    public Challenge updateChallenge(Long challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
+    public ChallengeDTOView updateChallenge(Long challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
@@ -41,7 +41,7 @@ public class ChallengeService {
 
         BeanUtils.copyProperties(challenge, challengeDTOForm);
         challenge.persist();
-        return challenge;
+        return new ChallengeDTOView(challenge);
     }
     
     @Transactional
