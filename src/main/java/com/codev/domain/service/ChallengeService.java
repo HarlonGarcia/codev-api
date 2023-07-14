@@ -25,6 +25,13 @@ public class ChallengeService {
                 .stream().map(ChallengeDTOView::new).toList();
     }
 
+    public ChallengeDTOView findById(Long challengeId) {
+        Challenge challenge = Challenge.findById(challengeId);
+        if (challenge == null)
+            throw new EntityNotFoundException("Challenge not found");
+        return new ChallengeDTOView(challenge);
+    }
+
     @Transactional
     public ChallengeDTOView createChallenge(ChallengeDTOForm challengeDTOForm) {
         Challenge challenge = new Challenge(challengeDTOForm);
