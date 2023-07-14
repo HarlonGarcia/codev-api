@@ -38,6 +38,13 @@ public class ChallengeResource {
     }
 
     @GET
+    @Path("/{challengeId}")
+    public Response findById(@PathParam("challengeId") Long challengeId) {
+        ChallengeDTOView challenge = challengeService.findById(challengeId);
+        return Response.ok(challenge).build();
+    }
+
+    @GET
     @Path("/{challengeId}/solutions")
     public Response findAllSolutionsByChallengeId(
             @PathParam("challengeId") Long challengeId,
