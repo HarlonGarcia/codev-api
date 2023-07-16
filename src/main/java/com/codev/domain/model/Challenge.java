@@ -30,10 +30,6 @@ public class Challenge extends PanacheEntityBase {
     @Column
     private String description;
 
-    @OneToMany(mappedBy = "challenge")
-    @JsonBackReference
-    private List<UserChallenge> userChallenges;
-
     @Column
     private boolean active;
 
@@ -50,6 +46,14 @@ public class Challenge extends PanacheEntityBase {
             inverseJoinColumns = @JoinColumn(name = "category_id")
     )
     private List<Category> categories;
+
+    @ManyToMany
+    @JoinTable(name = "tb_subscriber",
+            joinColumns = @JoinColumn(name = "challenge_id"),
+            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
+    )
+    @JsonBackReference
+    private List<User> subscribers;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;

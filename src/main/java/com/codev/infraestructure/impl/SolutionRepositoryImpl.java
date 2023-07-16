@@ -36,10 +36,18 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                 solutionRoot.get("challenge").get("id"),
                 solutionRoot.get("author").get("id"),
                 solutionRoot.get("repositoryUrl"),
-                solutionRoot.get("deployUrl")
+                solutionRoot.get("deployUrl"),
+                criteriaBuilder.count(solutionRoot.get("authors").get("id"))
         );
 
         criteriaQuery.where(criteriaBuilder.equal(solutionRoot.get("challenge").get("id"), challengeId));
+
+        criteriaQuery.groupBy(
+                solutionRoot.get("challenge").get("id"),
+                solutionRoot.get("author").get("id"),
+                solutionRoot.get("repositoryUrl"),
+                solutionRoot.get("deployUrl")
+        );
 
         int firstResult = page * size;
 

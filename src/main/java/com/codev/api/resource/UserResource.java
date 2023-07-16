@@ -8,7 +8,6 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
-import org.apache.commons.beanutils.BeanUtils;
 
 import java.util.List;
 
