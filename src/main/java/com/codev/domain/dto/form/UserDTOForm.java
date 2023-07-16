@@ -14,5 +14,7 @@ public class UserDTOForm {
 
     private String email;
 
+    private String password;
+
     private Set<Role> roles;
 }
