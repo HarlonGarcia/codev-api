@@ -13,11 +13,14 @@ public class SolutionDTOView {
 
     private String deployUrl;
 
-    public SolutionDTOView(Long challengeId, Long authorId, String repositoryUrl, String deployUrl) {
+    private long likes;
+
+    public SolutionDTOView(Long challengeId, Long authorId, String repositoryUrl, String deployUrl, long likes) {
         this.challengeId = challengeId;
         this.authorId = authorId;
         this.repositoryUrl = repositoryUrl;
         this.deployUrl = deployUrl;
+        this.likes = likes;
     }
 
 }
