@@ -1,5 +1,6 @@
 package com.codev.domain.model;
 
+import com.codev.domain.dto.form.UserDTOForm;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -30,4 +31,12 @@ public class User extends PanacheEntityBase {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles;
 
+    public User(UserDTOForm userDTOForm) {
+        this.id = userDTOForm.getId();
+        this.name = userDTOForm.getName();
+        this.email = userDTOForm.getEmail();
+        this.password = userDTOForm.getPassword();
+    }
+
+    public User(){}
 }
