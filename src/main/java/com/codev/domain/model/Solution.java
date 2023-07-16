@@ -3,7 +3,8 @@ package com.codev.domain.model;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
+
+import java.util.List;
 
 @Entity
 @Data
@@ -27,6 +28,13 @@ public class Solution extends PanacheEntityBase {
 
     @Column(name = "deploy_url")
     private String deployUrl;
+
+    @ManyToMany
+    @JoinTable(name = "tb_like",
+            joinColumns = @JoinColumn(name = "solution_id"),
+            inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
+    private List<User> authors;
 
     public Solution(Long id, Challenge challenge, String repositoryUrl, String deployUrl) {
         this.id = id;
