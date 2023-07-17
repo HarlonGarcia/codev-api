@@ -3,6 +3,7 @@ package com.codev.api.resource;
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
+import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
 import jakarta.inject.Inject;
@@ -32,7 +33,8 @@ public class ChallengeResource {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size);
+        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size)
+                .stream().map(ChallengeDTOView::new).toList();;
 
         return Response.ok(challenges).build();
     }
@@ -40,8 +42,8 @@ public class ChallengeResource {
     @GET
     @Path("/{challengeId}")
     public Response findById(@PathParam("challengeId") Long challengeId) {
-        ChallengeDTOView challenge = challengeService.findById(challengeId);
-        return Response.ok(challenge).build();
+        Challenge challenge = challengeService.findById(challengeId);
+        return Response.ok(new ChallengeDTOView(challenge)).build();
     }
 
     @GET
@@ -60,8 +62,8 @@ public class ChallengeResource {
 
     @POST
     public Response createChallenge(ChallengeDTOForm challengeDTOForm){
-        ChallengeDTOView challengeDTOView = challengeService.createChallenge(challengeDTOForm);
-        return Response.ok(challengeDTOView).status(201).build();
+        Challenge challenge = challengeService.createChallenge(challengeDTOForm);
+        return Response.ok(new ChallengeDTOView(challenge)).status(201).build();
     }
 
     @PUT
@@ -71,8 +73,8 @@ public class ChallengeResource {
             ChallengeDTOForm challengeDTOForm
     ){
         try {
-            ChallengeDTOView challengeDTOView = challengeService.updateChallenge(challengeId, challengeDTOForm);
-            return Response.ok(challengeDTOView).build();
+            Challenge challenge = challengeService.updateChallenge(challengeId, challengeDTOForm);
+            return Response.ok(new ChallengeDTOView(challenge)).build();
         } catch (InvocationTargetException | IllegalAccessException e) {
             return Response.ok(e.getStackTrace()).status(400).build();
         }

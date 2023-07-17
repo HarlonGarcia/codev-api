@@ -1,5 +1,6 @@
 package com.codev.domain.model;
 
+import com.codev.domain.dto.form.SolutionDTOForm;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -43,6 +44,10 @@ public class Solution extends PanacheEntityBase {
         this.deployUrl = deployUrl;
     }
 
-    public Solution(){}
+    public Solution(SolutionDTOForm solutionDTOForm) {
+        this.repositoryUrl = solutionDTOForm.getRepositoryUrl();
+        this.deployUrl = solutionDTOForm.getDeployUrl();
+    }
 
+    public Solution(){}
 }

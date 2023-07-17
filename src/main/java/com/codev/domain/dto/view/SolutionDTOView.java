@@ -1,5 +1,6 @@
 package com.codev.domain.dto.view;
 
+import com.codev.domain.model.Solution;
 import lombok.Data;
 
 @Data
@@ -21,6 +22,14 @@ public class SolutionDTOView {
         this.repositoryUrl = repositoryUrl;
         this.deployUrl = deployUrl;
         this.likes = likes;
+    }
+
+    public SolutionDTOView(Solution solution) {
+        this.challengeId = solution.getChallenge().getId();
+        this.authorId = solution.getAuthor().getId();
+        this.repositoryUrl = solution.getRepositoryUrl();
+        this.deployUrl = solution.getDeployUrl();
+        this.likes = 0;
     }
 
 }
