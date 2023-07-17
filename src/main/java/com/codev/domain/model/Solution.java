@@ -37,11 +37,13 @@ public class Solution extends PanacheEntityBase {
     )
     private List<User> authors;
 
-    public Solution(Long id, Challenge challenge, String repositoryUrl, String deployUrl) {
+    public Solution(Long id, Challenge challenge, User author, String repositoryUrl, String deployUrl, List<User> authors) {
         this.id = id;
         this.challenge = challenge;
         this.repositoryUrl = repositoryUrl;
         this.deployUrl = deployUrl;
+        this.author = author;
+        this.authors = authors;
     }
 
     public Solution(SolutionDTOForm solutionDTOForm) {
