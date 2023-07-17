@@ -21,6 +21,8 @@ public class ChallengeDTOView {
 
     private ChallengeStatus status;
 
+    private UserDTOView author;
+
     public ChallengeDTOView(Challenge challenge) {
         this.id = challenge.getId();
         this.title = challenge.getTitle();
@@ -28,6 +30,7 @@ public class ChallengeDTOView {
         this.createdAt = challenge.getCreatedAt();
         this.endDate = challenge.getEndDate();
         this.status = challenge.getStatus();
+        this.author = new UserDTOView(challenge.getAuthor());
     }
 
 }
