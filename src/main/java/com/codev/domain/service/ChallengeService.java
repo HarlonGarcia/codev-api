@@ -20,35 +20,30 @@ public class ChallengeService {
     @Inject
     ChallengeRepository challengeRepository;
 
-    public List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size) {
-        return challengeRepository.findAllChallengesWithPaging(page, size)
-                .stream().map(ChallengeDTOView::new).toList();
+    public List<Challenge> findAllChallengesWithPaging(Integer page, Integer size) {
+        return challengeRepository.findAllChallengesWithPaging(page, size);
     }
 
-    public ChallengeDTOView findById(Long challengeId) {
+    public Challenge findById(Long challengeId) {
         Challenge challenge = Challenge.findById(challengeId);
         if (challenge == null)
             throw new EntityNotFoundException("Challenge not found");
-        return new ChallengeDTOView(challenge);
+        return challenge;
     }
 
     @Transactional
-    public ChallengeDTOView createChallenge(ChallengeDTOForm challengeDTOForm) {
+    public Challenge createChallenge(ChallengeDTOForm challengeDTOForm) {
         Challenge challenge = new Challenge(challengeDTOForm);
         challenge.persist();
-        return new ChallengeDTOView(challenge);
+        return challenge;
     }
 
     @Transactional
-    public ChallengeDTOView updateChallenge(Long challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
-        Challenge challenge = Challenge.findById(challengeId);
-
-        if (challenge == null)
-            throw new EntityNotFoundException();
-
+    public Challenge updateChallenge(Long challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
+        Challenge challenge = findById(challengeId);
         BeanUtils.copyProperties(challenge, challengeDTOForm);
         challenge.persist();
-        return new ChallengeDTOView(challenge);
+        return challenge;
     }
     
     @Transactional
