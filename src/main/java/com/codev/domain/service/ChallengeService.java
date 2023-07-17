@@ -1,8 +1,8 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
-import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.model.Challenge;
+import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -33,7 +33,13 @@ public class ChallengeService {
 
     @Transactional
     public Challenge createChallenge(ChallengeDTOForm challengeDTOForm) {
+        User author = User.findById(challengeDTOForm.getAuthorId());
+        if (author == null)
+            throw new EntityNotFoundException("Author not found");
+
         Challenge challenge = new Challenge(challengeDTOForm);
+        challenge.setAuthor(author);
+
         challenge.persist();
         return challenge;
     }
