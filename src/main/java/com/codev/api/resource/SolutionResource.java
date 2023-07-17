@@ -1,7 +1,6 @@
 package com.codev.api.resource;
 
 import com.codev.domain.dto.form.SolutionDTOForm;
-import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.service.SolutionService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.POST;

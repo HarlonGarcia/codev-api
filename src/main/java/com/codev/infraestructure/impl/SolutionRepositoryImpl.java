@@ -2,12 +2,11 @@ package com.codev.infraestructure.impl;
 
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.model.Solution;
+import com.codev.domain.model.User;
 import com.codev.domain.repository.SolutionRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.criteria.*;
 
 import java.util.List;
 
@@ -32,19 +31,22 @@ public class SolutionRepositoryImpl implements SolutionRepository {
 
         Root<Solution> solutionRoot = criteriaQuery.from(Solution.class);
 
+        Join<Solution, User> authorJoin = solutionRoot.join("author", JoinType.LEFT);
+        Join<Solution, User> authorsJoin = solutionRoot.join("authors", JoinType.LEFT);
+
         criteriaQuery.multiselect(
                 solutionRoot.get("challenge").get("id"),
-                solutionRoot.get("author").get("id"),
+                authorJoin,
                 solutionRoot.get("repositoryUrl"),
                 solutionRoot.get("deployUrl"),
-                criteriaBuilder.count(solutionRoot.get("authors").get("id"))
+                criteriaBuilder.count(authorsJoin.get("id"))
         );
 
         criteriaQuery.where(criteriaBuilder.equal(solutionRoot.get("challenge").get("id"), challengeId));
 
         criteriaQuery.groupBy(
                 solutionRoot.get("challenge").get("id"),
-                solutionRoot.get("author").get("id"),
+                authorJoin,
                 solutionRoot.get("repositoryUrl"),
                 solutionRoot.get("deployUrl")
         );
