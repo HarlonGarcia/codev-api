@@ -1,6 +1,7 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.SolutionDTOForm;
+import com.codev.domain.dto.view.LikeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Solution;
@@ -43,4 +44,10 @@ public class SolutionService {
         Solution.persist(solution);
         return new SolutionDTOView(solution);
     }
+
+    @Transactional
+    public LikeDTOView likeOrDislikeInSolution(Long solutionId, Long userId) {
+        return solutionRepository.likeOrDislikeInSolution(solutionId, userId);
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.codev.infraestructure.impl;
 
+import com.codev.domain.dto.view.LikeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
@@ -10,6 +11,10 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 
 import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 
 @ApplicationScoped
@@ -75,4 +80,70 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                 .setMaxResults(size)
                 .getResultList();
     }
+
+    @Override
+    public LikeDTOView likeOrDislikeInSolution(Long solutionId, Long userId) {
+        boolean isLikedInSolution = isLikedInSolution(solutionId, userId);
+
+        if (isLikedInSolution)
+            return dislike(solutionId, userId);
+        else
+            return like(solutionId, userId);
+    }
+
+    private LikeDTOView like(Long solutionId, Long userId) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "INSERT INTO tb_like (author_id, solution_id) VALUES (?, ?)";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, userId);
+                statement.setLong(2, solutionId);
+                statement.executeUpdate();
+
+                return new LikeDTOView(true);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private LikeDTOView dislike(Long solutionId, Long userId) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "DELETE FROM tb_like WHERE author_id = ? AND solution_id = ?";
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, userId);
+                statement.setLong(2, solutionId);
+                statement.executeUpdate();
+
+                return new LikeDTOView(false);
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private boolean isLikedInSolution(Long solutionId, Long userId) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT COUNT(*) AS count" +
+                    " FROM tb_like" +
+                    " WHERE author_id = ? AND solution_id = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, userId);
+                statement.setLong(2, solutionId);
+
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    if (resultSet.next()) {
+                        int count = resultSet.getInt("count");
+                        return count > 0;
+                    }
+                    throw new RuntimeException("result.next() == false. There are no more rows");
+                }
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
+    }
+
 }

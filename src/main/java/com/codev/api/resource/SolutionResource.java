@@ -23,4 +23,13 @@ public class SolutionResource {
         return Response.ok(solutionService.createSolution(challengeId, solutionDTOForm)).build();
     }
 
+    @POST
+    @Path("{solutionId}/users/{userId}")
+    public Response likeOrDislikeInSolution(
+            @PathParam("solutionId") Long solutionId,
+            @PathParam("userId") Long userId
+    ) {
+        return Response.ok(solutionService.likeOrDislikeInSolution(solutionId, userId)).build();
+    }
+
 }
