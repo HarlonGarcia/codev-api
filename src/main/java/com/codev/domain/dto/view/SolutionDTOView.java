@@ -17,12 +17,15 @@ public class SolutionDTOView {
 
     private long likes;
 
-    public SolutionDTOView(Long challengeId, User author, String repositoryUrl, String deployUrl, long likes) {
+    private boolean liked;
+
+    public SolutionDTOView(Long challengeId, User author, String repositoryUrl, String deployUrl, long likes, boolean liked) {
         this.challengeId = challengeId;
         this.author = new UserDTOView(author);
         this.repositoryUrl = repositoryUrl;
         this.deployUrl = deployUrl;
         this.likes = likes;
+        this.liked = liked;
     }
 
     public SolutionDTOView(Solution solution) {
