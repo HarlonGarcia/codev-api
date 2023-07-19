@@ -30,7 +30,62 @@ public class SolutionRepositoryImpl implements SolutionRepository {
     DataSource dataSource;
 
     @Override
-    public List<SolutionDTOView> findAllSolutionsByChallengeId(Long challengeId, Integer page, Integer size) {
+    public List<SolutionDTOView> findAllSolutionsByChallengeId(
+            Long challengeId, Long userId, Integer page, Integer size
+    ) {
+
+//        if (page < 0) {
+//            throw new IllegalArgumentException("Page must be a positive integer.");
+//        }
+//
+//        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+//        CriteriaQuery<SolutionDTOView> criteriaQuery = criteriaBuilder.createQuery(SolutionDTOView.class);
+//
+//        Root<Solution> solutionRoot = criteriaQuery.from(Solution.class);
+//        Join<Solution, User> authorJoin = solutionRoot.join("author", JoinType.LEFT);
+//        Join<Solution, User> likeJoin = solutionRoot.join("authors", JoinType.LEFT);
+//
+//        Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
+//        Root<Solution> subqueryRoot = subquery.from(Solution.class);
+//        Join<Solution, User> subqueryAuthorJoin = subqueryRoot.join("author", JoinType.LEFT);
+//        Join<Solution, User> subqueryLikeJoin = subqueryRoot.join("authors", JoinType.LEFT);
+//
+//        subquery.select(subqueryRoot.get("id"));
+//        subquery.where(
+//                criteriaBuilder.and(
+//                        criteriaBuilder.equal(subqueryRoot.get("id"), solutionRoot.get("id")),
+//                        criteriaBuilder.equal(subqueryAuthorJoin.get("id"), authorJoin.get("id")),
+//                        criteriaBuilder.equal(subqueryLikeJoin.get("id"), likeJoin.get("id"))
+//                )
+//        );
+//
+//        criteriaQuery.multiselect(
+//                solutionRoot.get("challenge").get("id"),
+//                authorJoin,
+//                solutionRoot.get("repositoryUrl"),
+//                solutionRoot.get("deployUrl"),
+//                criteriaBuilder.count(likeJoin),
+//                criteriaBuilder.exists(subquery)
+//        );
+//
+//        criteriaQuery.where(criteriaBuilder.equal(solutionRoot.get("challenge").get("id"), challengeId));
+//
+//        criteriaQuery.groupBy(
+//                solutionRoot.get("challenge").get("id"),
+//                authorJoin,
+//                solutionRoot.get("repositoryUrl"),
+//                solutionRoot.get("deployUrl"),
+//                solutionRoot.get("author").get("id"),
+//                solutionRoot.get("id"),
+//                likeJoin
+//        );
+//
+//        int firstResult = page * size;
+//
+//        return entityManager.createQuery(criteriaQuery)
+//                .setFirstResult(firstResult)
+//                .setMaxResults(size)
+//                .getResultList();
 
         if (page < 0) {
             throw new IllegalArgumentException("Page must be a positive integer.");
@@ -40,20 +95,17 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         CriteriaQuery<SolutionDTOView> criteriaQuery = criteriaBuilder.createQuery(SolutionDTOView.class);
 
         Root<Solution> solutionRoot = criteriaQuery.from(Solution.class);
+
         Join<Solution, User> authorJoin = solutionRoot.join("author", JoinType.LEFT);
         Join<Solution, User> likeJoin = solutionRoot.join("authors", JoinType.LEFT);
 
         Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
-        Root<Solution> subqueryRoot = subquery.from(Solution.class);
-        Join<Solution, User> subqueryAuthorJoin = subqueryRoot.join("author", JoinType.LEFT);
-        Join<Solution, User> subqueryLikeJoin = subqueryRoot.join("authors", JoinType.LEFT);
-
-        subquery.select(subqueryRoot.get("id"));
+        Root<User> likeUserRoot = subquery.from(User.class);
+        subquery.select(likeUserRoot.get("id"));
         subquery.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(subqueryRoot.get("id"), solutionRoot.get("id")),
-                        criteriaBuilder.equal(subqueryAuthorJoin.get("id"), authorJoin.get("id")),
-                        criteriaBuilder.equal(subqueryLikeJoin.get("id"), likeJoin.get("id"))
+                        criteriaBuilder.equal(likeUserRoot.get("id"), userId),
+                        criteriaBuilder.notEqual(solutionRoot.get("author").get("id"), likeUserRoot.get("id"))
                 )
         );
 
@@ -62,20 +114,15 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                 authorJoin,
                 solutionRoot.get("repositoryUrl"),
                 solutionRoot.get("deployUrl"),
-                criteriaBuilder.count(likeJoin),
+                criteriaBuilder.countDistinct(likeJoin.get("id")),
                 criteriaBuilder.exists(subquery)
         );
 
         criteriaQuery.where(criteriaBuilder.equal(solutionRoot.get("challenge").get("id"), challengeId));
 
         criteriaQuery.groupBy(
-                solutionRoot.get("challenge").get("id"),
-                authorJoin,
-                solutionRoot.get("repositoryUrl"),
-                solutionRoot.get("deployUrl"),
-                solutionRoot.get("author").get("id"),
                 solutionRoot.get("id"),
-                likeJoin
+                authorJoin
         );
 
         int firstResult = page * size;

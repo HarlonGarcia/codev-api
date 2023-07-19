@@ -47,16 +47,17 @@ public class ChallengeResource {
     }
 
     @GET
-    @Path("/{challengeId}/solutions")
+    @Path("/{challengeId}/solutions/users/{userId}")
     public Response findAllSolutionsByChallengeId(
             @PathParam("challengeId") Long challengeId,
+            @PathParam("userId") Long userId,
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size
     ) {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<SolutionDTOView> solutions = solutionService.findAllSolutionsByChallengeId(challengeId, page, size);
+        List<SolutionDTOView> solutions = solutionService.findAllSolutionsByChallengeId(challengeId, userId, page, size);
         return Response.ok(solutions).build();
     }
 
