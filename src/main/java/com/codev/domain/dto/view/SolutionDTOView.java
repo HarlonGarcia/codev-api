@@ -36,4 +36,6 @@ public class SolutionDTOView {
         this.likes = 0;
     }
 
+    public SolutionDTOView(){}
+
 }
