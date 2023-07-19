@@ -26,8 +26,10 @@ public class SolutionService {
     @Inject
     UserService userService;
 
-    public List<SolutionDTOView> findAllSolutionsByChallengeId(Long challengeId, Integer page, Integer size) {
-        return solutionRepository.findAllSolutionsByChallengeId(challengeId, page, size);
+    public List<SolutionDTOView> findAllSolutionsByChallengeId(
+            Long challengeId, Long userId, Integer page, Integer size
+    ) {
+        return solutionRepository.findAllSolutionsByChallengeId(challengeId, userId, page, size);
     }
 
     @Transactional
