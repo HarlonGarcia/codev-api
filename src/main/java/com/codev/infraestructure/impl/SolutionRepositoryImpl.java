@@ -29,7 +29,6 @@ public class SolutionRepositoryImpl implements SolutionRepository {
     @Inject
     DataSource dataSource;
 
-
     @Override
     public List<SolutionDTOView> findAllSolutionsByChallengeId(Long challengeId, Integer page, Integer size) {
 
@@ -41,17 +40,20 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         CriteriaQuery<SolutionDTOView> criteriaQuery = criteriaBuilder.createQuery(SolutionDTOView.class);
 
         Root<Solution> solutionRoot = criteriaQuery.from(Solution.class);
-
         Join<Solution, User> authorJoin = solutionRoot.join("author", JoinType.LEFT);
         Join<Solution, User> likeJoin = solutionRoot.join("authors", JoinType.LEFT);
 
         Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
-        Root<User> likeUserRoot = subquery.from(User.class);
-        subquery.select(likeUserRoot.get("id"));
+        Root<Solution> subqueryRoot = subquery.from(Solution.class);
+        Join<Solution, User> subqueryAuthorJoin = subqueryRoot.join("author", JoinType.LEFT);
+        Join<Solution, User> subqueryLikeJoin = subqueryRoot.join("authors", JoinType.LEFT);
+
+        subquery.select(subqueryRoot.get("id"));
         subquery.where(
                 criteriaBuilder.and(
-                        criteriaBuilder.equal(likeUserRoot, authorJoin),
-                        criteriaBuilder.equal(likeUserRoot.get("id"), likeJoin.get("id"))
+                        criteriaBuilder.equal(subqueryRoot.get("id"), solutionRoot.get("id")),
+                        criteriaBuilder.equal(subqueryAuthorJoin.get("id"), authorJoin.get("id")),
+                        criteriaBuilder.equal(subqueryLikeJoin.get("id"), likeJoin.get("id"))
                 )
         );
 
@@ -60,7 +62,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                 authorJoin,
                 solutionRoot.get("repositoryUrl"),
                 solutionRoot.get("deployUrl"),
-                criteriaBuilder.count(likeJoin.get("id")),
+                criteriaBuilder.count(likeJoin),
                 criteriaBuilder.exists(subquery)
         );
 
@@ -70,7 +72,10 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                 solutionRoot.get("challenge").get("id"),
                 authorJoin,
                 solutionRoot.get("repositoryUrl"),
-                solutionRoot.get("deployUrl")
+                solutionRoot.get("deployUrl"),
+                solutionRoot.get("author").get("id"),
+                solutionRoot.get("id"),
+                likeJoin
         );
 
         int firstResult = page * size;
@@ -79,6 +84,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                 .setFirstResult(firstResult)
                 .setMaxResults(size)
                 .getResultList();
+
     }
 
     @Override
