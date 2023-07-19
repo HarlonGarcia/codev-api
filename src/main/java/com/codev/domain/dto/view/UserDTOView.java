@@ -13,11 +13,17 @@ public class UserDTOView {
 
     private String password;
 
+    private String githubUrl;
+
+    private String additionalUrl;
+
     public UserDTOView(User user) {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
         this.password = user.getPassword();
+        this.additionalUrl = user.getAdditionalUrl();
+        this.githubUrl = user.getGithubUrl();
     }
 
     public UserDTOView() {}

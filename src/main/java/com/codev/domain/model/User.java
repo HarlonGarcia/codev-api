@@ -25,6 +25,12 @@ public class User extends PanacheEntityBase {
     @Column
     private String password;
 
+    @Column(name = "github_url")
+    private String githubUrl;
+
+    @Column(name = "additional_url")
+    private String additionalUrl;
+
     @ManyToMany
     @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -36,7 +42,10 @@ public class User extends PanacheEntityBase {
         this.name = userDTOForm.getName();
         this.email = userDTOForm.getEmail();
         this.password = userDTOForm.getPassword();
+        this.githubUrl = userDTOForm.getGithubUrl();
+        this.additionalUrl = userDTOForm.getAdditionalUrl();
     }
 
     public User(){}
+
 }

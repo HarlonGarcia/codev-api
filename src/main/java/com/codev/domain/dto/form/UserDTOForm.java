@@ -16,5 +16,10 @@ public class UserDTOForm {
 
     private String password;
 
+    private String githubUrl;
+
+    private String additionalUrl;
+
     private Set<Role> roles;
+
 }
