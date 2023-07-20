@@ -44,7 +44,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         Root<Solution> solutionRoot = criteriaQuery.from(Solution.class);
 
         Join<Solution, User> authorJoin = solutionRoot.join("author", JoinType.LEFT);
-        Join<Solution, User> likeJoin = solutionRoot.join("authors", JoinType.LEFT);
+        Join<Solution, User> likeJoin = solutionRoot.join("participants", JoinType.LEFT);
 
         Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
         Root<User> likeUserRoot = subquery.from(User.class);
