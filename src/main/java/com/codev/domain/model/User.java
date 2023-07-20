@@ -5,6 +5,7 @@ import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 
 @Entity
@@ -31,6 +32,12 @@ public class User extends PanacheEntityBase {
     @Column(name = "additional_url")
     private String additionalUrl;
 
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
+
     @ManyToMany
     @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
@@ -44,6 +51,7 @@ public class User extends PanacheEntityBase {
         this.password = userDTOForm.getPassword();
         this.githubUrl = userDTOForm.getGithubUrl();
         this.additionalUrl = userDTOForm.getAdditionalUrl();
+        this.createdAt = LocalDateTime.now();
     }
 
     public User(){}
