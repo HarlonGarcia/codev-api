@@ -48,12 +48,12 @@ public class Challenge extends PanacheEntityBase {
     private List<Category> categories;
 
     @ManyToMany
-    @JoinTable(name = "tb_subscriber",
+    @JoinTable(name = "tb_participant",
             joinColumns = @JoinColumn(name = "challenge_id"),
-            inverseJoinColumns = @JoinColumn(name = "subscriber_id")
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
     )
     @JsonBackReference
-    private List<User> subscribers;
+    private List<User> participants;
 
     @Column(name = "created_at")
     private LocalDateTime createdAt;
