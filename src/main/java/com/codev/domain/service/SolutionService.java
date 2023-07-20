@@ -3,6 +3,7 @@ package com.codev.domain.service;
 import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.LikeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
+import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
@@ -48,8 +49,12 @@ public class SolutionService {
     }
 
     @Transactional
-    public LikeDTOView likeOrDislikeInSolution(Long solutionId, Long userId) {
-        return solutionRepository.likeOrDislikeInSolution(solutionId, userId);
+    public LikeDTOView addLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
+        return solutionRepository.addLike(solutionId, userId);
     }
 
+    @Transactional
+    public LikeDTOView removeLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
+        return solutionRepository.removeLike(solutionId, userId);
+    }
 }
