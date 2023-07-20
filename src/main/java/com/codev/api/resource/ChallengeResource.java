@@ -1,6 +1,7 @@
 package com.codev.api.resource;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
+import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.model.Challenge;
@@ -65,6 +66,15 @@ public class ChallengeResource {
     public Response createChallenge(ChallengeDTOForm challengeDTOForm){
         Challenge challenge = challengeService.createChallenge(challengeDTOForm);
         return Response.ok(new ChallengeDTOView(challenge)).status(201).build();
+    }
+
+    @POST
+    @Path("{challengeId}/solutions")
+    public Response createSolution(
+            @PathParam("challengeId") Long challengeId,
+            SolutionDTOForm solutionDTOForm
+    ) {
+        return Response.ok(solutionService.createSolution(challengeId, solutionDTOForm)).build();
     }
 
     @PUT

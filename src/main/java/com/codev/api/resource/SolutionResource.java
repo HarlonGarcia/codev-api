@@ -15,15 +15,6 @@ public class SolutionResource {
     SolutionService solutionService;
 
     @POST
-    @Path("challenges/{challengeId}")
-    public Response createSolution(
-            @PathParam("challengeId") Long challengeId,
-            SolutionDTOForm solutionDTOForm
-    ) {
-        return Response.ok(solutionService.createSolution(challengeId, solutionDTOForm)).build();
-    }
-
-    @POST
     @Path("{solutionId}/users/{userId}")
     public Response likeOrDislikeInSolution(
             @PathParam("solutionId") Long solutionId,
