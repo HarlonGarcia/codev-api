@@ -12,6 +12,7 @@ import jakarta.transaction.Transactional;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.List;
 
 @ApplicationScoped
@@ -61,5 +62,10 @@ public class ChallengeService {
 
         challenge.setActive(GlobalConstants.DEACTIVATE);
         challenge.persist();
+    }
+
+    @Transactional
+    public boolean joinChallenge(Long challengeId, Long participantId) throws SQLException {
+        return challengeRepository.joinChallenge(challengeId, participantId);
     }
 }

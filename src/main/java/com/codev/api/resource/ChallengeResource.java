@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.lang.reflect.InvocationTargetException;
+import java.sql.SQLException;
 import java.util.List;
 
 @Path("challenges")
@@ -75,6 +76,20 @@ public class ChallengeResource {
             SolutionDTOForm solutionDTOForm
     ) {
         return Response.ok(solutionService.createSolution(challengeId, solutionDTOForm)).build();
+    }
+
+    @POST
+    @Path("{challengeId}/users/{participantId}")
+    public Response joinChallenge(
+            @PathParam("challengeId") Long challengeId,
+            @PathParam("participantId") Long participantId
+    ) {
+        try {
+            challengeService.joinChallenge(challengeId, participantId);
+            return Response.ok().build();
+        } catch (SQLException e) {
+            return Response.ok(e.getStackTrace()).status(400).build();
+        }
     }
 
     @PUT
