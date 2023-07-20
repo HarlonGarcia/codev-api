@@ -2,6 +2,7 @@ package com.codev.infraestructure.impl;
 
 import com.codev.domain.dto.view.LikeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
+import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.SolutionRepository;
@@ -82,18 +83,29 @@ public class SolutionRepositoryImpl implements SolutionRepository {
     }
 
     @Override
-    public LikeDTOView likeOrDislikeInSolution(Long solutionId, Long userId) {
+    public LikeDTOView addLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
+        boolean isLikedInSolution = isLikedInSolution(solutionId, userId);
+
+        if (!isLikedInSolution)
+            return addLikeInSolution(solutionId, userId);
+        else
+            throw new LikeNotAcceptedException();
+    }
+
+    @Override
+    public LikeDTOView removeLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
         boolean isLikedInSolution = isLikedInSolution(solutionId, userId);
 
         if (isLikedInSolution)
-            return dislike(solutionId, userId);
+            return removeLikeInSolution(solutionId, userId);
         else
-            return like(solutionId, userId);
+            throw new LikeNotAcceptedException();
     }
 
-    private LikeDTOView like(Long solutionId, Long userId) {
+    private LikeDTOView addLikeInSolution(Long solutionId, Long userId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "INSERT INTO tb_like (author_id, solution_id) VALUES (?, ?)";
+
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setLong(1, userId);
                 statement.setLong(2, solutionId);
@@ -106,9 +118,10 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         }
     }
 
-    private LikeDTOView dislike(Long solutionId, Long userId) {
+    private LikeDTOView removeLikeInSolution(Long solutionId, Long userId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "DELETE FROM tb_like WHERE author_id = ? AND solution_id = ?";
+
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setLong(1, userId);
                 statement.setLong(2, solutionId);

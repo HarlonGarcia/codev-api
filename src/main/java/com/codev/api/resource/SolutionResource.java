@@ -1,5 +1,6 @@
 package com.codev.api.resource;
 
+import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.service.SolutionService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -18,11 +19,27 @@ public class SolutionResource {
 
     @POST
     @Path("{solutionId}/users/{userId}")
-    public Response likeOrDislikeInSolution(
+    public Response addLike(
             @PathParam("solutionId") Long solutionId,
             @PathParam("userId") Long userId
     ) {
-        return Response.ok(solutionService.likeOrDislikeInSolution(solutionId, userId)).build();
+        try {
+            return Response.ok(solutionService.addLike(solutionId, userId)).build();
+        } catch (LikeNotAcceptedException e) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
     }
 
+    @DELETE
+    @Path("{solutionId}/users/{userId}")
+    public Response removeLike(
+            @PathParam("solutionId") Long solutionId,
+            @PathParam("userId") Long userId
+    ) {
+        try {
+            return Response.ok(solutionService.removeLike(solutionId, userId)).build();
+        } catch (LikeNotAcceptedException e) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+        }
+    }
 }
