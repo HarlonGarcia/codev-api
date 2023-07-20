@@ -33,17 +33,17 @@ public class Solution extends PanacheEntityBase {
     @ManyToMany
     @JoinTable(name = "tb_like",
             joinColumns = @JoinColumn(name = "solution_id"),
-            inverseJoinColumns = @JoinColumn(name = "author_id")
+            inverseJoinColumns = @JoinColumn(name = "participant_id")
     )
-    private List<User> authors;
+    private List<User> participants;
 
-    public Solution(Long id, Challenge challenge, User author, String repositoryUrl, String deployUrl, List<User> authors) {
+    public Solution(Long id, Challenge challenge, User author, String repositoryUrl, String deployUrl, List<User> participants) {
         this.id = id;
         this.challenge = challenge;
         this.repositoryUrl = repositoryUrl;
         this.deployUrl = deployUrl;
         this.author = author;
-        this.authors = authors;
+        this.participants = participants;
     }
 
     public Solution(SolutionDTOForm solutionDTOForm) {
