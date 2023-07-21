@@ -8,8 +8,6 @@ import java.util.Set;
 @Data
 public class UserDTOForm {
 
-    private Long id;
-
     private String name;
 
     private String email;

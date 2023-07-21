@@ -13,8 +13,6 @@ public class UserDTOView {
 
     private String email;
 
-    private String password;
-
     private String githubUrl;
 
     private String additionalUrl;
@@ -27,12 +25,10 @@ public class UserDTOView {
         this.id = user.getId();
         this.name = user.getName();
         this.email = user.getEmail();
-        this.password = user.getPassword();
         this.additionalUrl = user.getAdditionalUrl();
         this.githubUrl = user.getGithubUrl();
         this.createdAt = user.getCreatedAt();
         this.updatedAt = LocalDateTime.now();
-        //todo: criar updatedAt quando o update de user for chamado
     }
 
     public UserDTOView() {}
