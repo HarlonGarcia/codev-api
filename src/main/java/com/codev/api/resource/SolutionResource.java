@@ -18,12 +18,15 @@ public class SolutionResource {
     SolutionService solutionService;
 
     @POST
-    @Path("{solutionId}/users/{userId}")
+    @Path("{solutionId}/add-like")
     public Response addLike(
             @PathParam("solutionId") Long solutionId,
-            @PathParam("userId") Long userId
+            @HeaderParam("X-User-ID") Long userId
     ) {
         try {
+            if (userId == null) {
+                return Response.status(Response.Status.BAD_REQUEST).entity("User ID not provided in the header.").build();
+            }
             return Response.ok(solutionService.addLike(solutionId, userId)).build();
         } catch (LikeNotAcceptedException e) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
@@ -31,10 +34,10 @@ public class SolutionResource {
     }
 
     @DELETE
-    @Path("{solutionId}/users/{userId}")
+    @Path("{solutionId}/remove-like")
     public Response removeLike(
             @PathParam("solutionId") Long solutionId,
-            @PathParam("userId") Long userId
+            @HeaderParam("X-User-ID") Long userId
     ) {
         try {
             return Response.ok(solutionService.removeLike(solutionId, userId)).build();

@@ -51,10 +51,10 @@ public class ChallengeResource {
     }
 
     @GET
-    @Path("/{challengeId}/solutions/users/{userId}")
+    @Path("/{challengeId}/solutions")
     public Response findAllSolutionsByChallengeId(
             @PathParam("challengeId") Long challengeId,
-            @PathParam("userId") Long userId,
+            @HeaderParam("X-User-ID") Long userId,
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size
     ) {
@@ -81,10 +81,10 @@ public class ChallengeResource {
     }
 
     @POST
-    @Path("{challengeId}/users/{participantId}/join-challenge")
+    @Path("{challengeId}/join-challenge")
     public Response joinChallenge(
             @PathParam("challengeId") Long challengeId,
-            @PathParam("participantId") Long participantId
+            @HeaderParam("X-User-ID") Long participantId
     ) {
         try {
             challengeService.joinChallenge(challengeId, participantId);
@@ -109,10 +109,10 @@ public class ChallengeResource {
     }
 
     @DELETE
-    @Path("{challengeId}/users/{participantId}/unjoin-challenge")
+    @Path("{challengeId}/unjoin-challenge")
     public Response unjoinChallenge(
             @PathParam("challengeId") Long challengeId,
-            @PathParam("participantId") Long participantId
+            @HeaderParam("X-User-ID") Long participantId
     ) {
         try {
             challengeService.unjoinChallenge(challengeId, participantId);
