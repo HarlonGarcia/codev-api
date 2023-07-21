@@ -74,4 +74,21 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         }
     }
 
+    @Override
+    public boolean unjoinChallenge(Long challengeId, Long participantId) throws SQLException {
+        String sql = "DELETE FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setLong(1, challengeId);
+            statement.setLong(2, participantId);
+
+            int rowsInserted = statement.executeUpdate();
+            return rowsInserted > 0;
+
+        } catch (SQLException e) {
+            throw new SQLException();
+        }
+    }
+
 }

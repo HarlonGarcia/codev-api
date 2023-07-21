@@ -68,4 +68,10 @@ public class ChallengeService {
     public boolean joinChallenge(Long challengeId, Long participantId) throws SQLException {
         return challengeRepository.joinChallenge(challengeId, participantId);
     }
+
+    @Transactional
+    public boolean unjoinChallenge(Long challengeId, Long participantId) throws SQLException {
+        return challengeRepository.unjoinChallenge(challengeId, participantId);
+    }
+
 }
