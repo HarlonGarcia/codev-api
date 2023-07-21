@@ -10,5 +10,6 @@ public interface ChallengeRepository {
     List<Challenge> findAllChallengesWithPaging(Integer page, Integer size);
 
     boolean joinChallenge(Long challengeId, Long participantId) throws SQLException;
+    boolean unjoinChallenge(Long challengeId, Long participantId) throws SQLException;
 
 }
