@@ -37,9 +37,11 @@ public class SolutionService {
     public SolutionDTOView createSolution(Long challengeId, SolutionDTOForm solutionDTOForm) {
         Challenge challenge = challengeService.findById(challengeId);
         User author = User.findById(solutionDTOForm.getAuthorId());
-        if (author == null)
+
+        if (author == null || challenge == null)
             throw new EntityNotFoundException("Author not found");
 
+        // todo Implement attributes that are missing (title, author...)
         Solution solution = new Solution(solutionDTOForm);
         solution.setChallenge(challenge);
         solution.setAuthor(author);

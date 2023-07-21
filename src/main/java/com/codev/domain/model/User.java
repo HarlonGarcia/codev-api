@@ -45,13 +45,13 @@ public class User extends PanacheEntityBase {
     private Set<Role> roles;
 
     public User(UserDTOForm userDTOForm) {
-        this.id = userDTOForm.getId();
         this.name = userDTOForm.getName();
         this.email = userDTOForm.getEmail();
         this.password = userDTOForm.getPassword();
         this.githubUrl = userDTOForm.getGithubUrl();
         this.additionalUrl = userDTOForm.getAdditionalUrl();
         this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
     }
 
     public User(){}

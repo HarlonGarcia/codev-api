@@ -49,4 +49,16 @@ public class UserResource {
             return Response.ok(e).status(400).build();
         }
     }
+
+    @PUT
+    @Path("/{id}")
+    public Response updateUser(@PathParam("id") Long id, UserDTOForm userDTOForm) {
+        try {
+            UserDTOView userDTOView = userService.updateUser(id, userDTOForm);
+            return Response.ok(userDTOView).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.ok(e).status(400).build();
+        }
+    }
 }
