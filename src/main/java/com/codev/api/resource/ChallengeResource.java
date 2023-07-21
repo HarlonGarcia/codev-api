@@ -81,7 +81,7 @@ public class ChallengeResource {
     }
 
     @POST
-    @Path("{challengeId}/users/{participantId}")
+    @Path("{challengeId}/users/{participantId}/join-challenge")
     public Response joinChallenge(
             @PathParam("challengeId") Long challengeId,
             @PathParam("participantId") Long participantId
@@ -104,6 +104,20 @@ public class ChallengeResource {
             Challenge challenge = challengeService.updateChallenge(challengeId, challengeDTOForm);
             return Response.ok(new ChallengeDTOView(challenge)).build();
         } catch (InvocationTargetException | IllegalAccessException e) {
+            return Response.ok(e.getStackTrace()).status(400).build();
+        }
+    }
+
+    @DELETE
+    @Path("{challengeId}/users/{participantId}/unjoin-challenge")
+    public Response unjoinChallenge(
+            @PathParam("challengeId") Long challengeId,
+            @PathParam("participantId") Long participantId
+    ) {
+        try {
+            challengeService.unjoinChallenge(challengeId, participantId);
+            return Response.ok().build();
+        } catch (SQLException e) {
             return Response.ok(e.getStackTrace()).status(400).build();
         }
     }
