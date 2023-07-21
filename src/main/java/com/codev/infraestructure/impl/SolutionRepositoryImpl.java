@@ -104,7 +104,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
 
     private LikeDTOView addLikeInSolution(Long solutionId, Long userId) {
         try (Connection connection = dataSource.getConnection()) {
-            String sql = "INSERT INTO tb_like (author_id, solution_id) VALUES (?, ?)";
+            String sql = "INSERT INTO tb_like (participant_id, solution_id) VALUES (?, ?)";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setLong(1, userId);
@@ -120,7 +120,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
 
     private LikeDTOView removeLikeInSolution(Long solutionId, Long userId) {
         try (Connection connection = dataSource.getConnection()) {
-            String sql = "DELETE FROM tb_like WHERE author_id = ? AND solution_id = ?";
+            String sql = "DELETE FROM tb_like WHERE participant_id = ? AND solution_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setLong(1, userId);
@@ -138,7 +138,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "SELECT COUNT(*) AS count" +
                     " FROM tb_like" +
-                    " WHERE author_id = ? AND solution_id = ?";
+                    " WHERE participant_id = ? AND solution_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setLong(1, userId);
