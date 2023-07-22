@@ -1,6 +1,7 @@
 package com.codev.api.resource;
 
 import com.codev.domain.dto.form.UserDTOForm;
+import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.model.User;
 import com.codev.domain.service.UserService;
@@ -22,9 +23,12 @@ public class UserResource {
     UserService userService;
 
     @GET
-    public Response findAllUsers() {
+    public Response findAllUsers(
+            @QueryParam("startsWith") @DefaultValue("") String startsWith
+    ) {
         try {
-            List<User> users = userService.findAllUsers();
+            UserFiltersDTOForm filters = new UserFiltersDTOForm(startsWith);
+            List<User> users = userService.findAllUsers(filters);
             return Response.ok(users).build();
         } catch (Exception error) {
             error.printStackTrace();
