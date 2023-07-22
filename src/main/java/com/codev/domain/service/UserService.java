@@ -1,6 +1,7 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.UserDTOForm;
+import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.UserRepository;
@@ -21,8 +22,8 @@ public class UserService {
     @Inject
     UserRepository userRepository;
 
-    public List<User> findAllUsers() {
-        return userRepository.findAllUsers();
+    public List<User> findAllUsers(UserFiltersDTOForm filters) {
+        return userRepository.findAllUsers(filters);
     }
 
     public UserDTOView findUserById(Long id) {
