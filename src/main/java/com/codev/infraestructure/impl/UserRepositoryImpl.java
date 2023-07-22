@@ -3,6 +3,7 @@ package com.codev.infraestructure.impl;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.UserRepository;
+import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
@@ -32,7 +33,7 @@ public class UserRepositoryImpl implements UserRepository {
         } else
             criteriaQuery.select(userRoot).distinct(true);
 
-
+        criteriaQuery.where(criteriaBuilder.equal(userRoot.get("active"), GlobalConstants.ACTIVE));
         criteriaQuery.orderBy(
                 criteriaBuilder.asc(userRoot.get("id"))
         );
