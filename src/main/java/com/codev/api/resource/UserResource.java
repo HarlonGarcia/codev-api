@@ -3,9 +3,12 @@ package com.codev.api.resource;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.exceptions.users.UserDeactivatedException;
+import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.model.User;
 import com.codev.domain.service.UserService;
 import jakarta.inject.Inject;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -39,8 +42,12 @@ public class UserResource {
     @GET
     @Path("/{id}")
     public Response findUserById(@PathParam("id") Long id) {
-        UserDTOView userDTOView = userService.findUserById(id);
-        return Response.ok(userDTOView).build();
+        try {
+            UserDTOView userDTOView = userService.findUserById(id);
+            return Response.ok(userDTOView).build();
+        } catch (UserDeactivatedException | EntityNotFoundException e) {
+            return Response.status(404).entity(e.getMessage()).build();
+        }
     }
 
     @POST
@@ -62,7 +69,25 @@ public class UserResource {
             return Response.ok(userDTOView).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.ok(e).status(400).build();
+            return Response.status(400).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{id}")
+    public Response deactivateUser(@PathParam("id") Long id) {
+        try {
+            userService.deactivateUser(id);
+            return Response.status(Response.Status.OK.getStatusCode()).build();
+        } catch (EntityNotFoundException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(e.getMessage()).build();
+        } catch (UserDeactivatedException e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.NOT_ACCEPTABLE.getStatusCode()).entity(e.getMessage()).build();
+        } catch (Exception e) {
+            e.printStackTrace();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).build();
         }
     }
 }

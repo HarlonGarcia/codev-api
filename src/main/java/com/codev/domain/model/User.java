@@ -1,6 +1,7 @@
 package com.codev.domain.model;
 
 import com.codev.domain.dto.form.UserDTOForm;
+import com.codev.utils.GlobalConstants;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -26,6 +27,9 @@ public class User extends PanacheEntityBase {
     @Column
     private String password;
 
+    @Column
+    private boolean active;
+
     @Column(name = "github_url")
     private String githubUrl;
 
@@ -48,6 +52,7 @@ public class User extends PanacheEntityBase {
         this.name = userDTOForm.getName();
         this.email = userDTOForm.getEmail();
         this.password = userDTOForm.getPassword();
+        this.active = GlobalConstants.ACTIVE;
         this.githubUrl = userDTOForm.getGithubUrl();
         this.additionalUrl = userDTOForm.getAdditionalUrl();
         this.createdAt = LocalDateTime.now();
