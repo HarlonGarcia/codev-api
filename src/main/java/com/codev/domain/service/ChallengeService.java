@@ -27,8 +27,10 @@ public class ChallengeService {
 
     public Challenge findById(Long challengeId) {
         Challenge challenge = Challenge.findById(challengeId);
+
         if (challenge == null)
             throw new EntityNotFoundException("Challenge not found");
+
         return challenge;
     }
 
