@@ -8,6 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -27,13 +28,19 @@ public class UserRepositoryImpl implements UserRepository {
         Root<User> userRoot = criteriaQuery.from(User.class);
         userRoot.fetch("roles", JoinType.LEFT);
 
+        List<Predicate> predicates = new ArrayList<>();
+
         if (filters.getStartsWith() != null) {
             String name = filters.getStartsWith().toLowerCase();
-            criteriaQuery.where(criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("name")), "%" + name + "%"));
+
+            predicates.add(criteriaBuilder.like(criteriaBuilder.lower(userRoot.get("name")), "%" + name + "%"));
         } else
             criteriaQuery.select(userRoot).distinct(true);
 
-        criteriaQuery.where(criteriaBuilder.equal(userRoot.get("active"), GlobalConstants.ACTIVE));
+        predicates.add(criteriaBuilder.equal(userRoot.get("active"), GlobalConstants.ACTIVE));
+
+        criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+
         criteriaQuery.orderBy(
                 criteriaBuilder.asc(userRoot.get("id"))
         );
