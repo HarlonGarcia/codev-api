@@ -1,12 +1,14 @@
 package com.codev.api.resource;
 
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
+import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.service.SolutionService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import org.jboss.resteasy.reactive.RestResponse;
 
 import java.util.NoSuchElementException;
 
@@ -38,12 +40,13 @@ public class SolutionResource {
     @DELETE
     @Path("/{solutionId}")
     public Response deleteSolution(
-            @PathParam("solutionId") Long solutionId
+            @PathParam("solutionId") Long solutionId,
+            @HeaderParam("X-User-ID") Long authorId
     ) {
         try {
-            solutionService.deleteSolution(solutionId);
+            solutionService.deleteSolution(solutionId, authorId);
             return Response.ok().build();
-        } catch (NoSuchElementException e) {
+        } catch (NoSuchElementException | SolutionNotDeletedException e) {
             e.printStackTrace();
             return Response.status(404).entity(e.getMessage()).build();
         }
@@ -61,4 +64,19 @@ public class SolutionResource {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
     }
+
+    @DELETE
+    @Path("{solutionId}/remove")
+    public Response removeSolution(
+            @PathParam("solutionId") Long solutionId,
+            @HeaderParam("X-User-ID") Long authorId
+    ) {
+        try {
+            solutionService.deleteSolution(solutionId, authorId);
+            return Response.ok().build();
+        } catch (SolutionNotDeletedException e) {
+            return Response.ok(e.getMessage()).status(RestResponse.Status.BAD_REQUEST).build();
+        }
+    }
+
 }

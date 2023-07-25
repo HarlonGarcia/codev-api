@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.LikeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
+import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
@@ -62,12 +63,8 @@ public class SolutionService {
     }
 
     @Transactional
-    public void deleteSolution(Long solutionId) {
-        Solution solution = Solution.findById(solutionId);
-
-        if (solution == null)
-            throw new NoSuchElementException("Solution not found");
-
-        solution.delete();
+    public boolean deleteSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
+        solutionRepository.removeLikeBySolutionId(solutionId);
+        return solutionRepository.deleteSolution(solutionId, authorId);
     }
 }
