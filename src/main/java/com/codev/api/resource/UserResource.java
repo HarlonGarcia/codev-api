@@ -4,8 +4,6 @@ import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
-import com.codev.domain.exceptions.users.UserDeactivatedException;
-import com.codev.domain.model.User;
 import com.codev.domain.service.UserService;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,7 +29,7 @@ public class UserResource {
     ) {
         try {
             UserFiltersDTOForm filters = new UserFiltersDTOForm(startsWith);
-            List<User> users = userService.findAllUsers(filters);
+            List<UserDTOView> users = userService.findAllUsers(filters);
             return Response.ok(users).build();
         } catch (Exception error) {
             error.printStackTrace();
