@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.LikeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
+import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
@@ -58,5 +59,10 @@ public class SolutionService {
     @Transactional
     public LikeDTOView removeLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
         return solutionRepository.removeLike(solutionId, userId);
+    }
+
+    public boolean removeSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
+        solutionRepository.removeLikeBySolutionId(solutionId);
+        return solutionRepository.removeSolution(solutionId, authorId);
     }
 }

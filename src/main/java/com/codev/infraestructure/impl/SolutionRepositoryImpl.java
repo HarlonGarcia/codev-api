@@ -3,6 +3,7 @@ package com.codev.infraestructure.impl;
 import com.codev.domain.dto.view.LikeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
+import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.SolutionRepository;
@@ -97,7 +98,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         boolean isLikedInSolution = isLikedInSolution(solutionId, userId);
 
         if (isLikedInSolution)
-            return removeLikeInSolution(solutionId, userId);
+            return removeLikeBySolutionIdAndparticipantId(solutionId, userId);
         else
             throw new LikeNotAcceptedException();
     }
@@ -118,12 +119,12 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         }
     }
 
-    private LikeDTOView removeLikeInSolution(Long solutionId, Long userId) {
+    private LikeDTOView removeLikeBySolutionIdAndparticipantId(Long solutionId, Long participantId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "DELETE FROM tb_like WHERE participant_id = ? AND solution_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, userId);
+                statement.setLong(1, participantId);
                 statement.setLong(2, solutionId);
                 statement.executeUpdate();
 
@@ -134,14 +135,14 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         }
     }
 
-    private boolean isLikedInSolution(Long solutionId, Long userId) {
+    private boolean isLikedInSolution(Long solutionId, Long participantId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "SELECT COUNT(*) AS count" +
                     " FROM tb_like" +
                     " WHERE participant_id = ? AND solution_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, userId);
+                statement.setLong(1, participantId);
                 statement.setLong(2, solutionId);
 
                 try (ResultSet resultSet = statement.executeQuery()) {
@@ -157,6 +158,38 @@ public class SolutionRepositoryImpl implements SolutionRepository {
             throw new RuntimeException(e);
         }
 
+    }
+
+    @Override
+    public boolean removeSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "DELETE FROM tb_solution WHERE author_id = ? AND id = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, authorId);
+                statement.setLong(2, solutionId);
+                statement.executeUpdate();
+
+                return true;
+            }
+
+        } catch (SQLException e) {
+            throw new SolutionNotDeletedException(e.getMessage());
+        }
+    }
+
+    public void removeLikeBySolutionId(Long solutionId) throws SolutionNotDeletedException {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "DELETE FROM tb_like WHERE solution_id = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, solutionId);
+                statement.executeUpdate();
+            }
+        } catch (SQLException e) {
+            System.out.println("LANÇOU EM: removeLikeBySolutionId");
+            throw new SolutionNotDeletedException(e.getMessage());
+        }
     }
 
 }
