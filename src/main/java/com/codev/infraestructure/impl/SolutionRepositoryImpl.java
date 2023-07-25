@@ -161,7 +161,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
     }
 
     @Override
-    public boolean removeSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
+    public boolean deleteSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "DELETE FROM tb_solution WHERE author_id = ? AND id = ?";
 

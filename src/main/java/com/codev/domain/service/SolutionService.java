@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @ApplicationScoped
 public class SolutionService {
@@ -61,8 +62,9 @@ public class SolutionService {
         return solutionRepository.removeLike(solutionId, userId);
     }
 
-    public boolean removeSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
+    @Transactional
+    public boolean deleteSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
         solutionRepository.removeLikeBySolutionId(solutionId);
-        return solutionRepository.removeSolution(solutionId, authorId);
+        return solutionRepository.deleteSolution(solutionId, authorId);
     }
 }

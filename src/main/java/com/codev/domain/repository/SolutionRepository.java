@@ -14,7 +14,7 @@ public interface SolutionRepository {
 
     LikeDTOView removeLike(Long solutionId, Long userId) throws LikeNotAcceptedException;
 
-    boolean removeSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException;
+    boolean deleteSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException;
 
     void removeLikeBySolutionId(Long solutionId) throws SolutionNotDeletedException;
 }

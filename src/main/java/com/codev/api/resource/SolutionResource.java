@@ -10,6 +10,8 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.reactive.RestResponse;
 
+import java.util.NoSuchElementException;
+
 @Path("solutions")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -20,7 +22,7 @@ public class SolutionResource {
     SolutionService solutionService;
 
     @POST
-    @Path("{solutionId}/add-like")
+    @Path("/{solutionId}/add-like")
     public Response addLike(
             @PathParam("solutionId") Long solutionId,
             @HeaderParam("X-User-ID") Long userId
@@ -36,7 +38,22 @@ public class SolutionResource {
     }
 
     @DELETE
-    @Path("{solutionId}/remove-like")
+    @Path("/{solutionId}")
+    public Response deleteSolution(
+            @PathParam("solutionId") Long solutionId,
+            @HeaderParam("X-User-ID") Long authorId
+    ) {
+        try {
+            solutionService.deleteSolution(solutionId, authorId);
+            return Response.ok().build();
+        } catch (NoSuchElementException | SolutionNotDeletedException e) {
+            e.printStackTrace();
+            return Response.status(404).entity(e.getMessage()).build();
+        }
+    }
+
+    @DELETE
+    @Path("/{solutionId}/remove-like")
     public Response removeLike(
             @PathParam("solutionId") Long solutionId,
             @HeaderParam("X-User-ID") Long userId
@@ -55,7 +72,7 @@ public class SolutionResource {
             @HeaderParam("X-User-ID") Long authorId
     ) {
         try {
-            solutionService.removeSolution(solutionId, authorId);
+            solutionService.deleteSolution(solutionId, authorId);
             return Response.ok().build();
         } catch (SolutionNotDeletedException e) {
             return Response.ok(e.getMessage()).status(RestResponse.Status.BAD_REQUEST).build();
