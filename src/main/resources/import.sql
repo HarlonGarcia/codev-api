@@ -1,6 +1,6 @@
---insert into tb_user (id, email, name, password) values (1, 'breno@gmail.com', 'Breno Duarte', '12345');
---insert into tb_user (id, email, name, password) values (2, 'harlon@gmail.com', 'Harlon Garcia', '54321');
---insert into tb_user (id, email, name, password) values (3, 'pedro@gmail.com', 'Pedro Arruda', '678910');
+--insert into tb_user (id, email, name, password, active) values (1, 'breno@gmail.com', 'Breno Duarte', '12345', true);
+--insert into tb_user (id, email, name, password, active) values (2, 'harlon@gmail.com', 'Harlon Garcia', '54321', true);
+--insert into tb_user (id, email, name, password, active) values (3, 'pedro@gmail.com', 'Pedro Arruda', '678910', true);
 --
 --insert into tb_challenge (id, description, title, author_id, active) values (1, 'Fazer uma API do banco tal', 'API do banco tal', 1, true);
 --insert into tb_challenge (id, description, title, author_id, active) values (2, 'Fazer o front end do banco tal', 'Front end do banco tal', 2, true);
