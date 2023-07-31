@@ -43,38 +43,39 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         List<SolutionDTOView> solutionDTOViews = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
-            String sql = "SELECT" +
-                    "    s1_0.challenge_id," +
-                    "    a1_0.id," +
-                    "    a1_0.active," +
-                    "    a1_0.additional_url," +
-                    "    a1_0.created_at," +
-                    "    a1_0.email," +
-                    "    a1_0.github_url," +
-                    "    a1_0.name," +
-                    "    a1_0.password," +
-                    "    a1_0.updated_at," +
-                    "    s1_0.repository_url," +
-                    "    s1_0.deploy_url," +
-                    "    COALESCE(l1_0.likes_count, 0) as likes," +
-                    "    l1_0.liked" +
-                    "FROM tb_solution s1_0" +
-                    "LEFT JOIN tb_user a1_0 ON a1_0.id = s1_0.author_id" +
+            String sql = "SELECT " +
+                    "s1_0.challenge_id, " +
+                    "a1_0.id, " +
+                    "a1_0.active, " +
+                    "a1_0.additional_url, " +
+                    "a1_0.created_at, " +
+                    "a1_0.email, " +
+                    "a1_0.github_url, " +
+                    "a1_0.name, " +
+                    "a1_0.password, " +
+                    "a1_0.updated_at, " +
+                    "s1_0.repository_url, " +
+                    "s1_0.deploy_url, " +
+                    "COALESCE(l1_0.likes_count, 0) as likes, " +
+                    "l1_0.liked, " +
+                    "s1_0.id " +
+                    "FROM tb_solution s1_0 " +
+                    "LEFT JOIN tb_user a1_0 ON a1_0.id = s1_0.author_id " +
                     "LEFT JOIN (" +
-                    "    SELECT" +
-                    "        p1_0.solution_id," +
-                    "        COUNT(DISTINCT p1_0.participant_id) as likes_count," +
+                    "    SELECT " +
+                    "        p1_0.solution_id, " +
+                    "        COUNT(DISTINCT p1_0.participant_id) as likes_count, " +
                     "        EXISTS (" +
-                    "            SELECT 1" +
-                    "            FROM tb_like p2_0" +
-                    "            WHERE p2_0.solution_id = p1_0.solution_id AND p2_0.participant_id = ?" +
-                    "        ) as liked" +
-                    "    FROM tb_like p1_0" +
-                    "    GROUP BY p1_0.solution_id" +
-                    ") l1_0 ON l1_0.solution_id = s1_0.id" +
-                    "WHERE s1_0.challenge_id = ?" +
-                    "ORDER BY s1_0.id" +
-                    "OFFSET ? ROWS FETCH FIRST ? ROWS ONLY;";
+                    "            SELECT 1 " +
+                    "            FROM tb_like p2_0 " +
+                    "            WHERE p2_0.solution_id = p1_0.solution_id AND p2_0.participant_id = ? " +
+                    "        ) as liked " +
+                    "    FROM tb_like p1_0 " +
+                    "    GROUP BY p1_0.solution_id " +
+                    ") l1_0 ON l1_0.solution_id = s1_0.id " +
+                    "WHERE s1_0.challenge_id = ? " +
+                    "ORDER BY s1_0.id " +
+                    "OFFSET ? ROWS FETCH FIRST ? ROWS ONLY";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
                 statement.setLong(1, userId);
@@ -92,16 +93,17 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                         author.setId(resultSet.getLong(2));
                         author.setActive(resultSet.getBoolean(3));
                         author.setAdditionalUrl(resultSet.getString(4));
-//                        author.setCreatedAt(LocalDateTime.from(resultSet.getDate(5).toInstant()));
+                        author.setCreatedAt(resultSet.getTimestamp(5).toLocalDateTime());
                         author.setEmail(resultSet.getString(6));
                         author.setGithubUrl(resultSet.getString(7));
                         author.setName(resultSet.getString(8));
                         author.setPassword(resultSet.getString(9));
-//                        author.setUpdatedAt(LocalDateTime.from(resultSet.getDate(10).toInstant()));
+                        author.setUpdatedAt(resultSet.getTimestamp(10).toLocalDateTime());
                         solutionDTOView.setRepositoryUrl(resultSet.getString(11));
                         solutionDTOView.setDeployUrl(resultSet.getString(12));
                         solutionDTOView.setLikes(resultSet.getLong(13));
                         solutionDTOView.setLiked(resultSet.getBoolean(14));
+                        solutionDTOView.setSolutionId(resultSet.getLong(15));
 
                         solutionDTOView.setAuthor(new UserDTOView(author));
 

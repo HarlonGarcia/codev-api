@@ -7,6 +7,8 @@ import lombok.Data;
 @Data
 public class SolutionDTOView {
 
+    private Long solutionId;
+
     private Long challengeId;
 
     private UserDTOView author;
@@ -29,6 +31,7 @@ public class SolutionDTOView {
     }
 
     public SolutionDTOView(Solution solution) {
+        this.solutionId = solution.getId();
         this.challengeId = solution.getChallenge().getId();
         this.author = new UserDTOView(solution.getAuthor());
         this.repositoryUrl = solution.getRepositoryUrl();
