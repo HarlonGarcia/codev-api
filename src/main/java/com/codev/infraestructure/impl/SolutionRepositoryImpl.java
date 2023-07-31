@@ -2,21 +2,21 @@ package com.codev.infraestructure.impl;
 
 import com.codev.domain.dto.view.LikeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
+import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
-import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.SolutionRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.*;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 
 @ApplicationScoped
@@ -40,46 +40,80 @@ public class SolutionRepositoryImpl implements SolutionRepository {
             throw new IllegalArgumentException("Page must be a positive integer.");
         }
 
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<SolutionDTOView> criteriaQuery = criteriaBuilder.createQuery(SolutionDTOView.class);
+        List<SolutionDTOView> solutionDTOViews = new ArrayList<>();
 
-        Root<Solution> solutionRoot = criteriaQuery.from(Solution.class);
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "SELECT" +
+                    "    s1_0.challenge_id," +
+                    "    a1_0.id," +
+                    "    a1_0.active," +
+                    "    a1_0.additional_url," +
+                    "    a1_0.created_at," +
+                    "    a1_0.email," +
+                    "    a1_0.github_url," +
+                    "    a1_0.name," +
+                    "    a1_0.password," +
+                    "    a1_0.updated_at," +
+                    "    s1_0.repository_url," +
+                    "    s1_0.deploy_url," +
+                    "    COALESCE(l1_0.likes_count, 0) as likes," +
+                    "    l1_0.liked" +
+                    "FROM tb_solution s1_0" +
+                    "LEFT JOIN tb_user a1_0 ON a1_0.id = s1_0.author_id" +
+                    "LEFT JOIN (" +
+                    "    SELECT" +
+                    "        p1_0.solution_id," +
+                    "        COUNT(DISTINCT p1_0.participant_id) as likes_count," +
+                    "        EXISTS (" +
+                    "            SELECT 1" +
+                    "            FROM tb_like p2_0" +
+                    "            WHERE p2_0.solution_id = p1_0.solution_id AND p2_0.participant_id = ?" +
+                    "        ) as liked" +
+                    "    FROM tb_like p1_0" +
+                    "    GROUP BY p1_0.solution_id" +
+                    ") l1_0 ON l1_0.solution_id = s1_0.id" +
+                    "WHERE s1_0.challenge_id = ?" +
+                    "ORDER BY s1_0.id" +
+                    "OFFSET ? ROWS FETCH FIRST ? ROWS ONLY;";
 
-        Join<Solution, User> authorJoin = solutionRoot.join("author", JoinType.LEFT);
-        Join<Solution, User> likeJoin = solutionRoot.join("participants", JoinType.LEFT);
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setLong(1, userId);
+                statement.setLong(2, challengeId);
+                statement.setInt(3, page * size); // Calculate the offset
+                statement.setInt(4, size);
 
-        Subquery<Long> subquery = criteriaQuery.subquery(Long.class);
-        Root<User> likeUserRoot = subquery.from(User.class);
-        subquery.select(likeUserRoot.get("id"));
-        subquery.where(
-                criteriaBuilder.and(
-                        criteriaBuilder.equal(likeUserRoot.get("id"), userId),
-                        criteriaBuilder.notEqual(solutionRoot.get("author").get("id"), likeUserRoot.get("id"))
-                )
-        );
+                try (ResultSet resultSet = statement.executeQuery()) {
+                    while (resultSet.next()) {
+                        // Map the columns to SolutionDTOView properties
+                        SolutionDTOView solutionDTOView = new SolutionDTOView();
+                        User author = new User();
 
-        criteriaQuery.multiselect(
-                solutionRoot.get("challenge").get("id"),
-                authorJoin,
-                solutionRoot.get("repositoryUrl"),
-                solutionRoot.get("deployUrl"),
-                criteriaBuilder.countDistinct(likeJoin.get("id")),
-                criteriaBuilder.exists(subquery)
-        );
+                        solutionDTOView.setChallengeId(resultSet.getLong(1));
+                        author.setId(resultSet.getLong(2));
+                        author.setActive(resultSet.getBoolean(3));
+                        author.setAdditionalUrl(resultSet.getString(4));
+//                        author.setCreatedAt(LocalDateTime.from(resultSet.getDate(5).toInstant()));
+                        author.setEmail(resultSet.getString(6));
+                        author.setGithubUrl(resultSet.getString(7));
+                        author.setName(resultSet.getString(8));
+                        author.setPassword(resultSet.getString(9));
+//                        author.setUpdatedAt(LocalDateTime.from(resultSet.getDate(10).toInstant()));
+                        solutionDTOView.setRepositoryUrl(resultSet.getString(11));
+                        solutionDTOView.setDeployUrl(resultSet.getString(12));
+                        solutionDTOView.setLikes(resultSet.getLong(13));
+                        solutionDTOView.setLiked(resultSet.getBoolean(14));
 
-        criteriaQuery.where(criteriaBuilder.equal(solutionRoot.get("challenge").get("id"), challengeId));
+                        solutionDTOView.setAuthor(new UserDTOView(author));
 
-        criteriaQuery.groupBy(
-                solutionRoot.get("id"),
-                authorJoin
-        );
+                        solutionDTOViews.add(solutionDTOView);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
 
-        int firstResult = page * size;
-
-        return entityManager.createQuery(criteriaQuery)
-                .setFirstResult(firstResult)
-                .setMaxResults(size)
-                .getResultList();
+        return solutionDTOViews;
 
     }
 
@@ -187,7 +221,6 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            System.out.println("LANÇOU EM: removeLikeBySolutionId");
             throw new SolutionNotDeletedException(e.getMessage());
         }
     }

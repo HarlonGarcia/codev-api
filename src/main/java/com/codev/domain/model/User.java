@@ -27,7 +27,7 @@ public class User extends PanacheEntityBase {
     @Column
     private String password;
 
-    @Column
+    @Column(nullable = false)
     private boolean active;
 
     @Column(name = "github_url")
