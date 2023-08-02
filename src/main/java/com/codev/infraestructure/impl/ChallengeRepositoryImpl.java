@@ -1,8 +1,11 @@
 package com.codev.infraestructure.impl;
 
+import com.codev.domain.model.Category;
 import com.codev.domain.model.Challenge;
+import com.codev.domain.model.ChallengeCategory;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
+import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -18,7 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @ApplicationScoped
-public class ChallengeRepositoryImpl implements ChallengeRepository {
+public class ChallengeRepositoryImpl implements ChallengeRepository, PanacheRepository<Category> {
 
     private final EntityManager entityManager;
 
@@ -28,6 +31,25 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     @Inject
     DataSource dataSource;
+
+    @Override
+    public List<Category> findAllCategoriesByChallengeId(Long challengeId) {
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
+
+        Root<ChallengeCategory> challengeCategoryRoot = criteriaQuery.from(ChallengeCategory.class);
+
+        criteriaQuery.select(challengeCategoryRoot.get("category"));
+
+        criteriaQuery.where(
+                criteriaBuilder.equal(challengeCategoryRoot.get("challenge").get("id"), challengeId)
+        );
+
+        return entityManager.createQuery(criteriaQuery)
+                .getResultList();
+
+    }
 
     @Override
     public List<Challenge> findAllChallengesWithPaging(Integer page, Integer size) {
@@ -71,7 +93,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
         } catch (SQLException e) {
             throw new SQLException();
-        }
+        } // status code 406 igual foi feito no add like
     }
 
     @Override
@@ -88,7 +110,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
         } catch (SQLException e) {
             throw new SQLException();
-        }
+        } // status code 406 igual foi feito no add like
     }
 
 }
