@@ -30,6 +30,14 @@ public class ChallengeResource {
     SolutionService solutionService;
 
     @GET
+    @Path("/{challengeId}/categories")
+    public Response findAllCategoriesByChallengeId(
+            @PathParam("challengeId") Long challengeId
+    ) {
+        return Response.ok(challengeService.findAllCategoriesByChallengeId(challengeId)).build();
+    }
+
+    @GET
     public Response findAllChallengeWithPaging(
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size

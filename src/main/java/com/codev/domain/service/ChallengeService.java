@@ -1,6 +1,7 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
+import com.codev.domain.model.Category;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
@@ -74,6 +75,10 @@ public class ChallengeService {
     @Transactional
     public boolean unjoinChallenge(Long challengeId, Long participantId) throws SQLException {
         return challengeRepository.unjoinChallenge(challengeId, participantId);
+    }
+
+    public List<Category> findAllCategoriesByChallengeId(Long challengeId) {
+        return challengeRepository.findAllCategoriesByChallengeId(challengeId);
     }
 
 }
