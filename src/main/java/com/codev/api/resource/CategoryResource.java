@@ -1,5 +1,8 @@
 package com.codev.api.resource;
 
+import com.codev.domain.dto.form.CategoryDTOForm;
+import com.codev.domain.dto.view.CategoryDTOView;
+import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.service.CategoryService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
@@ -17,9 +20,18 @@ public class CategoryResource {
     CategoryService categoryService;
 
     @POST
-    @Path("/{categoryName}/create-category")
-    public Response createCategory(@PathParam("categoryName") String categoryName) {
-        return Response.ok(categoryService.createCategory(categoryName)).build();
+    @Path("/create-category")
+    public Response createCategory(CategoryDTOForm categoryDTOForm) {
+        return Response.ok(new CategoryDTOView(categoryService.createCategory(categoryDTOForm))).build();
+    }
+
+    @PUT
+    @Path("/{categoryId}/update-category")
+    public Response updateCategory(
+            @PathParam("categoryId") Long categoryId,
+            CategoryDTOForm categoryDTOForm
+    ) {
+        return Response.ok(new CategoryDTOView(categoryService.updateCategory(categoryId, categoryDTOForm))).build();
     }
 
     @DELETE
