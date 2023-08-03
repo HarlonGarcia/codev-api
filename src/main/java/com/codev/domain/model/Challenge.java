@@ -40,6 +40,10 @@ public class Challenge extends PanacheEntityBase {
     @Column
     private String imageURL;
 
+    @ManyToOne
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @ManyToMany
     @JoinTable(name = "tb_challenge_technology",
             joinColumns = @JoinColumn(name = "challenge_id"),

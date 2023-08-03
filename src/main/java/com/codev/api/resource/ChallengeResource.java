@@ -71,6 +71,20 @@ public class ChallengeResource {
         return Response.ok(solutions).build();
     }
 
+    @GET
+    @Path("/categories/{categoryId}")
+    public Response findAllChallengesByCategoryIdWithPaging(
+            @PathParam("categoryId") Long categoryId,
+            @QueryParam("page") Integer page,
+            @QueryParam("size") Integer size
+    ) {
+        page = page != null ? page : 0;
+        size = size != null ? size : 10;
+
+        List<ChallengeDTOView> challenges = challengeService.findAllChallengesByCategoryId(categoryId, page, size);
+        return Response.ok(challenges).build();
+    }
+
     @POST
     public Response createChallenge(ChallengeDTOForm challengeDTOForm){
         Challenge challenge = challengeService.createChallenge(challengeDTOForm);
