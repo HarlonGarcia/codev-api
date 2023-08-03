@@ -4,9 +4,9 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 @Entity
-@Table(name = "tb_challenge_category")
+@Table(name = "tb_challenge_technology")
 @Data
-public class ChallengeCategory {
+public class ChallengeTechnology {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -17,7 +17,7 @@ public class ChallengeCategory {
     private Challenge challenge;
 
     @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
+    @JoinColumn(name = "technology_id")
+    private Technology technology;
 
 }

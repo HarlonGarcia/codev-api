@@ -1,6 +1,6 @@
 package com.codev.infraestructure.impl;
 
-import com.codev.domain.model.Category;
+import com.codev.domain.model.Technology;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
@@ -16,10 +16,10 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     EntityManager entityManager;
 
     @Override
-    public Category findByCategoryName(String categoryName) {
+    public Technology findByCategoryName(String categoryName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
-        Root<Category> categoryRoot = criteriaQuery.from(Category.class);
+        CriteriaQuery<Technology> criteriaQuery = criteriaBuilder.createQuery(Technology.class);
+        Root<Technology> categoryRoot = criteriaQuery.from(Technology.class);
 
         criteriaQuery.where(criteriaBuilder.equal(categoryRoot.get("name"), categoryName));
 
