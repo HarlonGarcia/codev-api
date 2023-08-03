@@ -1,6 +1,7 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
+import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.model.Technology;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.User;
@@ -79,6 +80,13 @@ public class ChallengeService {
 
     public List<Technology> findAllTechnologiesByChallengeId(Long challengeId) {
         return challengeRepository.findAllTechnologiesByChallengeId(challengeId);
+    }
+
+    public List<ChallengeDTOView> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size) {
+        return challengeRepository.findAllChallengesByCategoryId(categoryId, page, size)
+                .stream()
+                .map(ChallengeDTOView::new)
+                .toList();
     }
 
 }

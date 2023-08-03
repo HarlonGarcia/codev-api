@@ -1,8 +1,8 @@
 package com.codev.infraestructure.impl;
 
-import com.codev.domain.model.Technology;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.ChallengeTechnology;
+import com.codev.domain.model.Technology;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -47,6 +47,36 @@ public class ChallengeRepositoryImpl implements ChallengeRepository, PanacheRepo
         );
 
         return entityManager.createQuery(criteriaQuery)
+                .getResultList();
+
+    }
+
+    @Override
+    public List<Challenge> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size) {
+
+        if (page < 0) {
+            throw new IllegalArgumentException("Page must be a positive integer.");
+        }
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
+
+        Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
+
+        criteriaQuery.select(challengeRoot);
+
+        criteriaQuery.where(
+                criteriaBuilder.equal(challengeRoot.get("category").get("id"), categoryId),
+                criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE)
+        );
+
+        challengeRoot.fetch("author", JoinType.LEFT);
+
+        int firstResult = page * size;
+
+        return entityManager.createQuery(criteriaQuery)
+                .setFirstResult(firstResult)
+                .setMaxResults(size)
                 .getResultList();
 
     }

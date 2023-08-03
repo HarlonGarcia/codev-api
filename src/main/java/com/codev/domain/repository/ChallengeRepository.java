@@ -1,7 +1,7 @@
 package com.codev.domain.repository;
 
-import com.codev.domain.model.Technology;
 import com.codev.domain.model.Challenge;
+import com.codev.domain.model.Technology;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -15,5 +15,7 @@ public interface ChallengeRepository {
     boolean unjoinChallenge(Long challengeId, Long participantId) throws SQLException;
 
     List<Technology> findAllTechnologiesByChallengeId(Long challengeId);
+
+    List<Challenge> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size);
 
 }
