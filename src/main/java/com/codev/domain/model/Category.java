@@ -16,8 +16,8 @@ public class Category extends PanacheEntityBase {
     @Column(unique = true)
     private String name;
 
-    public Category(String categoryName) {
-        this.name = categoryName;
+    public Category(String name) {
+        this.name = name;
     }
 
     public Category() {}

@@ -1,10 +1,10 @@
 package com.codev.domain.repository;
 
-import com.codev.domain.model.Category;
+import com.codev.domain.model.Technology;
 
 public interface CategoryRepository {
 
-    Category findByCategoryName(String categoryName);
+    Technology findByCategoryName(String categoryName);
 
     void deleteCategory(Long categoryId);
 

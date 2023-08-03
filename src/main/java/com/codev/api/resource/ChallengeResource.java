@@ -30,11 +30,9 @@ public class ChallengeResource {
     SolutionService solutionService;
 
     @GET
-    @Path("/{challengeId}/categories")
-    public Response findAllCategoriesByChallengeId(
-            @PathParam("challengeId") Long challengeId
-    ) {
-        return Response.ok(challengeService.findAllCategoriesByChallengeId(challengeId)).build();
+    @Path("/{challengeId}/technologies")
+    public Response findAllTechnologiesByChallengeId(@PathParam("challengeId") Long challengeId) {
+        return Response.ok(challengeService.findAllTechnologiesByChallengeId(challengeId)).build();
     }
 
     @GET

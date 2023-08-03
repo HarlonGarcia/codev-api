@@ -41,11 +41,11 @@ public class Challenge extends PanacheEntityBase {
     private String imageURL;
 
     @ManyToMany
-    @JoinTable(name = "tb_challenge_category",
+    @JoinTable(name = "tb_challenge_technology",
             joinColumns = @JoinColumn(name = "challenge_id"),
-            inverseJoinColumns = @JoinColumn(name = "category_id")
+            inverseJoinColumns = @JoinColumn(name = "technology_id")
     )
-    private List<Category> categories;
+    private List<Technology> technologies;
 
     @ManyToMany
     @JoinTable(name = "tb_participant",

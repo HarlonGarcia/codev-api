@@ -1,8 +1,8 @@
 package com.codev.infraestructure.impl;
 
-import com.codev.domain.model.Category;
+import com.codev.domain.model.Technology;
 import com.codev.domain.model.Challenge;
-import com.codev.domain.model.ChallengeCategory;
+import com.codev.domain.model.ChallengeTechnology;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import io.quarkus.hibernate.orm.panache.PanacheRepository;
@@ -21,7 +21,7 @@ import java.sql.SQLException;
 import java.util.List;
 
 @ApplicationScoped
-public class ChallengeRepositoryImpl implements ChallengeRepository, PanacheRepository<Category> {
+public class ChallengeRepositoryImpl implements ChallengeRepository, PanacheRepository<Technology> {
 
     private final EntityManager entityManager;
 
@@ -33,17 +33,17 @@ public class ChallengeRepositoryImpl implements ChallengeRepository, PanacheRepo
     DataSource dataSource;
 
     @Override
-    public List<Category> findAllCategoriesByChallengeId(Long challengeId) {
+    public List<Technology> findAllTechnologiesByChallengeId(Long challengeId) {
 
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
+        CriteriaQuery<Technology> criteriaQuery = criteriaBuilder.createQuery(Technology.class);
 
-        Root<ChallengeCategory> challengeCategoryRoot = criteriaQuery.from(ChallengeCategory.class);
+        Root<ChallengeTechnology> challengeTechnologyRoot = criteriaQuery.from(ChallengeTechnology.class);
 
-        criteriaQuery.select(challengeCategoryRoot.get("category"));
+        criteriaQuery.select(challengeTechnologyRoot.get("technology"));
 
         criteriaQuery.where(
-                criteriaBuilder.equal(challengeCategoryRoot.get("challenge").get("id"), challengeId)
+                criteriaBuilder.equal(challengeTechnologyRoot.get("challenge").get("id"), challengeId)
         );
 
         return entityManager.createQuery(criteriaQuery)
