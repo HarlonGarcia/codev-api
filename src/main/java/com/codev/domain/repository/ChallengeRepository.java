@@ -18,4 +18,6 @@ public interface ChallengeRepository {
 
     List<Challenge> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size);
 
+    void addCategoryInChallenge(Long challengeId, Long categoryId) throws SQLException;
+
 }

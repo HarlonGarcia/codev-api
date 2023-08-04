@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
+import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
@@ -110,6 +111,21 @@ public class ChallengeResource {
             challengeService.joinChallenge(challengeId, participantId);
             return Response.ok().build();
         } catch (SQLException e) {
+            return Response.ok(e.getStackTrace()).status(400).build();
+        }
+    }
+
+    @POST
+    @Path("/{challengeId}/categories/{categoryId}")
+    public Response addCategoryInChallenge(
+            @PathParam("challengeId") Long challengeId,
+            @PathParam("categoryId") Long categoryId
+    ) {
+        try {
+            Challenge challenge = challengeService.addCategoryInChallenge(challengeId, categoryId);
+            return Response.ok(new ChallengeDTOView(challenge)).build();
+
+        } catch (CategoryAlreadyExistsInChallenge | SQLException e) {
             return Response.ok(e.getStackTrace()).status(400).build();
         }
     }

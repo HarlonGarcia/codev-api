@@ -23,6 +23,8 @@ public class ChallengeDTOView {
 
     private UserDTOView author;
 
+    private CategoryDTOView category;
+
     public ChallengeDTOView(Challenge challenge) {
         this.id = challenge.getId();
         this.title = challenge.getTitle();
@@ -31,6 +33,8 @@ public class ChallengeDTOView {
         this.endDate = challenge.getEndDate();
         this.status = challenge.getStatus();
         this.author = new UserDTOView(challenge.getAuthor());
+        if (challenge.getCategory() != null)
+            this.category = new CategoryDTOView(challenge.getCategory());
     }
 
 }
