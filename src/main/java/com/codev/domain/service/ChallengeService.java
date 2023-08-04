@@ -40,11 +40,21 @@ public class ChallengeService {
 
     @Transactional
     public Challenge createChallenge(ChallengeDTOForm challengeDTOForm) {
+
         User author = User.findById(challengeDTOForm.getAuthorId());
         if (author == null)
-            throw new EntityNotFoundException("Author not found");
+            throw new EntityNotFoundException("Author not found with id " + challengeDTOForm.getAuthorId());
 
         Challenge challenge = new Challenge(challengeDTOForm);
+
+        if (challengeDTOForm.getCategoryId() != null) {
+            Category category = Category.findById(challengeDTOForm.getCategoryId());
+            if (category == null)
+                throw new EntityNotFoundException("Category not found with id " + challengeDTOForm.getCategoryId());
+
+            challenge.setCategory(category);
+        }
+
         challenge.setAuthor(author);
 
         challenge.persist();
@@ -55,6 +65,15 @@ public class ChallengeService {
     public Challenge updateChallenge(Long challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
         Challenge challenge = findById(challengeId);
         BeanUtils.copyProperties(challenge, challengeDTOForm);
+
+        if (challengeDTOForm.getCategoryId() != null) {
+            Category category = Category.findById(challengeDTOForm.getCategoryId());
+            if (category == null)
+                throw new EntityNotFoundException("Category not found with id " + challengeDTOForm.getCategoryId());
+
+            challenge.setCategory(category);
+        }
+
         challenge.persist();
         return challenge;
     }
