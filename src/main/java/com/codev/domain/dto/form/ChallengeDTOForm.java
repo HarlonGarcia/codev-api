@@ -13,4 +13,6 @@ public class ChallengeDTOForm {
 
     private String imageURL;
 
+    private Long categoryId;
+
 }
