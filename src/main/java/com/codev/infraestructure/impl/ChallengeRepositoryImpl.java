@@ -83,7 +83,6 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     @Override
     public void addCategoryInChallenge(Long challengeId, Long categoryId) throws SQLException {
-
         String sql = "UPDATE tb_challenge SET category_id = ? WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -96,7 +95,21 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         } catch (SQLException e) {
             throw new SQLException("Unable to add category in challenge");
         }
+    }
 
+    @Override
+    public void removeCategoryInChallenge(Long challengeId) throws SQLException  {
+        String sql = "UPDATE tb_challenge SET category_id = NULL WHERE id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setLong(1, challengeId);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException("Unable to remove category in challenge");
+        }
     }
 
     @Override
@@ -141,7 +154,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
         } catch (SQLException e) {
             throw new SQLException();
-        } // status code 406 igual foi feito no add like
+        } // todo: status code 406 igual foi feito no add like
     }
 
     @Override
@@ -158,7 +171,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
         } catch (SQLException e) {
             throw new SQLException();
-        } // status code 406 igual foi feito no add like
+        } // todo: status code 406 igual foi feito no add like
     }
 
 }

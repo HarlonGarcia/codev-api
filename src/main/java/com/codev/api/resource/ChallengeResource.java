@@ -164,4 +164,16 @@ public class ChallengeResource {
         challengeService.deactivateChallenge(challengeId);
         return Response.ok().build();
     }
+
+    @DELETE
+    @Path("/{challengeId}/categories")
+    public Response removeCategoryInChallenge(@PathParam("challengeId") Long challengeId){
+        try {
+            challengeService.removeCategoryInChallenge(challengeId);
+            return Response.ok().build();
+        } catch (SQLException e) {
+            return Response.ok(e.getStackTrace()).status(400).build();
+        }
+    }
+
 }

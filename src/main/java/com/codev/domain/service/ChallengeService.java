@@ -131,4 +131,17 @@ public class ChallengeService {
         return challenge;
     }
 
+    @Transactional
+    public Challenge removeCategoryInChallenge(Long challengeId) throws SQLException {
+        Challenge challenge = Challenge.findById(challengeId);
+
+        if (challenge == null)
+            throw new EntityNotFoundException("Challenge not found with id " + challengeId);
+
+        challengeRepository.removeCategoryInChallenge(challengeId);
+
+        challenge.setCategory(null);
+        return challenge;
+    }
+
 }
