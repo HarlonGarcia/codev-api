@@ -38,6 +38,17 @@ public class ChallengeService {
         return challenge;
     }
 
+    public List<Technology> findAllTechnologiesByChallengeId(Long challengeId) {
+        return challengeRepository.findAllTechnologiesByChallengeId(challengeId);
+    }
+
+    public List<ChallengeDTOView> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size) {
+        return challengeRepository.findAllChallengesByCategoryId(categoryId, page, size)
+                .stream()
+                .map(ChallengeDTOView::new)
+                .toList();
+    }
+
     @Transactional
     public Challenge createChallenge(ChallengeDTOForm challengeDTOForm) {
 
@@ -99,18 +110,8 @@ public class ChallengeService {
         return challengeRepository.unjoinChallenge(challengeId, participantId);
     }
 
-    public List<Technology> findAllTechnologiesByChallengeId(Long challengeId) {
-        return challengeRepository.findAllTechnologiesByChallengeId(challengeId);
-    }
-
-    public List<ChallengeDTOView> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size) {
-        return challengeRepository.findAllChallengesByCategoryId(categoryId, page, size)
-                .stream()
-                .map(ChallengeDTOView::new)
-                .toList();
-    }
-
-        public Challenge addCategoryInChallenge(Long challengeId, Long categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
+    @Transactional
+    public Challenge addCategoryInChallenge(Long challengeId, Long categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
@@ -127,6 +128,19 @@ public class ChallengeService {
         challengeRepository.addCategoryInChallenge(challengeId, categoryId);
 
         challenge.setCategory(category);
+        return challenge;
+    }
+
+    @Transactional
+    public Challenge removeCategoryInChallenge(Long challengeId) throws SQLException {
+        Challenge challenge = Challenge.findById(challengeId);
+
+        if (challenge == null)
+            throw new EntityNotFoundException("Challenge not found with id " + challengeId);
+
+        challengeRepository.removeCategoryInChallenge(challengeId);
+
+        challenge.setCategory(null);
         return challenge;
     }
 

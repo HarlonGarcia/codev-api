@@ -20,4 +20,6 @@ public interface ChallengeRepository {
 
     void addCategoryInChallenge(Long challengeId, Long categoryId) throws SQLException;
 
+    void removeCategoryInChallenge(Long challengeId) throws SQLException;
+
 }
