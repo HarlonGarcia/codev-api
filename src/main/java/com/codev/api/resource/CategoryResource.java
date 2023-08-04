@@ -2,7 +2,6 @@ package com.codev.api.resource;
 
 import com.codev.domain.dto.form.CategoryDTOForm;
 import com.codev.domain.dto.view.CategoryDTOView;
-import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.service.CategoryService;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;

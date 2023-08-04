@@ -2,8 +2,10 @@ package com.codev.domain.service;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
-import com.codev.domain.model.Technology;
+import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
+import com.codev.domain.model.Category;
 import com.codev.domain.model.Challenge;
+import com.codev.domain.model.Technology;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
@@ -87,6 +89,26 @@ public class ChallengeService {
                 .stream()
                 .map(ChallengeDTOView::new)
                 .toList();
+    }
+
+        public Challenge addCategoryInChallenge(Long challengeId, Long categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
+        Challenge challenge = Challenge.findById(challengeId);
+
+        if (challenge == null)
+            throw new EntityNotFoundException("Challenge not found with id " + challengeId);
+
+        if (challenge.getCategory() != null)
+            throw new CategoryAlreadyExistsInChallenge();
+
+        Category category = Category.findById(categoryId);
+
+        if (category == null)
+            throw new EntityNotFoundException("Category not found with id " + category);
+
+        challengeRepository.addCategoryInChallenge(challengeId, categoryId);
+
+        challenge.setCategory(category);
+        return challenge;
     }
 
 }

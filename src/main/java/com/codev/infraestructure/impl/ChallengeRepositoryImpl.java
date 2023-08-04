@@ -5,7 +5,6 @@ import com.codev.domain.model.ChallengeTechnology;
 import com.codev.domain.model.Technology;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
-import io.quarkus.hibernate.orm.panache.PanacheRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
@@ -15,13 +14,14 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 
 import javax.sql.DataSource;
+import javax.sql.RowSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.List;
 
 @ApplicationScoped
-public class ChallengeRepositoryImpl implements ChallengeRepository, PanacheRepository<Technology> {
+public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     private final EntityManager entityManager;
 
@@ -78,6 +78,24 @@ public class ChallengeRepositoryImpl implements ChallengeRepository, PanacheRepo
                 .setFirstResult(firstResult)
                 .setMaxResults(size)
                 .getResultList();
+
+    }
+
+    @Override
+    public void addCategoryInChallenge(Long challengeId, Long categoryId) throws SQLException {
+
+        String sql = "UPDATE tb_challenge SET category_id = ? WHERE id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql)) {
+
+            statement.setLong(1, categoryId);
+            statement.setLong(2, challengeId);
+
+            statement.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new SQLException("Unable to add category in challenge");
+        }
 
     }
 

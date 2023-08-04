@@ -29,8 +29,8 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     @Override
     public void deleteCategory(Long categoryId) {
 
-        String deleteChallengeCategoryQuery = "DELETE FROM tb_challenge_category WHERE category_id = :categoryId";
-        entityManager.createNativeQuery(deleteChallengeCategoryQuery)
+        String deleteCategoryInChallengeQuery = "UPDATE tb_challenge SET category_id = NULL WHERE category_id = :categoryId";
+        entityManager.createNativeQuery(deleteCategoryInChallengeQuery)
                 .setParameter("categoryId", categoryId)
                 .executeUpdate();
 
