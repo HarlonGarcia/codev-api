@@ -1,5 +1,8 @@
 package com.codev.infraestructure.impl;
 
+import java.util.List;
+
+import com.codev.domain.model.Category;
 import com.codev.domain.model.Technology;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -16,12 +19,27 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     EntityManager entityManager;
 
     @Override
-    public Technology findByCategoryName(String categoryName) {
+    public List<Category> findAllCategories() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Category> criteriaQuery = criteriaBuilder.createQuery(Category.class);
+        Root<Category> categoryRoot = criteriaQuery.from(Category.class);
+
+        criteriaQuery.select(categoryRoot);
+
+        criteriaQuery.orderBy(
+                criteriaBuilder.asc(categoryRoot.get("name"))
+        );
+
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+
+    @Override
+    public Technology findTechnologyByCategoryName(String categoryName) {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Technology> criteriaQuery = criteriaBuilder.createQuery(Technology.class);
-        Root<Technology> categoryRoot = criteriaQuery.from(Technology.class);
+        Root<Technology> technologyRoot = criteriaQuery.from(Technology.class);
 
-        criteriaQuery.where(criteriaBuilder.equal(categoryRoot.get("name"), categoryName));
+        criteriaQuery.where(criteriaBuilder.equal(technologyRoot.get("name"), categoryName));
 
         return entityManager.createQuery(criteriaQuery).getSingleResult();
     }

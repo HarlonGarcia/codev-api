@@ -1,5 +1,7 @@
 package com.codev.domain.service;
 
+import java.util.List;
+
 import com.codev.domain.dto.form.CategoryDTOForm;
 import com.codev.domain.model.Category;
 import com.codev.domain.repository.CategoryRepository;
@@ -13,6 +15,10 @@ public class CategoryService {
 
     @Inject
     CategoryRepository categoryRepository;
+
+    public List<Category> findAllCategories() {
+        return categoryRepository.findAllCategories();
+    }
 
     @Transactional
     public Category createCategory(CategoryDTOForm categoryDTOForm) {
