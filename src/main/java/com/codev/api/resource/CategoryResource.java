@@ -7,6 +7,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
+
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 @Path("categories")
@@ -18,14 +21,20 @@ public class CategoryResource {
     @Inject
     CategoryService categoryService;
 
+    @GET
+    public Response findAllCategories() {
+        List<CategoryDTOView> categories = categoryService.findAllCategories()
+                .stream().map(CategoryDTOView::new).toList();
+
+        return Response.ok(categories).build();
+    }
+
     @POST
-    @Path("/create-category")
     public Response createCategory(CategoryDTOForm categoryDTOForm) {
         return Response.ok(new CategoryDTOView(categoryService.createCategory(categoryDTOForm))).build();
     }
 
     @PUT
-    @Path("/{categoryId}/update-category")
     public Response updateCategory(
             @PathParam("categoryId") Long categoryId,
             CategoryDTOForm categoryDTOForm
@@ -34,7 +43,6 @@ public class CategoryResource {
     }
 
     @DELETE
-    @Path("/{categoryId}/delete-category")
     public Response deleteCategory(@PathParam("categoryId") Long categoryId) {
         categoryService.deleteCategory(categoryId);
         return Response.ok().build();
