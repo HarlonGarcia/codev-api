@@ -7,6 +7,9 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+
+import java.util.List;
+
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 @Path("technologies")
@@ -18,14 +21,21 @@ public class TechnologyResource {
     @Inject
     TechnologyService technologyService;
 
+    @GET
+    public Response findAllTechnologies() {
+        List<TechnologyDTOView> technologies = technologyService.findAllTechnologies()
+            .stream().map(TechnologyDTOView::new).toList();
+        
+        return Response.ok(technologies).build();
+    }
+
     @POST
-    @Path("/create-technology")
     public Response createTechnology(TechnologyDTOForm technologyDTOForm) {
         return Response.ok(new TechnologyDTOView(technologyService.createTechnology(technologyDTOForm))).build();
     }
 
     @PUT
-    @Path("/{technologyId}/update-technology")
+    @Path("/{technologyId}")
     public Response updateTechnology(
             @PathParam("technologyId") Long technologyId,
             TechnologyDTOForm technologyDTOForm
@@ -34,7 +44,7 @@ public class TechnologyResource {
     }
 
     @DELETE
-    @Path("/{technologyId}/delete-technology")
+    @Path("/{technologyId}")
     public Response deleteTechnology(@PathParam("technologyId") Long technologyId) {
         technologyService.deleteTechnology(technologyId);
         return Response.ok().build();

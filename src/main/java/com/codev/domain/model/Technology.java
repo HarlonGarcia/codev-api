@@ -32,6 +32,7 @@ public class Technology extends PanacheEntityBase {
     public Technology() {}
 
     public Technology copyProperties(TechnologyDTOForm technologyDTOForm) {
+        // TODO : why not use the helper NullAwareBeanUtilsBean.java?
         if (technologyDTOForm.getName() != null)
             this.name = technologyDTOForm.getName();
         if (technologyDTOForm.getDescription() != null)

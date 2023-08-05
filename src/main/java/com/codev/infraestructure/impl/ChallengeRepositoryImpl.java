@@ -14,7 +14,6 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Root;
 
 import javax.sql.DataSource;
-import javax.sql.RowSet;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
