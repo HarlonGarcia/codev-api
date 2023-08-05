@@ -1,5 +1,7 @@
 package com.codev.domain.service;
 
+import java.util.List;
+
 import com.codev.domain.dto.form.TechnologyDTOForm;
 import com.codev.domain.model.Technology;
 import com.codev.domain.repository.TechnologyRepository;
@@ -13,6 +15,11 @@ public class TechnologyService {
 
     @Inject
     TechnologyRepository technologyRepository;
+
+
+    public List<Technology> findAllTechnologies() {
+        return technologyRepository.findAllTechnologies();
+    }
 
     @Transactional
     public Technology createTechnology(TechnologyDTOForm technologyDTOForm) {
