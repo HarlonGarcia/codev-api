@@ -15,7 +15,6 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @ApplicationScoped
 public class SolutionService {

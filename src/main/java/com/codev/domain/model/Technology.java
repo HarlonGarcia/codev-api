@@ -3,6 +3,7 @@ package com.codev.domain.model;
 import com.codev.domain.dto.form.TechnologyDTOForm;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
@@ -23,10 +24,15 @@ public class Technology extends PanacheEntityBase {
     @Column
     private String documentationLink;
 
+    @Size(min = 6, max = 6, message = "Color must be a valid 6-digit hexadecimal color.")
+    @Column
+    private String color;
+
     public Technology(TechnologyDTOForm technologyDTOForm) {
         this.name = technologyDTOForm.getName();
         this.description = technologyDTOForm.getDescription();
         this.documentationLink = technologyDTOForm.getDocumentationLink();
+        this.color = technologyDTOForm.getColor();
     }
 
     public Technology() {}

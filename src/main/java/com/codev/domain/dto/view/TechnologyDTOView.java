@@ -14,11 +14,14 @@ public class TechnologyDTOView {
 
     private String documentationLink;
 
-    public TechnologyDTOView(Technology technology){
+    private String color;
+
+    public TechnologyDTOView(Technology technology) {
         this.id = technology.getId();
         this.name = technology.getName();
         this.description = technology.getDescription();
         this.documentationLink = technology.getDocumentationLink();
+        this.color = technology.getColor();
     }
 
 }
