@@ -66,7 +66,7 @@ public class SolutionResource {
     }
 
     @DELETE
-    @Path("{solutionId}/remove")
+    @Path("/{solutionId}")
     public Response removeSolution(
             @PathParam("solutionId") Long solutionId,
             @HeaderParam("X-User-ID") Long authorId

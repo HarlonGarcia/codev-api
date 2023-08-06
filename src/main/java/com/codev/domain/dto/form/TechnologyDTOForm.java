@@ -11,4 +11,6 @@ public class TechnologyDTOForm {
 
     private String documentationLink;
 
+    private String color;
+
 }
