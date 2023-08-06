@@ -2,6 +2,8 @@ package com.codev.domain.dto.form;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class ChallengeDTOForm {
 
@@ -9,10 +11,10 @@ public class ChallengeDTOForm {
 
     private String description;
 
-    private Long authorId;
+    private UUID authorId;
 
     private String imageURL;
 
-    private Long categoryId;
+    private UUID categoryId;
 
 }

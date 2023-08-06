@@ -2,12 +2,14 @@ package com.codev.domain.dto.form;
 
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class SolutionDTOForm {
 
-    private Long challengeId;
+    private UUID challengeId;
 
-    private Long authorId;
+    private UUID authorId;
 
     private String repositoryUrl;
 

@@ -18,6 +18,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class SolutionRepositoryImpl implements SolutionRepository {
@@ -89,8 +90,8 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                         SolutionDTOView solutionDTOView = new SolutionDTOView();
                         User author = new User();
 
-                        solutionDTOView.setChallengeId(resultSet.getLong(1));
-                        author.setId(resultSet.getLong(2));
+                        solutionDTOView.setChallengeId(UUID.fromString(resultSet.getString(1)));
+                        author.setId(UUID.fromString(resultSet.getString(2)));
                         author.setActive(resultSet.getBoolean(3));
                         author.setAdditionalUrl(resultSet.getString(4));
                         author.setCreatedAt(resultSet.getTimestamp(5).toLocalDateTime());
@@ -103,7 +104,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                         solutionDTOView.setDeployUrl(resultSet.getString(12));
                         solutionDTOView.setLikes(resultSet.getLong(13));
                         solutionDTOView.setLiked(resultSet.getBoolean(14));
-                        solutionDTOView.setSolutionId(resultSet.getLong(15));
+                        solutionDTOView.setSolutionId(UUID.fromString(resultSet.getString(15)));
 
                         solutionDTOView.setAuthor(new UserDTOView(author));
 

@@ -4,10 +4,12 @@ import com.codev.domain.model.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class UserDTOView {
-    private Long id;
+
+    private UUID id;
 
     private String name;
 

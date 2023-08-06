@@ -3,10 +3,12 @@ package com.codev.domain.dto.view;
 import com.codev.domain.model.Technology;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class TechnologyDTOView {
 
-    private Long id;
+    private UUID id;
 
     private String name;
 
