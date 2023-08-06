@@ -10,8 +10,6 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import org.jboss.resteasy.reactive.RestResponse;
 
-import java.util.NoSuchElementException;
-
 @Path("solutions")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
@@ -34,21 +32,6 @@ public class SolutionResource {
             return Response.ok(solutionService.addLike(solutionId, userId)).build();
         } catch (LikeNotAcceptedException e) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
-        }
-    }
-
-    @DELETE
-    @Path("/{solutionId}")
-    public Response deleteSolution(
-            @PathParam("solutionId") Long solutionId,
-            @HeaderParam("X-User-ID") Long authorId
-    ) {
-        try {
-            solutionService.deleteSolution(solutionId, authorId);
-            return Response.ok().build();
-        } catch (NoSuchElementException | SolutionNotDeletedException e) {
-            e.printStackTrace();
-            return Response.status(404).entity(e.getMessage()).build();
         }
     }
 
