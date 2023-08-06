@@ -3,14 +3,16 @@ package com.codev.domain.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Entity
 @Table(name = "tb_challenge_technology")
 @Data
 public class ChallengeTechnology {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue
+    public UUID id;
 
     @ManyToOne
     @JoinColumn(name = "challenge_id")

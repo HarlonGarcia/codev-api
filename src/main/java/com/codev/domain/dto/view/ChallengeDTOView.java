@@ -5,11 +5,12 @@ import com.codev.domain.model.Challenge;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 public class ChallengeDTOView {
 
-    private Long id;
+    private UUID id;
 
     private String title;
 

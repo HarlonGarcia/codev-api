@@ -48,7 +48,6 @@ public class TechnologyResource {
     public Response deleteTechnology(@PathParam("technologyId") Long technologyId) {
         technologyService.deleteTechnology(technologyId);
         return Response.ok().build();
-        //todo: adicionar cascade
     }
 
 }

@@ -4,12 +4,14 @@ import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
 import lombok.Data;
 
+import java.util.UUID;
+
 @Data
 public class SolutionDTOView {
 
-    private Long solutionId;
+    private UUID solutionId;
 
-    private Long challengeId;
+    private UUID challengeId;
 
     private UserDTOView author;
 
@@ -21,7 +23,7 @@ public class SolutionDTOView {
 
     private boolean liked;
 
-    public SolutionDTOView(Long challengeId, User author, String repositoryUrl, String deployUrl, long likes, boolean liked) {
+    public SolutionDTOView(UUID challengeId, User author, String repositoryUrl, String deployUrl, long likes, boolean liked) {
         this.challengeId = challengeId;
         this.author = new UserDTOView(author);
         this.repositoryUrl = repositoryUrl;
