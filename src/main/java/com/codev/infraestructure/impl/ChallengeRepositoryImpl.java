@@ -86,7 +86,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         String sql = "UPDATE tb_challenge SET category_id = ? WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-
+          
             statement.setObject(1, categoryId);
             statement.setObject(2, challengeId);
 
@@ -145,7 +145,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         String sql = "INSERT INTO tb_participant (challenge_id, participant_id) values (?, ?)";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-
+          
             statement.setObject(1, challengeId);
             statement.setObject(2, participantId);
 
@@ -159,6 +159,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     @Override
     public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException {
+
         String sql = "DELETE FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {

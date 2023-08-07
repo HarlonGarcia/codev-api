@@ -15,6 +15,7 @@ public interface ChallengeRepository {
 
     boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException;
 
+
     List<Technology> findAllTechnologiesByChallengeId(UUID challengeId);
 
     List<Challenge> findAllChallengesByCategoryId(UUID categoryId, Integer page, Integer size);
