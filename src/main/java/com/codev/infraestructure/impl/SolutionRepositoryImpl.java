@@ -34,7 +34,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
 
     @Override
     public List<SolutionDTOView> findAllSolutionsByChallengeId(
-            Long challengeId, Long userId, Integer page, Integer size
+            UUID challengeId, UUID userId, Integer page, Integer size
     ) {
 
         if (page < 0) {
@@ -79,8 +79,8 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                     "OFFSET ? ROWS FETCH FIRST ? ROWS ONLY";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, userId);
-                statement.setLong(2, challengeId);
+                statement.setObject(1, userId);
+                statement.setObject(2, challengeId);
                 statement.setInt(3, page * size); // Calculate the offset
                 statement.setInt(4, size);
 
@@ -121,7 +121,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
     }
 
     @Override
-    public LikeDTOView addLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
+    public LikeDTOView addLike(UUID solutionId, UUID userId) throws LikeNotAcceptedException {
         boolean isLikedInSolution = isLikedInSolution(solutionId, userId);
 
         if (!isLikedInSolution)
@@ -131,7 +131,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
     }
 
     @Override
-    public LikeDTOView removeLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
+    public LikeDTOView removeLike(UUID solutionId, UUID userId) throws LikeNotAcceptedException {
         boolean isLikedInSolution = isLikedInSolution(solutionId, userId);
 
         if (isLikedInSolution)
@@ -140,13 +140,13 @@ public class SolutionRepositoryImpl implements SolutionRepository {
             throw new LikeNotAcceptedException();
     }
 
-    private LikeDTOView addLikeInSolution(Long solutionId, Long userId) {
+    private LikeDTOView addLikeInSolution(UUID solutionId, UUID userId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "INSERT INTO tb_like (participant_id, solution_id) VALUES (?, ?)";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, userId);
-                statement.setLong(2, solutionId);
+                statement.setObject(1, userId);
+                statement.setObject(2, solutionId);
                 statement.executeUpdate();
 
                 return new LikeDTOView(true);
@@ -156,13 +156,13 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         }
     }
 
-    private LikeDTOView removeLikeBySolutionIdAndparticipantId(Long solutionId, Long participantId) {
+    private LikeDTOView removeLikeBySolutionIdAndparticipantId(UUID solutionId, UUID participantId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "DELETE FROM tb_like WHERE participant_id = ? AND solution_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, participantId);
-                statement.setLong(2, solutionId);
+                statement.setObject(1, participantId);
+                statement.setObject(2, solutionId);
                 statement.executeUpdate();
 
                 return new LikeDTOView(false);
@@ -172,15 +172,15 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         }
     }
 
-    private boolean isLikedInSolution(Long solutionId, Long participantId) {
+    private boolean isLikedInSolution(UUID solutionId, UUID participantId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "SELECT COUNT(*) AS count" +
                     " FROM tb_like" +
                     " WHERE participant_id = ? AND solution_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, participantId);
-                statement.setLong(2, solutionId);
+                statement.setObject(1, participantId);
+                statement.setObject(2, solutionId);
 
                 try (ResultSet resultSet = statement.executeQuery()) {
                     if (resultSet.next()) {
@@ -198,13 +198,13 @@ public class SolutionRepositoryImpl implements SolutionRepository {
     }
 
     @Override
-    public boolean deleteSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
+    public boolean deleteSolution(UUID solutionId, UUID authorId) throws SolutionNotDeletedException {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "DELETE FROM tb_solution WHERE author_id = ? AND id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, authorId);
-                statement.setLong(2, solutionId);
+                statement.setObject(1, authorId);
+                statement.setObject(2, solutionId);
                 statement.executeUpdate();
 
                 return true;
@@ -215,12 +215,12 @@ public class SolutionRepositoryImpl implements SolutionRepository {
         }
     }
 
-    public void removeLikeBySolutionId(Long solutionId) throws SolutionNotDeletedException {
+    public void removeLikeBySolutionId(UUID solutionId) throws SolutionNotDeletedException {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "DELETE FROM tb_like WHERE solution_id = ?";
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                statement.setLong(1, solutionId);
+                statement.setObject(1, solutionId);
                 statement.executeUpdate();
             }
         } catch (SQLException e) {

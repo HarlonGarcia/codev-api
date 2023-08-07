@@ -31,6 +31,7 @@ public class Challenge extends PanacheEntityBase {
     @Column(length = 1500)
     private String description;
 
+
     @Column
     private boolean active;
 

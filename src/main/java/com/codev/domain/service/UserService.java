@@ -17,6 +17,7 @@ import jakarta.transaction.Transactional;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class UserService {
@@ -33,7 +34,7 @@ public class UserService {
         return userDTOList;
     }
 
-    public UserDTOView findUserById(Long id) throws UserDeactivatedException {
+    public UserDTOView findUserById(UUID id) throws UserDeactivatedException {
         User user = User.findById(id);
 
         if (user == null)
@@ -53,7 +54,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTOView updateUser(Long id, UserDTOForm userDTOForm) throws InvocationTargetException, IllegalAccessException {
+    public UserDTOView updateUser(UUID id, UserDTOForm userDTOForm) throws InvocationTargetException, IllegalAccessException {
         User user = User.findById(id);
 
         if (user == null)
@@ -67,7 +68,7 @@ public class UserService {
     }
 
     @Transactional
-    public void deactivateUser(Long id) throws UserDeactivatedException {
+    public void deactivateUser(UUID id) throws UserDeactivatedException {
         User user = User.findById(id);
 
         if (user == null)

@@ -18,6 +18,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class ChallengeService {
@@ -29,7 +30,7 @@ public class ChallengeService {
         return challengeRepository.findAllChallengesWithPaging(page, size);
     }
 
-    public Challenge findById(Long challengeId) {
+    public Challenge findById(UUID challengeId) {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
@@ -38,11 +39,11 @@ public class ChallengeService {
         return challenge;
     }
 
-    public List<Technology> findAllTechnologiesByChallengeId(Long challengeId) {
+    public List<Technology> findAllTechnologiesByChallengeId(UUID challengeId) {
         return challengeRepository.findAllTechnologiesByChallengeId(challengeId);
     }
 
-    public List<ChallengeDTOView> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size) {
+    public List<ChallengeDTOView> findAllChallengesByCategoryId(UUID categoryId, Integer page, Integer size) {
         return challengeRepository.findAllChallengesByCategoryId(categoryId, page, size)
                 .stream()
                 .map(ChallengeDTOView::new)
@@ -73,7 +74,7 @@ public class ChallengeService {
     }
 
     @Transactional
-    public Challenge updateChallenge(Long challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
+    public Challenge updateChallenge(UUID challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
         Challenge challenge = findById(challengeId);
         BeanUtils.copyProperties(challenge, challengeDTOForm);
 
@@ -90,7 +91,7 @@ public class ChallengeService {
     }
     
     @Transactional
-    public void deactivateChallenge(Long challengeId) {
+    public void deactivateChallenge(UUID challengeId) {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
@@ -101,17 +102,17 @@ public class ChallengeService {
     }
 
     @Transactional
-    public boolean joinChallenge(Long challengeId, Long participantId) throws SQLException {
+    public boolean joinChallenge(UUID challengeId, UUID participantId) throws SQLException {
         return challengeRepository.joinChallenge(challengeId, participantId);
     }
 
     @Transactional
-    public boolean unjoinChallenge(Long challengeId, Long participantId) throws SQLException {
+    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException {
         return challengeRepository.unjoinChallenge(challengeId, participantId);
     }
 
     @Transactional
-    public Challenge addCategoryInChallenge(Long challengeId, Long categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
+    public Challenge addCategoryInChallenge(UUID challengeId, UUID categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
@@ -132,7 +133,7 @@ public class ChallengeService {
     }
 
     @Transactional
-    public Challenge removeCategoryInChallenge(Long challengeId) throws SQLException {
+    public Challenge removeCategoryInChallenge(UUID challengeId) throws SQLException {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)

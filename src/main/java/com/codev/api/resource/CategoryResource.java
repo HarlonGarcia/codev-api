@@ -7,10 +7,10 @@ import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
-
-import org.eclipse.microprofile.openapi.annotations.tags.Tag;
+import java.util.UUID;
 
 @Path("categories")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -36,14 +36,14 @@ public class CategoryResource {
 
     @PUT
     public Response updateCategory(
-            @PathParam("categoryId") Long categoryId,
+            @PathParam("categoryId") UUID categoryId,
             CategoryDTOForm categoryDTOForm
     ) {
         return Response.ok(new CategoryDTOView(categoryService.updateCategory(categoryId, categoryDTOForm))).build();
     }
 
     @DELETE
-    public Response deleteCategory(@PathParam("categoryId") Long categoryId) {
+    public Response deleteCategory(@PathParam("categoryId") UUID categoryId) {
         categoryService.deleteCategory(categoryId);
         return Response.ok().build();
         //todo: adicionar cascade
