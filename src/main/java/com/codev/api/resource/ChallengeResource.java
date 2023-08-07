@@ -17,6 +17,7 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.UUID;
 
 @Path("challenges")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -32,7 +33,7 @@ public class ChallengeResource {
 
     @GET
     @Path("/{challengeId}/technologies")
-    public Response findAllTechnologiesByChallengeId(@PathParam("challengeId") Long challengeId) {
+    public Response findAllTechnologiesByChallengeId(@PathParam("challengeId") UUID challengeId) {
         return Response.ok(challengeService.findAllTechnologiesByChallengeId(challengeId)).build();
     }
 
@@ -52,7 +53,7 @@ public class ChallengeResource {
 
     @GET
     @Path("/{challengeId}")
-    public Response findById(@PathParam("challengeId") Long challengeId) {
+    public Response findById(@PathParam("challengeId") UUID challengeId) {
         Challenge challenge = challengeService.findById(challengeId);
         return Response.ok(new ChallengeDTOView(challenge)).build();
     }
@@ -95,7 +96,7 @@ public class ChallengeResource {
     @POST
     @Path("{challengeId}/solutions")
     public Response createSolution(
-            @PathParam("challengeId") Long challengeId,
+            @PathParam("challengeId") UUID challengeId,
             SolutionDTOForm solutionDTOForm
     ) {
         return Response.ok(solutionService.createSolution(challengeId, solutionDTOForm)).build();
@@ -104,7 +105,7 @@ public class ChallengeResource {
     @POST
     @Path("{challengeId}/join-challenge")
     public Response joinChallenge(
-            @PathParam("challengeId") Long challengeId,
+            @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") Long participantId
     ) {
         try {
@@ -118,7 +119,7 @@ public class ChallengeResource {
     @POST
     @Path("/{challengeId}/categories/{categoryId}")
     public Response addCategoryInChallenge(
-            @PathParam("challengeId") Long challengeId,
+            @PathParam("challengeId") UUID challengeId,
             @PathParam("categoryId") Long categoryId
     ) {
         try {
@@ -133,7 +134,7 @@ public class ChallengeResource {
     @PUT
     @Path("/{challengeId}")
     public Response updateChallenge(
-            @PathParam("challengeId") Long challengeId,
+            @PathParam("challengeId") UUID challengeId,
             ChallengeDTOForm challengeDTOForm
     ){
         try {
@@ -147,7 +148,7 @@ public class ChallengeResource {
     @DELETE
     @Path("{challengeId}/unjoin-challenge")
     public Response unjoinChallenge(
-            @PathParam("challengeId") Long challengeId,
+            @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") Long participantId
     ) {
         try {
@@ -160,14 +161,14 @@ public class ChallengeResource {
 
     @DELETE
     @Path("/{challengeId}")
-    public Response deactivateChallenge(@PathParam("challengeId") Long challengeId){
+    public Response deactivateChallenge(@PathParam("challengeId") UUID challengeId){
         challengeService.deactivateChallenge(challengeId);
         return Response.ok().build();
     }
 
     @DELETE
     @Path("/{challengeId}/categories")
-    public Response removeCategoryInChallenge(@PathParam("challengeId") Long challengeId){
+    public Response removeCategoryInChallenge(@PathParam("challengeId") UUID challengeId){
         try {
             challengeService.removeCategoryInChallenge(challengeId);
             return Response.ok().build();

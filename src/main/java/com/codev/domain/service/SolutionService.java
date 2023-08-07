@@ -15,6 +15,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 
 import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 public class SolutionService {
@@ -35,7 +36,7 @@ public class SolutionService {
     }
 
     @Transactional
-    public SolutionDTOView createSolution(Long challengeId, SolutionDTOForm solutionDTOForm) {
+    public SolutionDTOView createSolution(UUID challengeId, SolutionDTOForm solutionDTOForm) {
         Challenge challenge = challengeService.findById(challengeId);
         User author = User.findById(solutionDTOForm.getAuthorId());
 
