@@ -1,6 +1,7 @@
 package com.codev.infraestructure.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.codev.domain.model.Category;
 import com.codev.domain.model.Technology;
@@ -45,7 +46,7 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public void deleteCategory(Long categoryId) {
+    public void deleteCategory(UUID categoryId) {
 
         String deleteCategoryInChallengeQuery = "UPDATE tb_challenge SET category_id = NULL WHERE category_id = :categoryId";
         entityManager.createNativeQuery(deleteCategoryInChallengeQuery)

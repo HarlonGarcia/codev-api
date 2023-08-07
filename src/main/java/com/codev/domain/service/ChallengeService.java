@@ -43,7 +43,7 @@ public class ChallengeService {
         return challengeRepository.findAllTechnologiesByChallengeId(challengeId);
     }
 
-    public List<ChallengeDTOView> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size) {
+    public List<ChallengeDTOView> findAllChallengesByCategoryId(UUID categoryId, Integer page, Integer size) {
         return challengeRepository.findAllChallengesByCategoryId(categoryId, page, size)
                 .stream()
                 .map(ChallengeDTOView::new)
@@ -102,17 +102,17 @@ public class ChallengeService {
     }
 
     @Transactional
-    public boolean joinChallenge(UUID challengeId, Long participantId) throws SQLException {
+    public boolean joinChallenge(UUID challengeId, UUID participantId) throws SQLException {
         return challengeRepository.joinChallenge(challengeId, participantId);
     }
 
     @Transactional
-    public boolean unjoinChallenge(UUID challengeId, Long participantId) throws SQLException {
+    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException {
         return challengeRepository.unjoinChallenge(challengeId, participantId);
     }
 
     @Transactional
-    public Challenge addCategoryInChallenge(UUID challengeId, Long categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
+    public Challenge addCategoryInChallenge(UUID challengeId, UUID categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)

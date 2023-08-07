@@ -11,15 +11,16 @@ public interface ChallengeRepository {
 
     List<Challenge> findAllChallengesWithPaging(Integer page, Integer size);
 
-    boolean joinChallenge(UUID challengeId, Long participantId) throws SQLException;
+    boolean joinChallenge(UUID challengeId, UUID participantId) throws SQLException;
 
-    boolean unjoinChallenge(UUID challengeId, Long participantId) throws SQLException;
+    boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException;
+
 
     List<Technology> findAllTechnologiesByChallengeId(UUID challengeId);
 
-    List<Challenge> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size);
+    List<Challenge> findAllChallengesByCategoryId(UUID categoryId, Integer page, Integer size);
 
-    void addCategoryInChallenge(UUID challengeId, Long categoryId) throws SQLException;
+    void addCategoryInChallenge(UUID challengeId, UUID categoryId) throws SQLException;
 
     void removeCategoryInChallenge(UUID challengeId) throws SQLException;
 

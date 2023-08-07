@@ -30,7 +30,7 @@ public class SolutionService {
     UserService userService;
 
     public List<SolutionDTOView> findAllSolutionsByChallengeId(
-            Long challengeId, Long userId, Integer page, Integer size
+            UUID challengeId, UUID userId, Integer page, Integer size
     ) {
         return solutionRepository.findAllSolutionsByChallengeId(challengeId, userId, page, size);
     }
@@ -53,17 +53,17 @@ public class SolutionService {
     }
 
     @Transactional
-    public LikeDTOView addLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
+    public LikeDTOView addLike(UUID solutionId, UUID userId) throws LikeNotAcceptedException {
         return solutionRepository.addLike(solutionId, userId);
     }
 
     @Transactional
-    public LikeDTOView removeLike(Long solutionId, Long userId) throws LikeNotAcceptedException {
+    public LikeDTOView removeLike(UUID solutionId, UUID userId) throws LikeNotAcceptedException {
         return solutionRepository.removeLike(solutionId, userId);
     }
 
     @Transactional
-    public boolean deleteSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException {
+    public boolean deleteSolution(UUID solutionId, UUID authorId) throws SolutionNotDeletedException {
         solutionRepository.removeLikeBySolutionId(solutionId);
         return solutionRepository.deleteSolution(solutionId, authorId);
     }

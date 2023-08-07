@@ -52,7 +52,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public List<Challenge> findAllChallengesByCategoryId(Long categoryId, Integer page, Integer size) {
+    public List<Challenge> findAllChallengesByCategoryId(UUID categoryId, Integer page, Integer size) {
 
         if (page < 0) {
             throw new IllegalArgumentException("Page must be a positive integer.");
@@ -82,13 +82,13 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public void addCategoryInChallenge(UUID challengeId, Long categoryId) throws SQLException {
+    public void addCategoryInChallenge(UUID challengeId, UUID categoryId) throws SQLException {
         String sql = "UPDATE tb_challenge SET category_id = ? WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setLong(1, categoryId);
-            statement.setString(2, challengeId.toString());
+          
+            statement.setObject(1, categoryId);
+            statement.setObject(2, challengeId);
 
             statement.executeUpdate();
 
@@ -103,7 +103,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, challengeId.toString());
+            statement.setObject(1, challengeId);
 
             statement.executeUpdate();
 
@@ -141,13 +141,13 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public boolean joinChallenge(UUID challengeId, Long participantId) throws SQLException {
+    public boolean joinChallenge(UUID challengeId, UUID participantId) throws SQLException {
         String sql = "INSERT INTO tb_participant (challenge_id, participant_id) values (?, ?)";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
-
-            statement.setString(1, challengeId.toString());
-            statement.setLong(2, participantId);
+          
+            statement.setObject(1, challengeId);
+            statement.setObject(2, participantId);
 
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;
@@ -158,13 +158,14 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public boolean unjoinChallenge(UUID challengeId, Long participantId) throws SQLException {
+    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException {
+
         String sql = "DELETE FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
 
-            statement.setString(1, challengeId.toString());
-            statement.setLong(2, participantId);
+            statement.setObject(1, challengeId);
+            statement.setObject(2, participantId);
 
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;

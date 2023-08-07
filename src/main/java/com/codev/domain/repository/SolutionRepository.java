@@ -6,15 +6,16 @@ import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 
 import java.util.List;
+import java.util.UUID;
 
 public interface SolutionRepository {
-    List<SolutionDTOView> findAllSolutionsByChallengeId(Long challengeId, Long userId, Integer page, Integer size);
+    List<SolutionDTOView> findAllSolutionsByChallengeId(UUID challengeId, UUID userId, Integer page, Integer size);
 
-    LikeDTOView addLike(Long solutionId, Long userId) throws LikeNotAcceptedException;
+    LikeDTOView addLike(UUID solutionId, UUID userId) throws LikeNotAcceptedException;
 
-    LikeDTOView removeLike(Long solutionId, Long userId) throws LikeNotAcceptedException;
+    LikeDTOView removeLike(UUID solutionId, UUID userId) throws LikeNotAcceptedException;
 
-    boolean deleteSolution(Long solutionId, Long authorId) throws SolutionNotDeletedException;
+    boolean deleteSolution(UUID solutionId, UUID authorId) throws SolutionNotDeletedException;
 
-    void removeLikeBySolutionId(Long solutionId) throws SolutionNotDeletedException;
+    void removeLikeBySolutionId(UUID solutionId) throws SolutionNotDeletedException;
 }

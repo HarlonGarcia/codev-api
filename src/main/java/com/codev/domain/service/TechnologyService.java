@@ -1,6 +1,7 @@
 package com.codev.domain.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.codev.domain.dto.form.TechnologyDTOForm;
 import com.codev.domain.model.Technology;
@@ -29,7 +30,7 @@ public class TechnologyService {
     }
 
     @Transactional
-    public Technology updateTechnology(Long technologyId, TechnologyDTOForm technologyDTOForm) {
+    public Technology updateTechnology(UUID technologyId, TechnologyDTOForm technologyDTOForm) {
         Technology technology = Technology.findById(technologyId);
         if (technology == null)
             throw new EntityNotFoundException("Technology does not exist and therefore it was not possible to delete");
@@ -40,7 +41,7 @@ public class TechnologyService {
     }
 
     @Transactional
-    public void deleteTechnology(Long technologyId) {
+    public void deleteTechnology(UUID technologyId) {
         Technology technology = Technology.findById(technologyId);
         if (technology == null)
             throw new EntityNotFoundException("Technology does not exist and therefore it was not possible to delete");

@@ -61,8 +61,8 @@ public class ChallengeResource {
     @GET
     @Path("/{challengeId}/solutions")
     public Response findAllSolutionsByChallengeId(
-            @PathParam("challengeId") Long challengeId,
-            @HeaderParam("X-User-ID") Long userId,
+            @PathParam("challengeId") UUID challengeId,
+            @HeaderParam("X-User-ID") UUID userId,
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size
     ) {
@@ -76,7 +76,7 @@ public class ChallengeResource {
     @GET
     @Path("/categories/{categoryId}")
     public Response findAllChallengesByCategoryIdWithPaging(
-            @PathParam("categoryId") Long categoryId,
+            @PathParam("categoryId") UUID categoryId,
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size
     ) {
@@ -106,7 +106,7 @@ public class ChallengeResource {
     @Path("{challengeId}/join-challenge")
     public Response joinChallenge(
             @PathParam("challengeId") UUID challengeId,
-            @HeaderParam("X-User-ID") Long participantId
+            @HeaderParam("X-User-ID") UUID participantId
     ) {
         try {
             challengeService.joinChallenge(challengeId, participantId);
@@ -120,7 +120,7 @@ public class ChallengeResource {
     @Path("/{challengeId}/categories/{categoryId}")
     public Response addCategoryInChallenge(
             @PathParam("challengeId") UUID challengeId,
-            @PathParam("categoryId") Long categoryId
+            @PathParam("categoryId") UUID categoryId
     ) {
         try {
             Challenge challenge = challengeService.addCategoryInChallenge(challengeId, categoryId);
@@ -149,7 +149,7 @@ public class ChallengeResource {
     @Path("{challengeId}/unjoin-challenge")
     public Response unjoinChallenge(
             @PathParam("challengeId") UUID challengeId,
-            @HeaderParam("X-User-ID") Long participantId
+            @HeaderParam("X-User-ID") UUID participantId
     ) {
         try {
             challengeService.unjoinChallenge(challengeId, participantId);
