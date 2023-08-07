@@ -13,6 +13,7 @@ import jakarta.ws.rs.core.Response;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
+import java.util.UUID;
 
 @Path("users")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -39,7 +40,7 @@ public class UserResource {
 
     @GET
     @Path("/{id}")
-    public Response findUserById(@PathParam("id") Long id) {
+    public Response findUserById(@PathParam("id") UUID id) {
         try {
             UserDTOView userDTOView = userService.findUserById(id);
             return Response.ok(userDTOView).build();
@@ -61,7 +62,7 @@ public class UserResource {
 
     @PUT
     @Path("/{id}")
-    public Response updateUser(@PathParam("id") Long id, UserDTOForm userDTOForm) {
+    public Response updateUser(@PathParam("id") UUID id, UserDTOForm userDTOForm) {
         try {
             UserDTOView userDTOView = userService.updateUser(id, userDTOForm);
             return Response.ok(userDTOView).build();
@@ -73,7 +74,7 @@ public class UserResource {
 
     @DELETE
     @Path("/{id}")
-    public Response deactivateUser(@PathParam("id") Long id) {
+    public Response deactivateUser(@PathParam("id") UUID id) {
         try {
             userService.deactivateUser(id);
             return Response.status(Response.Status.OK.getStatusCode()).build();

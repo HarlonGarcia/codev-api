@@ -1,6 +1,7 @@
 package com.codev.domain.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.codev.domain.dto.form.CategoryDTOForm;
 import com.codev.domain.model.Category;
@@ -28,7 +29,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public Category updateCategory(Long categoryId, CategoryDTOForm categoryDTOForm) {
+    public Category updateCategory(UUID categoryId, CategoryDTOForm categoryDTOForm) {
         Category category = Category.findById(categoryId);
         if (category == null)
             throw new EntityNotFoundException("Category does not exist and therefore it was not possible to delete");
@@ -39,7 +40,7 @@ public class CategoryService {
     }
 
     @Transactional
-    public void deleteCategory(Long categoryId) {
+    public void deleteCategory(UUID categoryId) {
         Category category = Category.findById(categoryId);
         if (category == null)
             throw new EntityNotFoundException("Category does not exist and therefore it was not possible to delete");

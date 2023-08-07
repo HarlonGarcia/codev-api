@@ -9,6 +9,7 @@ import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
@@ -37,7 +38,7 @@ public class TechnologyResource {
     @PUT
     @Path("/{technologyId}")
     public Response updateTechnology(
-            @PathParam("technologyId") Long technologyId,
+            @PathParam("technologyId") UUID technologyId,
             TechnologyDTOForm technologyDTOForm
     ) {
         return Response.ok(new TechnologyDTOView(technologyService.updateTechnology(technologyId, technologyDTOForm))).build();
@@ -45,7 +46,7 @@ public class TechnologyResource {
 
     @DELETE
     @Path("/{technologyId}")
-    public Response deleteTechnology(@PathParam("technologyId") Long technologyId) {
+    public Response deleteTechnology(@PathParam("technologyId") UUID technologyId) {
         technologyService.deleteTechnology(technologyId);
         return Response.ok().build();
     }

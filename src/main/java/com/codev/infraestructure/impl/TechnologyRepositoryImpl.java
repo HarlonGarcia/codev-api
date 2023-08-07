@@ -1,6 +1,7 @@
 package com.codev.infraestructure.impl;
 
 import java.util.List;
+import java.util.UUID;
 
 import com.codev.domain.model.Technology;
 import com.codev.domain.repository.TechnologyRepository;
@@ -35,7 +36,7 @@ public class TechnologyRepositoryImpl implements TechnologyRepository {
     }
 
     @Override
-    public void deleteTechnology(Long technologyId) {
+    public void deleteTechnology(UUID technologyId) {
 
         String deleteChallengeTechnologyQuery = "DELETE FROM tb_challenge_technology WHERE technology_id = :technologyId";
         entityManager.createNativeQuery(deleteChallengeTechnologyQuery)
