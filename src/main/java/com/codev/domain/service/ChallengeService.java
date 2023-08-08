@@ -52,8 +52,8 @@ public class ChallengeService {
 
     @Transactional
     public Challenge createChallenge(ChallengeDTOForm challengeDTOForm) {
-
         User author = User.findById(challengeDTOForm.getAuthorId());
+
         if (author == null)
             throw new EntityNotFoundException("Author not found with id " + challengeDTOForm.getAuthorId());
 

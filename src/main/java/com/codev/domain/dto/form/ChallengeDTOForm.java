@@ -4,6 +4,8 @@ import lombok.Data;
 
 import java.util.UUID;
 
+import com.codev.domain.enums.ChallengeStatus;
+
 @Data
 public class ChallengeDTOForm {
 
@@ -16,5 +18,7 @@ public class ChallengeDTOForm {
     private String imageURL;
 
     private UUID categoryId;
+
+    private ChallengeStatus status;
 
 }
