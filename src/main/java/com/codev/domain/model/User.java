@@ -44,6 +44,12 @@ public class User extends PanacheEntityBase {
     private LocalDateTime updatedAt;
 
     @ManyToMany
+    @JoinTable(name = "tb_user_label",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "label_id"))
+    private Set<Label> labels;
+
+    @ManyToMany
     @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
