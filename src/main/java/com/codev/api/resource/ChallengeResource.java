@@ -42,20 +42,23 @@ public class ChallengeResource {
     @GET
     public Response findAllChallengeWithPaging(
             @QueryParam("page") Integer page,
-            @QueryParam("size") Integer size
+            @QueryParam("size") Integer size,
+            @QueryParam("category") UUID categoryId
     ){
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size)
-                .stream().map(ChallengeDTOView::new).toList();;
+        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size, categoryId)
+                .stream().map(
+                    challenge -> new ChallengeDTOView(challenge, challenge.getCategory())
+                ).toList();;
 
         return Response.ok(challenges).build();
     }
 
     @GET
     @Path("/{challengeId}")
-    public Response findById(@PathParam("challengeId") UUID challengeId) {
+    public Response findChallengeById(@PathParam("challengeId") UUID challengeId) {
         Challenge challenge = challengeService.findById(challengeId);
         return Response.ok(new ChallengeDTOView(challenge)).build();
     }
@@ -75,24 +78,10 @@ public class ChallengeResource {
         return Response.ok(solutions).build();
     }
 
-    @GET
-    @Path("/categories/{categoryId}")
-    public Response findAllChallengesByCategoryIdWithPaging(
-            @PathParam("categoryId") UUID categoryId,
-            @QueryParam("page") Integer page,
-            @QueryParam("size") Integer size
-    ) {
-        page = page != null ? page : 0;
-        size = size != null ? size : 10;
-
-        List<ChallengeDTOView> challenges = challengeService.findAllChallengesByCategoryId(categoryId, page, size);
-        return Response.ok(challenges).build();
-    }
-
     @POST
     public Response createChallenge(ChallengeDTOForm challengeDTOForm){
-        Challenge challenge = challengeService.createChallenge(challengeDTOForm);
-        return Response.ok(new ChallengeDTOView(challenge)).status(201).build();
+        ChallengeDTOView challengeDTOView = challengeService.createChallenge(challengeDTOForm);
+        return Response.ok(challengeDTOView).status(201).build();
     }
 
     @POST

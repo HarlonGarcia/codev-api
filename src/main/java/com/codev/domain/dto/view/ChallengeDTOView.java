@@ -1,6 +1,7 @@
 package com.codev.domain.dto.view;
 
 import com.codev.domain.enums.ChallengeStatus;
+import com.codev.domain.model.Category;
 import com.codev.domain.model.Challenge;
 import lombok.Data;
 
@@ -33,9 +34,12 @@ public class ChallengeDTOView {
         this.createdAt = challenge.getCreatedAt();
         this.endDate = challenge.getEndDate();
         this.status = challenge.getStatus();
-        this.author = new UserDTOView(challenge.getAuthor());
-        if (challenge.getCategory() != null)
-            this.category = new CategoryDTOView(challenge.getCategory());
+        this.author = new UserDTOView(challenge.getAuthor());    
+    }
+    
+    public ChallengeDTOView(Challenge challenge, Category category) {
+        this(challenge);
+        this.category = new CategoryDTOView(challenge.getCategory());
     }
 
 }

@@ -2,6 +2,7 @@ package com.codev.domain.service;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
+import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
@@ -28,8 +29,8 @@ public class ChallengeService {
     @Inject
     ChallengeRepository challengeRepository;
 
-    public List<Challenge> findAllChallengesWithPaging(Integer page, Integer size) {
-        return challengeRepository.findAllChallengesWithPaging(page, size);
+    public List<Challenge> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId) {
+        return challengeRepository.findAllChallengesWithPaging(page, size, categoryId);
     }
 
     public Challenge findById(UUID challengeId) {
@@ -53,18 +54,26 @@ public class ChallengeService {
     }
 
     @Transactional
-    public Challenge createChallenge(ChallengeDTOForm challengeDTOForm) {
+    public ChallengeDTOView createChallenge(ChallengeDTOForm challengeDTOForm) {
         User author = User.findById(challengeDTOForm.getAuthorId());
 
         if (author == null)
             throw new EntityNotFoundException("Author not found with id " + challengeDTOForm.getAuthorId());
 
+        if (challengeDTOForm.getStatus() == null) {
+            challengeDTOForm.setStatus(ChallengeStatus.TO_BEGIN);
+        }
+
         Challenge challenge = new Challenge(challengeDTOForm);
 
-        if (challengeDTOForm.getCategoryId() != null) {
-            Category category = Category.findById(challengeDTOForm.getCategoryId());
-            if (category == null)
+        UUID categoryId = challengeDTOForm.getCategoryId();
+
+        if (categoryId != null) {    
+            Category category = Category.findById(categoryId);
+
+            if (category == null) {
                 throw new EntityNotFoundException("Category not found with id " + challengeDTOForm.getCategoryId());
+            }
 
             challenge.setCategory(category);
         }
@@ -72,7 +81,12 @@ public class ChallengeService {
         challenge.setAuthor(author);
 
         challenge.persist();
-        return challenge;
+
+        if (categoryId != null) {
+            return new ChallengeDTOView(challenge, challenge.getCategory());
+        }
+
+        return new ChallengeDTOView(challenge);
     }
 
     @Transactional

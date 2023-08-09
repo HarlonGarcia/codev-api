@@ -13,12 +13,14 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
 import jakarta.persistence.criteria.JoinType;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -115,12 +117,13 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public List<Challenge> findAllChallengesWithPaging(Integer page, Integer size) {
+    public List<Challenge> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId) {
 
         if (page < 0) {
             throw new IllegalArgumentException("Page must be a positive integer.");
         }
 
+        System.out.println("categoryId: " + categoryId);
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
 
@@ -128,9 +131,17 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
         criteriaQuery.select(challengeRoot);
 
-        criteriaQuery.where(
-                criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE)
-        );
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (categoryId != null) {
+            predicates.add(criteriaBuilder.equal(
+                challengeRoot.get("category").get("id"), 
+                categoryId));
+        }
+
+        predicates.add(criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE));
+
+        criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
         challengeRoot.fetch("author", JoinType.LEFT);
 

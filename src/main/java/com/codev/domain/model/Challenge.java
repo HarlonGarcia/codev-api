@@ -73,7 +73,7 @@ public class Challenge extends PanacheEntityBase {
         this.active = GlobalConstants.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.endDate = createdAt.plusMonths(1);
-        this.status = challengeDTOForm.getStatus() == null ? ChallengeStatus.TO_BEGIN : challengeDTOForm.getStatus();
+        this.status = challengeDTOForm.getStatus();
     }
 
     public Challenge(){}
