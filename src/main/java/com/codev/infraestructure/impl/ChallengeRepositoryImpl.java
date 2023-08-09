@@ -1,5 +1,7 @@
 package com.codev.infraestructure.impl;
 
+import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
+import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.ChallengeTechnology;
 import com.codev.domain.model.Technology;
@@ -141,7 +143,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public boolean joinChallenge(UUID challengeId, UUID participantId) throws SQLException {
+    public boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException {
         String sql = "INSERT INTO tb_participant (challenge_id, participant_id) values (?, ?)";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -153,12 +155,12 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             return rowsInserted > 0;
 
         } catch (SQLException e) {
-            throw new SQLException();
-        } // todo: status code 406 igual foi feito no add like
+            throw new JoinNotAcceptedException();
+        }
     }
 
     @Override
-    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException {
+    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException {
 
         String sql = "DELETE FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
         try (Connection connection = dataSource.getConnection();
@@ -171,8 +173,8 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             return rowsInserted > 0;
 
         } catch (SQLException e) {
-            throw new SQLException();
-        } // todo: status code 406 igual foi feito no add like
+            throw new UnjoinNotAcceptedException();
+        }
     }
 
 }

@@ -5,6 +5,8 @@ import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
+import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
+import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
@@ -111,8 +113,8 @@ public class ChallengeResource {
         try {
             challengeService.joinChallenge(challengeId, participantId);
             return Response.ok().build();
-        } catch (SQLException e) {
-            return Response.ok(e.getStackTrace()).status(400).build();
+        } catch (JoinNotAcceptedException e) {
+            return Response.ok(e.getStackTrace()).status(Response.Status.NOT_ACCEPTABLE).build();
         }
     }
 
@@ -154,8 +156,8 @@ public class ChallengeResource {
         try {
             challengeService.unjoinChallenge(challengeId, participantId);
             return Response.ok().build();
-        } catch (SQLException e) {
-            return Response.ok(e.getStackTrace()).status(400).build();
+        } catch (UnjoinNotAcceptedException e) {
+            return Response.ok(e.getStackTrace()).status(Response.Status.NOT_ACCEPTABLE).build();
         }
     }
 
