@@ -3,6 +3,8 @@ package com.codev.domain.service;
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
+import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
+import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Category;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Technology;
@@ -102,12 +104,12 @@ public class ChallengeService {
     }
 
     @Transactional
-    public boolean joinChallenge(UUID challengeId, UUID participantId) throws SQLException {
+    public boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException {
         return challengeRepository.joinChallenge(challengeId, participantId);
     }
 
     @Transactional
-    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException {
+    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException {
         return challengeRepository.unjoinChallenge(challengeId, participantId);
     }
 

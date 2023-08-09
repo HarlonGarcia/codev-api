@@ -1,5 +1,7 @@
 package com.codev.domain.repository;
 
+import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
+import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Technology;
 
@@ -11,9 +13,9 @@ public interface ChallengeRepository {
 
     List<Challenge> findAllChallengesWithPaging(Integer page, Integer size);
 
-    boolean joinChallenge(UUID challengeId, UUID participantId) throws SQLException;
+    boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException;
 
-    boolean unjoinChallenge(UUID challengeId, UUID participantId) throws SQLException;
+    boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException;
 
 
     List<Technology> findAllTechnologiesByChallengeId(UUID challengeId);
