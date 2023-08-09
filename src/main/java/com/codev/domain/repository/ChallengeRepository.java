@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface ChallengeRepository {
 
-    List<Challenge> findAllChallengesWithPaging(Integer page, Integer size);
+    List<Challenge> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId);
 
     boolean joinChallenge(UUID challengeId, UUID participantId) throws SQLException;
 

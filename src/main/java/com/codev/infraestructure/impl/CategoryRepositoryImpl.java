@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.UUID;
 
 import com.codev.domain.model.Category;
+import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Technology;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -39,7 +40,8 @@ public class CategoryRepositoryImpl implements CategoryRepository {
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Technology> criteriaQuery = criteriaBuilder.createQuery(Technology.class);
         Root<Technology> technologyRoot = criteriaQuery.from(Technology.class);
-
+        
+        // TODO rename to technologies and fix this line
         criteriaQuery.where(criteriaBuilder.equal(technologyRoot.get("name"), categoryName));
 
         return entityManager.createQuery(criteriaQuery).getSingleResult();
