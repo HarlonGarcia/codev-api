@@ -33,13 +33,13 @@ public class ChallengeService {
     public List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId) {
         return challengeRepository.findAllChallengesWithPaging(page, size, categoryId).stream().map(
             challenge -> {
-                List<TechnologyDTOView> technologies = challenge.getTechnologies().stream()
+                List<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
                     .map(TechnologyDTOView::new).toList();
 
                 return new ChallengeDTOView(
                     challenge, 
                     challenge.getCategory(),
-                    technologies
+                    technologiesDTOView
                 );
             })
         .toList();
@@ -105,7 +105,7 @@ public class ChallengeService {
 
     @Transactional
     public Challenge updateChallenge(UUID challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
-        Challenge challenge = findById(challengeId);
+        Challenge challenge = Challenge.findById(challengeId);
         BeanUtils.copyProperties(challenge, challengeDTOForm);
 
         if (challengeDTOForm.getCategoryId() != null) {
