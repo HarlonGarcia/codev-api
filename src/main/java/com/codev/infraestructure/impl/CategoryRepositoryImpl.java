@@ -36,18 +36,6 @@ public class CategoryRepositoryImpl implements CategoryRepository {
     }
 
     @Override
-    public Technology findTechnologyByCategoryName(String categoryName) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Technology> criteriaQuery = criteriaBuilder.createQuery(Technology.class);
-        Root<Technology> technologyRoot = criteriaQuery.from(Technology.class);
-        
-        // TODO rename to technologies and fix this line
-        criteriaQuery.where(criteriaBuilder.equal(technologyRoot.get("name"), categoryName));
-
-        return entityManager.createQuery(criteriaQuery).getSingleResult();
-    }
-
-    @Override
     public void deleteCategory(UUID categoryId) {
 
         String deleteCategoryInChallengeQuery = "UPDATE tb_challenge SET category_id = NULL WHERE category_id = :categoryId";
