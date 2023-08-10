@@ -6,6 +6,7 @@ import com.codev.domain.model.Challenge;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.UUID;
 
 @Data
@@ -27,7 +28,7 @@ public class ChallengeDTOView {
 
     private CategoryDTOView category;
 
-    //todo: retornar technologies
+    private List<TechnologyDTOView> technologies;
 
     public ChallengeDTOView(Challenge challenge) {
         this.id = challenge.getId();
@@ -36,12 +37,17 @@ public class ChallengeDTOView {
         this.createdAt = challenge.getCreatedAt();
         this.endDate = challenge.getEndDate();
         this.status = challenge.getStatus();
-        this.author = new UserDTOView(challenge.getAuthor());    
+        this.author = new UserDTOView(challenge.getAuthor());
     }
     
     public ChallengeDTOView(Challenge challenge, Category category) {
         this(challenge);
         this.category = new CategoryDTOView(challenge.getCategory());
+    }
+
+    public ChallengeDTOView(Challenge challenge, Category category, List<TechnologyDTOView> technologies) {
+        this(challenge, category);
+        this.technologies = technologies;
     }
 
 }

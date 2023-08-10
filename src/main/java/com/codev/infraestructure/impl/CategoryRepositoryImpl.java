@@ -4,8 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.codev.domain.model.Category;
-import com.codev.domain.model.Challenge;
-import com.codev.domain.model.Technology;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;

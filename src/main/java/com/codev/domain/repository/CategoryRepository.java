@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.UUID;
 
 import com.codev.domain.model.Category;
-import com.codev.domain.model.Technology;
 
 public interface CategoryRepository {
 

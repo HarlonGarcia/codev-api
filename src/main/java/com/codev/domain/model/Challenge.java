@@ -77,5 +77,4 @@ public class Challenge extends PanacheEntityBase {
     }
 
     public Challenge(){}
-
 }
