@@ -9,8 +9,6 @@ import com.codev.domain.model.Technology;
 public interface CategoryRepository {
 
     List<Category> findAllCategories();
-    
-    Technology findTechnologyByCategoryName(String categoryName);
 
     void deleteCategory(UUID categoryId);
 
