@@ -94,12 +94,13 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                         author.setId(UUID.fromString(resultSet.getString(2)));
                         author.setActive(resultSet.getBoolean(3));
                         author.setAdditionalUrl(resultSet.getString(4));
-                        author.setCreatedAt(resultSet.getTimestamp(5).toLocalDateTime());
+//                        author.setCreatedAt(resultSet.getTimestamp(5).toLocalDateTime());
                         author.setEmail(resultSet.getString(6));
                         author.setGithubUrl(resultSet.getString(7));
                         author.setName(resultSet.getString(8));
                         author.setPassword(resultSet.getString(9));
-                        author.setUpdatedAt(resultSet.getTimestamp(10).toLocalDateTime());
+//                        author.setUpdatedAt(resultSet.getTimestamp(10).toLocalDateTime());
+                        //todo: arrumar as datas para retornar corretamente e nao da problema NullPointerException
                         solutionDTOView.setRepositoryUrl(resultSet.getString(11));
                         solutionDTOView.setDeployUrl(resultSet.getString(12));
                         solutionDTOView.setLikes(resultSet.getLong(13));

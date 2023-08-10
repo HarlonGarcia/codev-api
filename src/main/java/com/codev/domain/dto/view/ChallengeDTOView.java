@@ -27,6 +27,8 @@ public class ChallengeDTOView {
 
     private CategoryDTOView category;
 
+    //todo: retornar technologies
+
     public ChallengeDTOView(Challenge challenge) {
         this.id = challenge.getId();
         this.title = challenge.getTitle();

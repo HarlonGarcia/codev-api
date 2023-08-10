@@ -23,7 +23,7 @@ public class Technology extends PanacheEntityBase {
     @Column
     private String description;
 
-    @Column
+    @Column(name = "documentation_link")
     private String documentationLink;
 
     @Size(min = 6, max = 6, message = "Color must be a valid 6-digit hexadecimal color.")
