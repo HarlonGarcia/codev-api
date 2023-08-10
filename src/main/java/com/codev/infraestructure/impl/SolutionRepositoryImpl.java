@@ -100,7 +100,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                         author.setName(resultSet.getString(8));
                         author.setPassword(resultSet.getString(9));
 //                        author.setUpdatedAt(resultSet.getTimestamp(10).toLocalDateTime());
-                        //todo: arrumar as datas para retornar corretamente e nao da problema NullPointerException
+                        // todo: arrumar as datas para retornar corretamente e nao da problema NullPointerException
                         solutionDTOView.setRepositoryUrl(resultSet.getString(11));
                         solutionDTOView.setDeployUrl(resultSet.getString(12));
                         solutionDTOView.setLikes(resultSet.getLong(13));

@@ -35,6 +35,7 @@ public class CategoryResource {
     }
 
     @PUT
+    @Path("/{categoryId}")
     public Response updateCategory(
             @PathParam("categoryId") UUID categoryId,
             CategoryDTOForm categoryDTOForm
@@ -43,10 +44,10 @@ public class CategoryResource {
     }
 
     @DELETE
+    @Path("/{categoryId}")
     public Response deleteCategory(@PathParam("categoryId") UUID categoryId) {
         categoryService.deleteCategory(categoryId);
         return Response.ok().build();
-        //todo: adicionar cascade
     }
 
 }
