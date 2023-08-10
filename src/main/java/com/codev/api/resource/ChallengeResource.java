@@ -48,10 +48,7 @@ public class ChallengeResource {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size, categoryId)
-                .stream().map(
-                    challenge -> new ChallengeDTOView(challenge, challenge.getCategory())
-                ).toList();;
+        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size, categoryId);
 
         return Response.ok(challenges).build();
     }
