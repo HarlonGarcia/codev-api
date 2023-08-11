@@ -94,7 +94,7 @@ public class ChallengeResource {
     @Path("{challengeId}/solutions")
     public Response createSolution(
             @PathParam("challengeId") UUID challengeId,
-            SolutionDTOForm solutionDTOForm
+            @Valid SolutionDTOForm solutionDTOForm
     ) {
         return Response.ok(solutionService.createSolution(challengeId, solutionDTOForm)).build();
     }
