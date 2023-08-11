@@ -7,6 +7,7 @@ import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.service.UserService;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -50,7 +51,7 @@ public class UserResource {
     }
 
     @POST
-    public Response createUser(UserDTOForm userDTOForm) {
+    public Response createUser(@Valid UserDTOForm userDTOForm) {
         try {
             UserDTOView userDTOView = userService.createUser(userDTOForm);
             return Response.ok(userDTOView).status(201).build();
@@ -62,7 +63,9 @@ public class UserResource {
 
     @PUT
     @Path("/{id}")
-    public Response updateUser(@PathParam("id") UUID id, UserDTOForm userDTOForm) {
+    public Response updateUser(
+            @PathParam("id") UUID id,
+            @Valid UserDTOForm userDTOForm) {
         try {
             UserDTOView userDTOView = userService.updateUser(id, userDTOForm);
             return Response.ok(userDTOView).build();
