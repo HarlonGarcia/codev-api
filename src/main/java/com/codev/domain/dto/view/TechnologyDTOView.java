@@ -12,8 +12,6 @@ public class TechnologyDTOView {
 
     private String name;
 
-    private String description;
-
     private String documentationLink;
 
     private String color;
@@ -21,7 +19,6 @@ public class TechnologyDTOView {
     public TechnologyDTOView(Technology technology) {
         this.id = technology.getId();
         this.name = technology.getName();
-        this.description = technology.getDescription();
         this.documentationLink = technology.getDocumentationLink();
         this.color = technology.getColor();
     }

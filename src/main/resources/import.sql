@@ -16,9 +16,9 @@ insert into tb_category (id, name) values ('f35235bc-a07c-4a70-917d-347109bf4260
 insert into tb_challenge (id, description, title, author_id, active, category_id) values ('dd57f958-586b-47d4-8868-f6f7e78aa387', 'Fazer uma API do banco tal', 'API do banco tal', '0a10cc2c-d527-44bc-912f-95ea6aa94961', true, '436de9e1-5ae5-470f-a014-e2d096376ec3');
 insert into tb_challenge (id, description, title, author_id, active, category_id) values ('275a42b8-0d84-47fc-90d5-2b7c2b94c4b8', 'Fazer o front end do banco tal', 'Front end do banco tal', 'c114fe61-f54f-4858-9c4d-9f6d9d8207aa', true, 'b47afe2a-e870-45f6-a484-f2352ff92468');
 
-insert into tb_technology (id, name, description, color, documentation_link) values ('8e423476-1326-4291-b106-332eb0198a04', 'SQL', 'descrição', '#aaa', 'documentation_link');
-insert into tb_technology (id, name, description, color, documentation_link) values ('687cdccc-f13a-4474-a5fb-c28573834624', 'Java', 'descrição', '#111', 'documentation_link');
-insert into tb_technology (id, name, description, color, documentation_link) values ('b4ba40d6-7bbd-44a5-8bd1-38847d4b663a', 'React', 'descrição', '#656065', 'documentation_link');
+insert into tb_technology (id, name, color, documentation_link) values ('8e423476-1326-4291-b106-332eb0198a04', 'SQL', '#aaa', 'documentation_link');
+insert into tb_technology (id, name, color, documentation_link) values ('687cdccc-f13a-4474-a5fb-c28573834624', 'Java', '#111', 'documentation_link');
+insert into tb_technology (id, name, color, documentation_link) values ('b4ba40d6-7bbd-44a5-8bd1-38847d4b663a', 'React', '#656065', 'documentation_link');
 
 insert into tb_challenge_technology (id, challenge_id, technology_id) values ('9f893e6d-e1d8-4928-910e-3b9969b9c796', 'dd57f958-586b-47d4-8868-f6f7e78aa387', '8e423476-1326-4291-b106-332eb0198a04');
 insert into tb_challenge_technology (id, challenge_id, technology_id) values ('5398e2d5-d1b4-4e18-90eb-526b0ac9af00', 'dd57f958-586b-47d4-8868-f6f7e78aa387', '687cdccc-f13a-4474-a5fb-c28573834624');
