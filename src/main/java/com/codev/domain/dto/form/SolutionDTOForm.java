@@ -19,4 +19,5 @@ public class SolutionDTOForm {
     private String repositoryUrl;
 
     private String deployUrl;
+
 }

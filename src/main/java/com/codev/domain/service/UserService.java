@@ -13,6 +13,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
@@ -24,6 +25,9 @@ public class UserService {
 
     @Inject
     UserRepository userRepository;
+
+    @Inject
+    BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public List<UserDTOView> findAllUsers(UserFiltersDTOForm filters) {
         List<User> users = userRepository.findAllUsers(filters);
@@ -48,6 +52,7 @@ public class UserService {
     @Transactional
     public UserDTOView createUser(UserDTOForm userDTOForm) {
         User user = new User(userDTOForm);
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         user.persist();
 
         return new UserDTOView(user);
