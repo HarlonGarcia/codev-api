@@ -20,9 +20,6 @@ public class Technology extends PanacheEntityBase {
     @Column(unique = true)
     private String name;
 
-    @Column
-    private String description;
-
     @Column(name = "documentation_link")
     private String documentationLink;
 
@@ -32,7 +29,6 @@ public class Technology extends PanacheEntityBase {
 
     public Technology(TechnologyDTOForm technologyDTOForm) {
         this.name = technologyDTOForm.getName();
-        this.description = technologyDTOForm.getDescription();
         this.documentationLink = technologyDTOForm.getDocumentationLink();
         this.color = technologyDTOForm.getColor();
     }
@@ -40,11 +36,8 @@ public class Technology extends PanacheEntityBase {
     public Technology() {}
 
     public Technology copyProperties(TechnologyDTOForm technologyDTOForm) {
-        // TODO : why not use the helper NullAwareBeanUtilsBean.java?
         if (technologyDTOForm.getName() != null)
             this.name = technologyDTOForm.getName();
-        if (technologyDTOForm.getDescription() != null)
-            this.description = technologyDTOForm.getDescription();
         if (technologyDTOForm.getDocumentationLink() != null)
             this.documentationLink = technologyDTOForm.getDocumentationLink();
         return this;
