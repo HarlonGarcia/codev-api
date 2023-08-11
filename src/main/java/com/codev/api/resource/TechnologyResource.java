@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.TechnologyDTOForm;
 import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.service.TechnologyService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -31,7 +32,7 @@ public class TechnologyResource {
     }
 
     @POST
-    public Response createTechnology(TechnologyDTOForm technologyDTOForm) {
+    public Response createTechnology(@Valid TechnologyDTOForm technologyDTOForm) {
         return Response.ok(new TechnologyDTOView(technologyService.createTechnology(technologyDTOForm))).build();
     }
 
@@ -39,7 +40,7 @@ public class TechnologyResource {
     @Path("/{technologyId}")
     public Response updateTechnology(
             @PathParam("technologyId") UUID technologyId,
-            TechnologyDTOForm technologyDTOForm
+            @Valid TechnologyDTOForm technologyDTOForm
     ) {
         return Response.ok(new TechnologyDTOView(technologyService.updateTechnology(technologyId, technologyDTOForm))).build();
     }
