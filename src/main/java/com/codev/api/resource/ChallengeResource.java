@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
+import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
@@ -57,7 +58,13 @@ public class ChallengeResource {
     @Path("/{challengeId}")
     public Response findChallengeById(@PathParam("challengeId") UUID challengeId) {
         Challenge challenge = challengeService.findById(challengeId);
-        return Response.ok(new ChallengeDTOView(challenge)).build();
+
+        List<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
+            .map(TechnologyDTOView::new).toList();
+
+        ChallengeDTOView challengeDTOView = new ChallengeDTOView(challenge, challenge.getCategory(), technologiesDTOView);
+        
+        return Response.ok(challengeDTOView).build();
     }
 
     @GET
