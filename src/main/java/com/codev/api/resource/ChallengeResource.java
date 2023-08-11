@@ -12,6 +12,8 @@ import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
 import jakarta.inject.Inject;
+import jakarta.validation.UnexpectedTypeException;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -83,9 +85,9 @@ public class ChallengeResource {
     }
 
     @POST
-    public Response createChallenge(ChallengeDTOForm challengeDTOForm){
+    public Response createChallenge(@Valid ChallengeDTOForm challengeDTOForm) {
         ChallengeDTOView challengeDTOView = challengeService.createChallenge(challengeDTOForm);
-        return Response.ok(challengeDTOView).status(201).build();
+        return Response.ok(challengeDTOView).status(Response.Status.CREATED).build();
     }
 
     @POST
@@ -130,7 +132,7 @@ public class ChallengeResource {
     @Path("/{challengeId}")
     public Response updateChallenge(
             @PathParam("challengeId") UUID challengeId,
-            ChallengeDTOForm challengeDTOForm
+            @Valid ChallengeDTOForm challengeDTOForm
     ){
         try {
             Challenge challenge = challengeService.updateChallenge(challengeId, challengeDTOForm);
