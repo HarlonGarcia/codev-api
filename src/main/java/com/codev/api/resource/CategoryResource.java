@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.CategoryDTOForm;
 import com.codev.domain.dto.view.CategoryDTOView;
 import com.codev.domain.service.CategoryService;
 import jakarta.inject.Inject;
+import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -30,7 +31,7 @@ public class CategoryResource {
     }
 
     @POST
-    public Response createCategory(CategoryDTOForm categoryDTOForm) {
+    public Response createCategory(@Valid CategoryDTOForm categoryDTOForm) {
         return Response.ok(new CategoryDTOView(categoryService.createCategory(categoryDTOForm))).build();
     }
 
@@ -38,7 +39,7 @@ public class CategoryResource {
     @Path("/{categoryId}")
     public Response updateCategory(
             @PathParam("categoryId") UUID categoryId,
-            CategoryDTOForm categoryDTOForm
+            @Valid CategoryDTOForm categoryDTOForm
     ) {
         return Response.ok(new CategoryDTOView(categoryService.updateCategory(categoryId, categoryDTOForm))).build();
     }
