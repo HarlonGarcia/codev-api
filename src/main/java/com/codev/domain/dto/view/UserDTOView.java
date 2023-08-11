@@ -34,7 +34,7 @@ public class UserDTOView {
         this.additionalUrl = user.getAdditionalUrl();
         this.githubUrl = user.getGithubUrl();
         this.createdAt = user.getCreatedAt();
-        this.updatedAt = LocalDateTime.now();
+        this.updatedAt = user.getUpdatedAt();
         this.labels = user.getLabels();
     }
 

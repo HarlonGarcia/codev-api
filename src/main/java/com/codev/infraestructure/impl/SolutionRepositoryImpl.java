@@ -12,10 +12,7 @@ import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -41,7 +38,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
             throw new IllegalArgumentException("Page must be a positive integer.");
         }
 
-        List<SolutionDTOView> solutionDTOViews = new ArrayList<>();
+        List<SolutionDTOView> solutionDTOViewList = new ArrayList<>();
 
         try (Connection connection = dataSource.getConnection()) {
             String sql = "SELECT " +
@@ -94,13 +91,12 @@ public class SolutionRepositoryImpl implements SolutionRepository {
                         author.setId(UUID.fromString(resultSet.getString(2)));
                         author.setActive(resultSet.getBoolean(3));
                         author.setAdditionalUrl(resultSet.getString(4));
-//                        author.setCreatedAt(resultSet.getTimestamp(5).toLocalDateTime());
+                        author.setCreatedAt(resultSet.getTimestamp(5) != null ? resultSet.getTimestamp(5).toLocalDateTime() : null);
                         author.setEmail(resultSet.getString(6));
                         author.setGithubUrl(resultSet.getString(7));
                         author.setName(resultSet.getString(8));
                         author.setPassword(resultSet.getString(9));
-//                        author.setUpdatedAt(resultSet.getTimestamp(10).toLocalDateTime());
-                        // todo: arrumar as datas para retornar corretamente e nao da problema NullPointerException
+                        author.setUpdatedAt(resultSet.getTimestamp(10) != null ? resultSet.getTimestamp(10).toLocalDateTime() : null);
                         solutionDTOView.setRepositoryUrl(resultSet.getString(11));
                         solutionDTOView.setDeployUrl(resultSet.getString(12));
                         solutionDTOView.setLikes(resultSet.getLong(13));
@@ -109,7 +105,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
 
                         solutionDTOView.setAuthor(new UserDTOView(author));
 
-                        solutionDTOViews.add(solutionDTOView);
+                        solutionDTOViewList.add(solutionDTOView);
                     }
                 }
             }
@@ -117,7 +113,7 @@ public class SolutionRepositoryImpl implements SolutionRepository {
             throw new RuntimeException(e);
         }
 
-        return solutionDTOViews;
+        return solutionDTOViewList;
 
     }
 
