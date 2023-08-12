@@ -19,13 +19,13 @@ public class User extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column
+    @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
-    @Column
+    @Column(nullable = false)
     private String password;
 
     @Column(nullable = false)
@@ -37,7 +37,7 @@ public class User extends PanacheEntityBase {
     @Column(name = "additional_url")
     private String additionalUrl;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "updated_at")

@@ -18,14 +18,14 @@ public class Solution extends PanacheEntityBase {
     public UUID id;
 
     @ManyToOne
-    @JoinColumn(name = "challenge_id")
+    @JoinColumn(name = "challenge_id", nullable = false)
     private Challenge challenge;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @Column(name = "repository_url")
+    @Column(name = "repository_url", nullable = false)
     private String repositoryUrl;
 
     @Column(name = "deploy_url")
