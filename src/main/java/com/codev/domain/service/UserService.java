@@ -1,5 +1,9 @@
 package com.codev.domain.service;
 
+import com.codev.api.security.auth.AuthRequest;
+import com.codev.api.security.auth.AuthResponse;
+import com.codev.api.security.auth.PBKDF2Encoder;
+import com.codev.api.security.token.TokenUtils;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
@@ -13,7 +17,6 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
@@ -27,7 +30,7 @@ public class UserService {
     UserRepository userRepository;
 
     @Inject
-    BCryptPasswordEncoder bCryptPasswordEncoder;
+    PBKDF2Encoder passwordEncoder;
 
     public List<UserDTOView> findAllUsers(UserFiltersDTOForm filters) {
         List<User> users = userRepository.findAllUsers(filters);
@@ -52,7 +55,7 @@ public class UserService {
     @Transactional
     public UserDTOView createUser(UserDTOForm userDTOForm) {
         User user = new User(userDTOForm);
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(userDTOForm.getPassword()));
         user.persist();
 
         return new UserDTOView(user);
@@ -83,5 +86,17 @@ public class UserService {
 
         user.setActive(GlobalConstants.DEACTIVATE);
         user.persist();
+    }
+
+    @Transactional
+    public AuthResponse login(AuthRequest authRequest) throws Exception {
+        User user = userRepository.findByUsername(authRequest.username);
+        String passwordEncode = passwordEncoder.encode(authRequest.password);
+
+        if (user != null && user.getPassword().equals(passwordEncode)) {
+            return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
+        } else {
+            return new AuthResponse();
+        }
     }
 }

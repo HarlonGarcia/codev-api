@@ -8,4 +8,7 @@ import java.util.List;
 public interface UserRepository {
 
     List<User> findAllUsers(UserFiltersDTOForm filters);
+
+    User findByUsername(String email);
+
 }

@@ -1,10 +1,12 @@
 package com.codev.api.resource;
 
+import com.codev.api.security.auth.AuthRequest;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.service.UserService;
+import jakarta.annotation.security.PermitAll;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -58,6 +60,17 @@ public class UserResource {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.ok(e).status(400).build();
+        }
+    }
+
+    @PermitAll
+    @POST
+    @Path("/login")
+    public Response login(AuthRequest authRequest) {
+        try {
+            return Response.ok(userService.login(authRequest)).build();
+        } catch (Exception e) {
+            return Response.ok(e.getMessage()).status(Response.Status.UNAUTHORIZED).build();
         }
     }
 
