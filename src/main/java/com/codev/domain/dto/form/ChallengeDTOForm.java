@@ -21,7 +21,7 @@ public class ChallengeDTOForm {
     private UUID authorId;
 
     @NotBlank
-    private String imageURL;
+    private String imageUrl;
 
     @NotNull
     private UUID categoryId;

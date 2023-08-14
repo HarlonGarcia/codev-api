@@ -1,5 +1,4 @@
 MVN=./mvnw
-DEV=compile quarkus:dev
 
-run:
-	$(MVN) $(DEV)
+start:
+	$(MVN) compile quarkus:dev

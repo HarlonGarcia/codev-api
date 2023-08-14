@@ -39,7 +39,7 @@ public class Challenge extends PanacheEntityBase {
     private ChallengeStatus status;
 
     @Column
-    private String imageURL;
+    private String imageUrl;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -69,7 +69,7 @@ public class Challenge extends PanacheEntityBase {
     public Challenge(ChallengeDTOForm challengeDTOForm) {
         this.title = challengeDTOForm.getTitle();
         this.description = challengeDTOForm.getDescription();
-        this.imageURL = challengeDTOForm.getImageURL();
+        this.imageUrl = challengeDTOForm.getImageUrl();
         this.active = GlobalConstants.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.endDate = createdAt.plusMonths(1);
