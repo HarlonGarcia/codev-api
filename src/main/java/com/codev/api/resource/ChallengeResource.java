@@ -12,6 +12,7 @@ import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -36,12 +37,14 @@ public class ChallengeResource {
     @Inject
     SolutionService solutionService;
 
+    @RolesAllowed({"ADMIN", "USER"})
     @GET
     @Path("/{challengeId}/technologies")
     public Response findAllTechnologiesByChallengeId(@PathParam("challengeId") UUID challengeId) {
         return Response.ok(challengeService.findAllTechnologiesByChallengeId(challengeId)).build();
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @GET
     public Response findAllChallengeWithPaging(
             @QueryParam("page") Integer page,
@@ -57,6 +60,7 @@ public class ChallengeResource {
         return Response.ok(challenges).build();
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @GET
     @Path("/{challengeId}")
     public Response findChallengeById(@PathParam("challengeId") UUID challengeId) {
@@ -70,6 +74,7 @@ public class ChallengeResource {
         return Response.ok(challengeDTOView).build();
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @GET
     @Path("/{challengeId}/solutions")
     public Response findAllSolutionsByChallengeId(
@@ -85,12 +90,14 @@ public class ChallengeResource {
         return Response.ok(solutions).build();
     }
 
+    @RolesAllowed({"ADMIN"})
     @POST
     public Response createChallenge(@Valid ChallengeDTOForm challengeDTOForm) {
         ChallengeDTOView challengeDTOView = challengeService.createChallenge(challengeDTOForm);
         return Response.ok(challengeDTOView).status(Response.Status.CREATED).build();
     }
 
+    @RolesAllowed({"USER"})
     @POST
     @Path("{challengeId}/solutions")
     public Response createSolution(
@@ -100,6 +107,7 @@ public class ChallengeResource {
         return Response.ok(solutionService.createSolution(challengeId, solutionDTOForm)).build();
     }
 
+    @RolesAllowed({"USER"})
     @POST
     @Path("{challengeId}/join-challenge")
     public Response joinChallenge(
@@ -114,6 +122,7 @@ public class ChallengeResource {
         }
     }
 
+    @RolesAllowed({"ADMIN"})
     @POST
     @Path("/{challengeId}/categories/{categoryId}")
     public Response addCategoryInChallenge(
@@ -129,6 +138,7 @@ public class ChallengeResource {
         }
     }
 
+    @RolesAllowed({"ADMIN"})
     @PUT
     @Path("/{challengeId}")
     public Response updateChallenge(
@@ -143,6 +153,7 @@ public class ChallengeResource {
         }
     }
 
+    @RolesAllowed({"USER"})
     @DELETE
     @Path("{challengeId}/unjoin-challenge")
     public Response unjoinChallenge(
@@ -157,6 +168,7 @@ public class ChallengeResource {
         }
     }
 
+    @RolesAllowed({"ADMIN"})
     @DELETE
     @Path("/{challengeId}")
     public Response deactivateChallenge(@PathParam("challengeId") UUID challengeId){
@@ -164,6 +176,7 @@ public class ChallengeResource {
         return Response.ok().build();
     }
 
+    @RolesAllowed({"ADMIN"})
     @DELETE
     @Path("/{challengeId}/categories")
     public Response removeCategoryInChallenge(@PathParam("challengeId") UUID challengeId){

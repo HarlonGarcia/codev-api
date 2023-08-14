@@ -7,6 +7,7 @@ import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.service.UserService;
 import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.validation.Valid;
@@ -27,6 +28,7 @@ public class UserResource {
     @Inject
     UserService userService;
 
+    @RolesAllowed({"ADMIN"})
     @GET
     public Response findAllUsers(
             @QueryParam("startsWith") @DefaultValue("") String startsWith
@@ -41,6 +43,7 @@ public class UserResource {
         }
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @GET
     @Path("/{id}")
     public Response findUserById(@PathParam("id") UUID id) {
@@ -52,6 +55,7 @@ public class UserResource {
         }
     }
 
+    @PermitAll
     @POST
     public Response createUser(@Valid UserDTOForm userDTOForm) {
         try {
@@ -74,6 +78,7 @@ public class UserResource {
         }
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @PUT
     @Path("/{id}")
     public Response updateUser(
@@ -88,6 +93,7 @@ public class UserResource {
         }
     }
 
+    @RolesAllowed({"ADMIN", "USER"})
     @DELETE
     @Path("/{id}")
     public Response deactivateUser(@PathParam("id") UUID id) {

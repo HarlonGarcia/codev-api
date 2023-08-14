@@ -3,6 +3,7 @@ package com.codev.api.resource;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.service.SolutionService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -21,6 +22,7 @@ public class SolutionResource {
     @Inject
     SolutionService solutionService;
 
+    @RolesAllowed({"USER"})
     @POST
     @Path("/{solutionId}/add-like")
     public Response addLike(
@@ -37,6 +39,7 @@ public class SolutionResource {
         }
     }
 
+    @RolesAllowed({"USER"})
     @DELETE
     @Path("/{solutionId}")
     public Response deleteSolution(
@@ -52,6 +55,7 @@ public class SolutionResource {
         }
     }
 
+    @RolesAllowed({"USER"})
     @DELETE
     @Path("/{solutionId}/remove-like")
     public Response removeLike(

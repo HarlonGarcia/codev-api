@@ -3,6 +3,7 @@ package com.codev.api.resource;
 import com.codev.domain.dto.form.TechnologyDTOForm;
 import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.service.TechnologyService;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -23,6 +24,7 @@ public class TechnologyResource {
     @Inject
     TechnologyService technologyService;
 
+    @RolesAllowed({"ADMIN", "USER"})
     @GET
     public Response findAllTechnologies() {
         List<TechnologyDTOView> technologies = technologyService.findAllTechnologies()
@@ -31,11 +33,13 @@ public class TechnologyResource {
         return Response.ok(technologies).build();
     }
 
+    @RolesAllowed({"ADMIN"})
     @POST
     public Response createTechnology(@Valid TechnologyDTOForm technologyDTOForm) {
         return Response.ok(new TechnologyDTOView(technologyService.createTechnology(technologyDTOForm))).build();
     }
 
+    @RolesAllowed({"ADMIN"})
     @PUT
     @Path("/{technologyId}")
     public Response updateTechnology(
@@ -45,6 +49,7 @@ public class TechnologyResource {
         return Response.ok(new TechnologyDTOView(technologyService.updateTechnology(technologyId, technologyDTOForm))).build();
     }
 
+    @RolesAllowed({"ADMIN"})
     @DELETE
     @Path("/{technologyId}")
     public Response deleteTechnology(@PathParam("technologyId") UUID technologyId) {
