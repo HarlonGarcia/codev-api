@@ -17,7 +17,7 @@ public class Technology extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
 
     @Column(name = "documentation_link")

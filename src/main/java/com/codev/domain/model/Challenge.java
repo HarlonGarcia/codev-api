@@ -21,20 +21,20 @@ public class Challenge extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column
+    @Column(nullable = false)
     private String title;
 
     @ManyToOne
-    @JoinColumn(name = "author_id")
+    @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @Column(length = 1500)
+    @Column(length = 1500, nullable = false)
     private String description;
 
-    @Column
+    @Column(nullable = false)
     private boolean active;
 
-    @Column
+    @Column(nullable = false)
     @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
@@ -60,7 +60,7 @@ public class Challenge extends PanacheEntityBase {
     @JsonBackReference
     private List<User> participants;
 
-    @Column(name = "created_at")
+    @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
     @Column(name = "end_date")

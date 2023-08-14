@@ -48,4 +48,22 @@ public class UserRepositoryImpl implements UserRepository {
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
+
+    @Override
+    public User findByUsername(String email) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        userRoot.fetch("roles", JoinType.LEFT);
+
+        criteriaQuery.where(
+                criteriaBuilder.equal(userRoot.get("email"), email),
+                criteriaBuilder.equal(userRoot.get("active"), GlobalConstants.ACTIVE)
+        );
+
+        return entityManager.createQuery(criteriaQuery)
+                .getSingleResult();
+    }
+
 }
