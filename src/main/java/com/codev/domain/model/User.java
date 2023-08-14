@@ -64,6 +64,7 @@ public class User extends PanacheEntityBase {
         this.additionalUrl = userDTOForm.getAdditionalUrl();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
+        this.roles.add(new Role("USER"));
     }
 
     public User(){}
