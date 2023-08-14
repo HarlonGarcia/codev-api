@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.enums.ChallengeStatus;
+import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
@@ -30,8 +31,8 @@ public class ChallengeService {
     @Inject
     ChallengeRepository challengeRepository;
 
-    public List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId) {
-        return challengeRepository.findAllChallengesWithPaging(page, size, categoryId).stream().map(
+    public List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
+        return challengeRepository.findAllChallengesWithPaging(page, size, categoryId, orderBy).stream().map(
             challenge -> {
                 List<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
                     .map(TechnologyDTOView::new).toList();

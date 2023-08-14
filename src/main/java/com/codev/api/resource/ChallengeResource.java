@@ -5,6 +5,7 @@ import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.dto.view.TechnologyDTOView;
+import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
@@ -12,7 +13,6 @@ import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
 import jakarta.inject.Inject;
-import jakarta.validation.UnexpectedTypeException;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -46,12 +46,13 @@ public class ChallengeResource {
     public Response findAllChallengeWithPaging(
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size,
-            @QueryParam("category") UUID categoryId
+            @QueryParam("category") UUID categoryId,
+            @QueryParam("orderBy") @DefaultValue("ASC") OrderBy orderBy
     ){
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size, categoryId);
+        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging    (page, size, categoryId, orderBy);
 
         return Response.ok(challenges).build();
     }

@@ -1,5 +1,6 @@
 package com.codev.infraestructure.impl;
 
+import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
@@ -117,22 +118,28 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public List<Challenge> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId) {
-
+    public List<Challenge> findAllChallengesWithPaging(
+        Integer page, Integer size, UUID categoryId, OrderBy orderBy
+    ) {
         if (page < 0) {
             throw new IllegalArgumentException("Page must be a positive integer.");
         }
-
-        System.out.println("categoryId: " + categoryId);
+        
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
 
         Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
-
+        
         criteriaQuery.select(challengeRoot);
-
+        
+        if (orderBy == OrderBy.LATEST) {
+            criteriaQuery.orderBy(criteriaBuilder.desc(
+                challengeRoot.get("createdAt")
+            ));
+        }
+        
         List<Predicate> predicates = new ArrayList<>();
-
+        
         if (categoryId != null) {
             predicates.add(criteriaBuilder.equal(
                 challengeRoot.get("category").get("id"), 
@@ -140,7 +147,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         }
 
         predicates.add(criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE));
-
+        
         criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
         challengeRoot.fetch("author", JoinType.LEFT);

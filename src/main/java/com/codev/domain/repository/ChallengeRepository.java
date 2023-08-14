@@ -1,5 +1,6 @@
 package com.codev.domain.repository;
 
+import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
@@ -11,7 +12,9 @@ import java.util.UUID;
 
 public interface ChallengeRepository {
 
-    List<Challenge> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId);
+    List<Challenge> findAllChallengesWithPaging(
+        Integer page, Integer size, UUID categoryId, OrderBy orderBy
+    );
 
     boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException;
 

@@ -20,8 +20,8 @@ insert into tb_category (id, name) values ('436de9e1-5ae5-470f-a014-e2d096376ec3
 insert into tb_category (id, name) values ('b47afe2a-e870-45f6-a484-f2352ff92468', 'Frontend');
 insert into tb_category (id, name) values ('f35235bc-a07c-4a70-917d-347109bf4260', 'FullStack');
 
-insert into tb_challenge (id, description, title, status, created_at, author_id, active, category_id) values ('dd57f958-586b-47d4-8868-f6f7e78aa387', 'Fazer uma API do banco tal', 'API do banco tal', 'TO_BEGIN', '2023-08-12T13:03:24.5160281', '0a10cc2c-d527-44bc-912f-95ea6aa94961', true, '436de9e1-5ae5-470f-a014-e2d096376ec3');
-insert into tb_challenge (id, description, title, status, created_at, author_id, active, category_id) values ('275a42b8-0d84-47fc-90d5-2b7c2b94c4b8', 'Fazer o front end do banco tal', 'Front end do banco tal', 'TO_BEGIN', '2023-08-12T13:03:24.5160281', 'c114fe61-f54f-4858-9c4d-9f6d9d8207aa', true, 'b47afe2a-e870-45f6-a484-f2352ff92468');
+insert into tb_challenge (id, description, title, author_id, active, status, category_id, created_at) values ('dd57f958-586b-47d4-8868-f6f7e78aa387', 'Api de Rede Social com NodeJS e NoSQL', 'NodeJS + NoSQL', '0a10cc2c-d527-44bc-912f-95ea6aa94961', true, 'TO_BEGIN', '436de9e1-5ae5-470f-a014-e2d096376ec3', '2023-08-11T00:15:49.483342884');
+insert into tb_challenge (id, description, title, author_id, active, status, category_id, created_at) values ('275a42b8-0d84-47fc-90d5-2b7c2b94c4b8', 'Fazer o front end do banco tal', 'Front end do banco tal', 'c114fe61-f54f-4858-9c4d-9f6d9d8207aa', true, 'TO_BEGIN', 'b47afe2a-e870-45f6-a484-f2352ff92468', '2023-08-12T00:15:49.483342884');
 
 insert into tb_technology (id, name, color, documentation_link) values ('8e423476-1326-4291-b106-332eb0198a04', 'SQL', '#aaa', 'documentation_link');
 insert into tb_technology (id, name, color, documentation_link) values ('687cdccc-f13a-4474-a5fb-c28573834624', 'Java', '#111', 'documentation_link');
