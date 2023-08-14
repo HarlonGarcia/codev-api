@@ -17,4 +17,5 @@ public class Role extends PanacheEntityBase {
 
     @Column(nullable = false)
     private String authority;
+
 }
