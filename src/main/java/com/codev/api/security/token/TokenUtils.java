@@ -32,7 +32,7 @@ public class TokenUtils {
         claimsBuilder.expiresAt(currentTimeInSecs + TOKEN_DURATION);
         claimsBuilder.groups(groups);
 
-        return claimsBuilder.jws().signatureKeyId(privateKeyLocation).sign(privateKey);
+        return claimsBuilder.jws().keyId(privateKeyLocation).sign(privateKey);
     }
 
     public static PrivateKey readPrivateKey(final String pemResName) throws Exception {
