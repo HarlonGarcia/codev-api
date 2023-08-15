@@ -7,6 +7,8 @@ import com.codev.api.security.token.TokenUtils;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
+import com.codev.domain.exceptions.users.UnathorizedLoginMessage;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.UserRepository;
@@ -89,14 +91,18 @@ public class UserService {
     }
 
     @Transactional
-    public AuthResponse login(AuthRequest authRequest) throws Exception {
+    public AuthResponse login(AuthRequest authRequest) throws GenerateTokenExcepetion, UnathorizedLoginMessage {
         User user = userRepository.findByUsername(authRequest.username);
         String passwordEncode = passwordEncoder.encode(authRequest.password);
 
         if (user != null && user.getPassword().equals(passwordEncode)) {
-            return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
+            try {
+                return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
+            } catch (Exception e) {
+                throw new GenerateTokenExcepetion();
+            }
         } else {
-            return new AuthResponse();
+            throw new UnathorizedLoginMessage();
         }
     }
 }

@@ -4,12 +4,16 @@ import com.codev.api.security.auth.AuthRequest;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
+import com.codev.domain.exceptions.users.UnathorizedLoginMessage;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
+import com.codev.domain.exceptions.users.UserDoesNotExistResponse;
 import com.codev.domain.service.UserService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -73,8 +77,12 @@ public class UserResource {
     public Response login(AuthRequest authRequest) {
         try {
             return Response.ok(userService.login(authRequest)).build();
-        } catch (Exception e) {
-            return Response.ok(e.getMessage()).status(Response.Status.UNAUTHORIZED).build();
+        } catch (UnathorizedLoginMessage e) {
+            return Response.ok(e).status(Response.Status.UNAUTHORIZED).build();
+        } catch (GenerateTokenExcepetion e) {
+            return Response.ok(e).status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        } catch (NoResultException e) {
+            return Response.ok(new UserDoesNotExistResponse()).status(Response.Status.NOT_FOUND).build();
         }
     }
 
