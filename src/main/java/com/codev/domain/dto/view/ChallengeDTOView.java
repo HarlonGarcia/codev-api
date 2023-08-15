@@ -7,6 +7,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Data
@@ -28,7 +29,7 @@ public class ChallengeDTOView {
 
     private CategoryDTOView category;
 
-    private List<TechnologyDTOView> technologies;
+    private Set<TechnologyDTOView> technologies;
 
     public ChallengeDTOView(Challenge challenge) {
         this.id = challenge.getId();
@@ -45,7 +46,7 @@ public class ChallengeDTOView {
         this.category = new CategoryDTOView(challenge.getCategory());
     }
 
-    public ChallengeDTOView(Challenge challenge, Category category, List<TechnologyDTOView> technologies) {
+    public ChallengeDTOView(Challenge challenge, Category category, Set<TechnologyDTOView> technologies) {
         this(challenge, category);
         this.technologies = technologies;
     }

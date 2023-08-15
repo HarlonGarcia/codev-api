@@ -10,6 +10,7 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -50,7 +51,7 @@ public class Challenge extends PanacheEntityBase {
             joinColumns = @JoinColumn(name = "challenge_id"),
             inverseJoinColumns = @JoinColumn(name = "technology_id")
     )
-    private List<Technology> technologies;
+    private Set<Technology> technologies;
 
     @ManyToMany
     @JoinTable(name = "tb_participant",
