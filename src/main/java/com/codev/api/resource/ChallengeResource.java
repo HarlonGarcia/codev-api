@@ -23,7 +23,9 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Path("challenges")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -55,7 +57,7 @@ public class ChallengeResource {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging    (page, size, categoryId, orderBy);
+        Set<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging    (page, size, categoryId, orderBy);
 
         return Response.ok(challenges).build();
     }
@@ -66,8 +68,8 @@ public class ChallengeResource {
     public Response findChallengeById(@PathParam("challengeId") UUID challengeId) {
         Challenge challenge = challengeService.findById(challengeId);
 
-        List<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
-            .map(TechnologyDTOView::new).toList();
+        Set<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
+            .map(TechnologyDTOView::new).collect(Collectors.toSet());
 
         ChallengeDTOView challengeDTOView = new ChallengeDTOView(challenge, challenge.getCategory(), technologiesDTOView);
         

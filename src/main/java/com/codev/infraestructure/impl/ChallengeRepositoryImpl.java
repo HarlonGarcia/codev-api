@@ -21,9 +21,8 @@ import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ChallengeRepositoryImpl implements ChallengeRepository {
@@ -118,7 +117,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public List<Challenge> findAllChallengesWithPaging(
+    public Set<Challenge> findAllChallengesWithPaging(
         Integer page, Integer size, UUID categoryId, OrderBy orderBy
     ) {
         if (page < 0) {
@@ -150,14 +149,19 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         
         criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
-        challengeRoot.fetch("author", JoinType.LEFT);
+        challengeRoot.fetch("author", JoinType.LEFT)
+            .fetch("labels", JoinType.LEFT);
+        challengeRoot.fetch("author", JoinType.LEFT)
+            .fetch("roles", JoinType.LEFT);
+        challengeRoot.fetch("technologies", JoinType.LEFT);
+        challengeRoot.fetch("category", JoinType.LEFT);
 
         int firstResult = page * size;
 
-        return entityManager.createQuery(criteriaQuery)
+        return new HashSet<>(entityManager.createQuery(criteriaQuery)
                 .setFirstResult(firstResult)
                 .setMaxResults(size)
-                .getResultList();
+                .getResultList());
     }
 
     @Override

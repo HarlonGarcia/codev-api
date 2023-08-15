@@ -8,11 +8,12 @@ import com.codev.domain.model.Technology;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 public interface ChallengeRepository {
 
-    List<Challenge> findAllChallengesWithPaging(
+    Set<Challenge> findAllChallengesWithPaging(
         Integer page, Integer size, UUID categoryId, OrderBy orderBy
     );
 

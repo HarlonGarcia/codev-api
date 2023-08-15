@@ -23,7 +23,9 @@ import org.apache.commons.beanutils.BeanUtils;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 public class ChallengeService {
@@ -31,11 +33,11 @@ public class ChallengeService {
     @Inject
     ChallengeRepository challengeRepository;
 
-    public List<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
+    public Set<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
         return challengeRepository.findAllChallengesWithPaging(page, size, categoryId, orderBy).stream().map(
             challenge -> {
-                List<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
-                    .map(TechnologyDTOView::new).toList();
+                Set<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
+                    .map(TechnologyDTOView::new).collect(Collectors.toSet());
 
                 return new ChallengeDTOView(
                     challenge, 
@@ -43,7 +45,7 @@ public class ChallengeService {
                     technologiesDTOView
                 );
             })
-        .toList();
+            .collect(Collectors.toSet());
     }
 
     public Challenge findById(UUID challengeId) {
