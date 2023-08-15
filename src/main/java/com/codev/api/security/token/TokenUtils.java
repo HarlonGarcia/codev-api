@@ -1,5 +1,6 @@
 package com.codev.api.security.token;
 
+import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
 import com.codev.domain.model.Role;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
