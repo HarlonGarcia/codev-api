@@ -6,9 +6,11 @@ import com.codev.domain.model.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Data
 public class UserDTOView {
@@ -29,7 +31,7 @@ public class UserDTOView {
 
     private Set<Label> labels;
 
-    private List<Role> roles;
+    private Set<Role> roles;
 
     public UserDTOView(User user) {
         this.id = user.getId();
@@ -40,7 +42,7 @@ public class UserDTOView {
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
         this.labels = user.getLabels();
-        this.roles = user.getRoles();
+        this.roles = new HashSet<>(user.getRoles());
     }
 
     public UserDTOView() {}
