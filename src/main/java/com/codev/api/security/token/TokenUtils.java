@@ -25,7 +25,7 @@ public class TokenUtils {
         long currentTimeInSecs = currentTimeInSecs();
 
         Set<String> groups = new HashSet<>();
-        for (Role role : roles) groups.add(role.getAuthority());
+        for (Role role : roles) groups.add(role.getName());
 
         claimsBuilder.subject(username);
         claimsBuilder.issuedAt(currentTimeInSecs);

@@ -1,9 +1,10 @@
 insert into tb_user (id, email, github_url, additional_url, name, password, active, created_at, updated_at) values ('0a10cc2c-d527-44bc-912f-95ea6aa94961', 'breno@gmail.com', 'https://github.com/brenooduarte', 'www.linkedin.com/in/breno-freitas-duarte', 'Breno Duarte', 'Wwtf1LEt+oBYjbew/WeFdU+HFW+oMIGDhTy+E6Q0f4Q=', true, '2023-08-11T00:15:49.483342884', '2023-08-11T00:15:49.483342884');
 insert into tb_user (id, email, github_url, additional_url, name, password, active, created_at, updated_at) values ('c114fe61-f54f-4858-9c4d-9f6d9d8207aa', 'harlon@gmail.com', 'https://github.com/HarlonGarcia', 'www.linkedin.com/in/harlon-garcia', 'Harlon Garcia', 'Wwtf1LEt+oBYjbew/WeFdU+HFW+oMIGDhTy+E6Q0f4Q=', true, '2023-08-11T00:15:49.483342884', '2023-08-11T00:15:49.483342884');
 insert into tb_user (id, email, github_url, additional_url, name, password, active, created_at, updated_at) values ('3aec17ef-b1ac-45a0-9963-3a68583b41b5', 'pedro@gmail.com', 'https://github.com/Palc3301', 'www.linkedin.com/in/pedro-arruda', 'Pedro Arruda', 'Wwtf1LEt+oBYjbew/WeFdU+HFW+oMIGDhTy+E6Q0f4Q=', true, '2023-08-11T00:15:49.483342884', '2023-08-11T00:15:49.483342884');
+-- The password that is encrypted in these three users is 12345
 
-insert into tb_role (id, authority) values ('28439d95-3df9-41ac-9718-dc4a906ef9a9', 'ADMIN');
-insert into tb_role (id, authority) values ('fc136e23-4bc9-468c-b4dd-cf99d0f1bd8b', 'USER');
+insert into tb_role (id, name) values ('28439d95-3df9-41ac-9718-dc4a906ef9a9', 'ADMIN');
+insert into tb_role (id, name) values ('fc136e23-4bc9-468c-b4dd-cf99d0f1bd8b', 'USER');
 
 insert into tb_user_role (user_id, role_id) values ('0a10cc2c-d527-44bc-912f-95ea6aa94961', '28439d95-3df9-41ac-9718-dc4a906ef9a9');
 insert into tb_user_role (user_id, role_id) values ('0a10cc2c-d527-44bc-912f-95ea6aa94961', 'fc136e23-4bc9-468c-b4dd-cf99d0f1bd8b');
