@@ -7,8 +7,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Data
@@ -53,7 +52,7 @@ public class User extends PanacheEntityBase {
     @JoinTable(name = "tb_user_role",
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles;
+    private List<Role> roles;
 
     public User(UserDTOForm userDTOForm) {
         this.name = userDTOForm.getName();
@@ -64,7 +63,7 @@ public class User extends PanacheEntityBase {
         this.additionalUrl = userDTOForm.getAdditionalUrl();
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
-        this.roles.add(new Role("USER"));
+        this.roles = new ArrayList<>();
     }
 
     public User(){}

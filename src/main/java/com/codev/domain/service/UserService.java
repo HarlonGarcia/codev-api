@@ -10,6 +10,7 @@ import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
 import com.codev.domain.exceptions.users.UnathorizedLoginMessage;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
+import com.codev.domain.model.Role;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
@@ -56,8 +57,14 @@ public class UserService {
 
     @Transactional
     public UserDTOView createUser(UserDTOForm userDTOForm) {
+
         User user = new User(userDTOForm);
         user.setPassword(passwordEncoder.encode(userDTOForm.getPassword()));
+
+        Role role = new Role("USER");
+        role.setId(GlobalConstants.USER_ROLE_ID);
+
+        user.getRoles().add(role);
         user.persist();
 
         return new UserDTOView(user);
