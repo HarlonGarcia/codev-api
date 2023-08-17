@@ -1,6 +1,5 @@
 package com.codev.api.security.token;
 
-import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
 import com.codev.domain.model.Role;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
@@ -11,13 +10,14 @@ import java.security.PrivateKey;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class TokenUtils {
 
-    public static final long TOKEN_DURATION = 3600;
+    public static final long TOKEN_DURATION = 86400;
 
-    public static String generateToken(String username, Set<Role> roles) throws Exception {
+    public static String generateToken(String username, List<Role> roles) throws Exception {
         String privateKeyLocation = "/privatekey.pem";
         PrivateKey privateKey = readPrivateKey(privateKeyLocation);
 

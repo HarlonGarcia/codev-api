@@ -1,10 +1,12 @@
 package com.codev.domain.dto.view;
 
 import com.codev.domain.model.Label;
+import com.codev.domain.model.Role;
 import com.codev.domain.model.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,6 +29,8 @@ public class UserDTOView {
 
     private Set<Label> labels;
 
+    private List<Role> roles;
+
     public UserDTOView(User user) {
         this.id = user.getId();
         this.name = user.getName();
@@ -36,6 +40,7 @@ public class UserDTOView {
         this.createdAt = user.getCreatedAt();
         this.updatedAt = user.getUpdatedAt();
         this.labels = user.getLabels();
+        this.roles = user.getRoles();
     }
 
     public UserDTOView() {}
