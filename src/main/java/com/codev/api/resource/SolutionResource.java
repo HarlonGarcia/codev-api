@@ -51,7 +51,7 @@ public class SolutionResource {
             return Response.ok().build();
         } catch (NoSuchElementException | SolutionNotDeletedException e) {
             e.printStackTrace();
-            return Response.status(404).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
 

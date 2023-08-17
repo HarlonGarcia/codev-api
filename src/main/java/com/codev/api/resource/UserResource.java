@@ -45,7 +45,7 @@ public class UserResource {
             return Response.ok(users).build();
         } catch (Exception error) {
             error.printStackTrace();
-            return Response.ok(error).status(400).build();
+            return Response.ok(error).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -57,7 +57,7 @@ public class UserResource {
             User user = userService.findUserById(userId);
             return Response.ok(new UserDTOView(user)).build();
         } catch (UserDeactivatedException | EntityNotFoundException e) {
-            return Response.status(404).entity(e.getMessage()).build();
+            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
         }
     }
 
@@ -66,10 +66,10 @@ public class UserResource {
     public Response createUser(@Valid UserDTOForm userDTOForm) {
         try {
             UserDTOView userDTOView = userService.createUser(userDTOForm);
-            return Response.ok(userDTOView).status(201).build();
+            return Response.ok(userDTOView).status(Response.Status.CREATED).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.ok(e).status(400).build();
+            return Response.ok(e).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -111,7 +111,7 @@ public class UserResource {
             return Response.ok(userDTOView).build();
         } catch (Exception e) {
             e.printStackTrace();
-            return Response.status(400).build();
+            return Response.status(Response.Status.BAD_REQUEST).build();
         }
     }
 
