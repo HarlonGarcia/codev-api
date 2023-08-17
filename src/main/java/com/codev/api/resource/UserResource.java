@@ -8,6 +8,8 @@ import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
 import com.codev.domain.exceptions.users.UnathorizedLoginMessage;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.exceptions.users.UserDoesNotExistResponse;
+import com.codev.domain.exceptions.users.UserHasAdminRoleException;
+import com.codev.domain.model.User;
 import com.codev.domain.service.UserService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -49,11 +51,11 @@ public class UserResource {
 
     @RolesAllowed({"ADMIN", "USER"})
     @GET
-    @Path("/{id}")
-    public Response findUserById(@PathParam("id") UUID id) {
+    @Path("/{userId}")
+    public Response findUserById(@PathParam("userId") UUID userId) {
         try {
-            UserDTOView userDTOView = userService.findUserById(id);
-            return Response.ok(userDTOView).build();
+            User user = userService.findUserById(userId);
+            return Response.ok(new UserDTOView(user)).build();
         } catch (UserDeactivatedException | EntityNotFoundException e) {
             return Response.status(404).entity(e.getMessage()).build();
         }
@@ -68,6 +70,18 @@ public class UserResource {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.ok(e).status(400).build();
+        }
+    }
+
+    @RolesAllowed({"ADMIN"})
+    @POST
+    @Path("/{userId}/add-admin-role")
+    public Response addAdminRoleInUser(@PathParam("userId") UUID userId) {
+        try {
+            UserDTOView userDTOView = userService.addAdminRoleInUser(userId);
+            return Response.ok(userDTOView).build();
+        } catch (UserDeactivatedException | UserHasAdminRoleException e) {
+            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build();
         }
     }
 
@@ -88,12 +102,12 @@ public class UserResource {
 
     @RolesAllowed({"ADMIN", "USER"})
     @PUT
-    @Path("/{id}")
+    @Path("/{userId}")
     public Response updateUser(
-            @PathParam("id") UUID id,
+            @PathParam("userId") UUID userId,
             @Valid UserDTOForm userDTOForm) {
         try {
-            UserDTOView userDTOView = userService.updateUser(id, userDTOForm);
+            UserDTOView userDTOView = userService.updateUser(userId, userDTOForm);
             return Response.ok(userDTOView).build();
         } catch (Exception e) {
             e.printStackTrace();
@@ -103,10 +117,10 @@ public class UserResource {
 
     @RolesAllowed({"ADMIN", "USER"})
     @DELETE
-    @Path("/{id}")
-    public Response deactivateUser(@PathParam("id") UUID id) {
+    @Path("/{userId}")
+    public Response deactivateUser(@PathParam("userId") UUID userId) {
         try {
-            userService.deactivateUser(id);
+            userService.deactivateUser(userId);
             return Response.status(Response.Status.OK.getStatusCode()).build();
         } catch (EntityNotFoundException e) {
             e.printStackTrace();

@@ -16,10 +16,10 @@ public class Role extends PanacheEntityBase {
     public UUID id;
 
     @Column(nullable = false)
-    private String authority;
+    private String name;
 
-    public Role(String authority) {
-        this.authority = authority;
+    public Role(String name) {
+        this.name = name;
     }
 
     public Role() {}

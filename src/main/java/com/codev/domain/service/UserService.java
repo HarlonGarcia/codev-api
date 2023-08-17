@@ -10,8 +10,10 @@ import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
 import com.codev.domain.exceptions.users.UnathorizedLoginMessage;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
+import com.codev.domain.exceptions.users.UserHasAdminRoleException;
 import com.codev.domain.model.Role;
 import com.codev.domain.model.User;
+import com.codev.domain.repository.RoleRepository;
 import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
 import com.codev.utils.helpers.DtoTransformer;
@@ -33,6 +35,9 @@ public class UserService {
     UserRepository userRepository;
 
     @Inject
+    RoleRepository roleRepository;
+
+    @Inject
     PBKDF2Encoder passwordEncoder;
 
     public List<UserDTOView> findAllUsers(UserFiltersDTOForm filters) {
@@ -44,15 +49,13 @@ public class UserService {
         return userDTOList;
     }
 
-    public UserDTOView findUserById(UUID id) throws UserDeactivatedException {
-        User user = User.findById(id);
+    public User findUserById(UUID userId) throws UserDeactivatedException {
+        User user = userRepository.findById(userId);
 
-        if (user == null)
-            throw new EntityNotFoundException("User not found");
         if (!user.isActive())
             throw new UserDeactivatedException();
 
-        return new UserDTOView(user);
+        return user;
     }
 
     @Transactional
@@ -71,8 +74,27 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTOView updateUser(UUID id, UserDTOForm userDTOForm) throws InvocationTargetException, IllegalAccessException {
-        User user = User.findById(id);
+    public UserDTOView addAdminRoleInUser(UUID userId) throws UserDeactivatedException, UserHasAdminRoleException {
+        User user = findUserById(userId);
+
+        for (Role role : user.getRoles()) {
+            if (role.getName().equals("ADMIN")) {
+                throw new UserHasAdminRoleException();
+            }
+        }
+
+        Role role = new Role("ADMIN");
+        role.setId(GlobalConstants.ADMIN_ROLE_ID);
+
+        user.getRoles().add(role);
+
+        roleRepository.addAdminRoleInUser(userId);
+        return new UserDTOView(user);
+    }
+
+    @Transactional
+    public UserDTOView updateUser(UUID userId, UserDTOForm userDTOForm) throws InvocationTargetException, IllegalAccessException {
+        User user = User.findById(userId);
 
         if (user == null)
             throw new EntityNotFoundException("User not found");
@@ -85,8 +107,8 @@ public class UserService {
     }
 
     @Transactional
-    public void deactivateUser(UUID id) throws UserDeactivatedException {
-        User user = User.findById(id);
+    public void deactivateUser(UUID userId) throws UserDeactivatedException {
+        User user = User.findById(userId);
 
         if (user == null)
             throw new EntityNotFoundException("User not found");
@@ -112,4 +134,5 @@ public class UserService {
             throw new UnathorizedLoginMessage();
         }
     }
+
 }
