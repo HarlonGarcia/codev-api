@@ -136,7 +136,7 @@ public class ChallengeResource {
             return Response.ok(new ChallengeDTOView(challenge)).build();
 
         } catch (CategoryAlreadyExistsInChallenge | SQLException e) {
-            return Response.ok(e.getStackTrace()).status(400).build();
+            return Response.ok(e.getStackTrace()).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -151,7 +151,7 @@ public class ChallengeResource {
             Challenge challenge = challengeService.updateChallenge(challengeId, challengeDTOForm);
             return Response.ok(new ChallengeDTOView(challenge)).build();
         } catch (InvocationTargetException | IllegalAccessException e) {
-            return Response.ok(e.getStackTrace()).status(400).build();
+            return Response.ok(e.getStackTrace()).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
@@ -186,7 +186,7 @@ public class ChallengeResource {
             challengeService.removeCategoryInChallenge(challengeId);
             return Response.ok().build();
         } catch (SQLException e) {
-            return Response.ok(e.getStackTrace()).status(400).build();
+            return Response.ok(e.getStackTrace()).status(Response.Status.BAD_REQUEST).build();
         }
     }
 
