@@ -1,21 +1,21 @@
 package com.codev.domain.service;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.codev.domain.dto.form.CategoryDTOForm;
 import com.codev.domain.model.Category;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class CategoryService {
 
-    @Inject
-    CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     public List<Category> findAllCategories() {
         return categoryRepository.findAllCategories();

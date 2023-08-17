@@ -4,10 +4,10 @@ import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.service.SolutionService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.NoSuchElementException;
@@ -17,10 +17,10 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Solution")
+@RequiredArgsConstructor
 public class SolutionResource {
 
-    @Inject
-    SolutionService solutionService;
+    private final SolutionService solutionService;
 
     @RolesAllowed({"USER"})
     @POST

@@ -8,6 +8,7 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 
 import java.util.ArrayList;
@@ -17,12 +18,8 @@ import java.util.UUID;
 @ApplicationScoped
 public class UserRepositoryImpl implements UserRepository {
 
-    private final EntityManager entityManager;
-
-
-    public UserRepositoryImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
+    @PersistenceContext
+    EntityManager entityManager;
 
     @Override
     public List<User> findAllUsers(UserFiltersDTOForm filters) {
@@ -61,6 +58,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         Root<User> userRoot = criteriaQuery.from(User.class);
         userRoot.fetch("roles", JoinType.LEFT);
+        userRoot.fetch("labels", JoinType.LEFT);
 
         criteriaQuery.where(
                 criteriaBuilder.equal(userRoot.get("email"), email),

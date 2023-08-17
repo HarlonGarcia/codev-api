@@ -4,11 +4,11 @@ import com.codev.domain.dto.form.CategoryDTOForm;
 import com.codev.domain.dto.view.CategoryDTOView;
 import com.codev.domain.service.CategoryService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
@@ -18,10 +18,10 @@ import java.util.UUID;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Category")
+@RequiredArgsConstructor
 public class CategoryResource {
 
-    @Inject
-    CategoryService categoryService;
+    private final CategoryService categoryService;
 
     @RolesAllowed({"ADMIN", "USER"})
     @GET

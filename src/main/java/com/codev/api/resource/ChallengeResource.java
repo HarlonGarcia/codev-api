@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.lang.reflect.InvocationTargetException;
@@ -31,13 +32,12 @@ import java.util.stream.Collectors;
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Challenge")
+@RequiredArgsConstructor
 public class ChallengeResource {
 
-    @Inject
-    ChallengeService challengeService;
+    private final ChallengeService challengeService;
 
-    @Inject
-    SolutionService solutionService;
+    private final SolutionService solutionService;
 
     @RolesAllowed({"ADMIN", "USER"})
     @GET

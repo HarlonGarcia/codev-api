@@ -10,24 +10,20 @@ import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.SolutionRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class SolutionService {
 
-    @Inject
-    SolutionRepository solutionRepository;
+    private final SolutionRepository solutionRepository;
 
-    @Inject
-    ChallengeService challengeService;
-
-    @Inject
-    UserService userService;
+    private final ChallengeService challengeService;
 
     public List<SolutionDTOView> findAllSolutionsByChallengeId(
             UUID challengeId, UUID userId, Integer page, Integer size

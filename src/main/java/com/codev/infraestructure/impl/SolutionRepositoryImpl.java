@@ -9,25 +9,22 @@ import com.codev.domain.model.User;
 import com.codev.domain.repository.SolutionRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
-import jakarta.persistence.EntityManager;
+import lombok.RequiredArgsConstructor;
 
 import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class SolutionRepositoryImpl implements SolutionRepository {
 
-    private final EntityManager entityManager;
-
-    public SolutionRepositoryImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    @Inject
-    DataSource dataSource;
+    private final DataSource dataSource;
 
     @Override
     public List<SolutionDTOView> findAllSolutionsByChallengeId(
