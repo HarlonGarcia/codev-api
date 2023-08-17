@@ -19,9 +19,9 @@ import com.codev.utils.GlobalConstants;
 import com.codev.utils.helpers.DtoTransformer;
 import com.codev.utils.helpers.NullAwareBeanUtilsBean;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
@@ -29,16 +29,14 @@ import java.util.List;
 import java.util.UUID;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class UserService {
 
-    @Inject
-    UserRepository userRepository;
+    private final UserRepository userRepository;
 
-    @Inject
-    RoleRepository roleRepository;
+    private final RoleRepository roleRepository;
 
-    @Inject
-    PBKDF2Encoder passwordEncoder;
+    private final PBKDF2Encoder passwordEncoder;
 
     public List<UserDTOView> findAllUsers(UserFiltersDTOForm filters) {
         List<User> users = userRepository.findAllUsers(filters);

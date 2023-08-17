@@ -15,9 +15,9 @@ import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
@@ -28,10 +28,10 @@ import java.util.UUID;
 import java.util.stream.Collectors;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class ChallengeService {
 
-    @Inject
-    ChallengeRepository challengeRepository;
+    private final ChallengeRepository challengeRepository;
 
     public Set<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
         return challengeRepository.findAllChallengesWithPaging(page, size, categoryId, orderBy).stream().map(

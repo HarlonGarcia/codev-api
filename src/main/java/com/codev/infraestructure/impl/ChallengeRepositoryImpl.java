@@ -11,30 +11,24 @@ import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
-import jakarta.persistence.criteria.CriteriaBuilder;
-import jakarta.persistence.criteria.CriteriaQuery;
-import jakarta.persistence.criteria.JoinType;
-import jakarta.persistence.criteria.Predicate;
-import jakarta.persistence.criteria.Root;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.criteria.*;
+import lombok.RequiredArgsConstructor;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class ChallengeRepositoryImpl implements ChallengeRepository {
 
-    private final EntityManager entityManager;
+    @PersistenceContext
+    EntityManager entityManager;
 
-    public ChallengeRepositoryImpl(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    @Inject
-    DataSource dataSource;
+    private final DataSource dataSource;
 
     @Override
     public List<Technology> findAllTechnologiesByChallengeId(UUID challengeId) {

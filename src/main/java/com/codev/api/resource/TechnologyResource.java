@@ -4,25 +4,24 @@ import com.codev.domain.dto.form.TechnologyDTOForm;
 import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.service.TechnologyService;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
+import lombok.RequiredArgsConstructor;
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 import java.util.List;
 import java.util.UUID;
-
-import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
 @Path("technologies")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 @Tag(name = "Technology")
+@RequiredArgsConstructor
 public class TechnologyResource {
 
-    @Inject
-    TechnologyService technologyService;
+    private final TechnologyService technologyService;
 
     @RolesAllowed({"ADMIN", "USER"})
     @GET

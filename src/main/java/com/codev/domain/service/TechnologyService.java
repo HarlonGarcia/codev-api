@@ -1,21 +1,21 @@
 package com.codev.domain.service;
 
-import java.util.List;
-import java.util.UUID;
-
 import com.codev.domain.dto.form.TechnologyDTOForm;
 import com.codev.domain.model.Technology;
 import com.codev.domain.repository.TechnologyRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.RequiredArgsConstructor;
+
+import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
+@RequiredArgsConstructor
 public class TechnologyService {
 
-    @Inject
-    TechnologyRepository technologyRepository;
+    private final TechnologyRepository technologyRepository;
 
 
     public List<Technology> findAllTechnologies() {
