@@ -19,6 +19,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final EntityManager entityManager;
 
+
     public UserRepositoryImpl(EntityManager entityManager) {
         this.entityManager = entityManager;
     }
@@ -30,6 +31,7 @@ public class UserRepositoryImpl implements UserRepository {
 
         Root<User> userRoot = criteriaQuery.from(User.class);
         userRoot.fetch("roles", JoinType.LEFT);
+        userRoot.fetch("labels", JoinType.LEFT);
 
         List<Predicate> predicates = new ArrayList<>();
 
