@@ -12,8 +12,9 @@ import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
+
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.inject.Inject;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -46,7 +47,7 @@ public class ChallengeResource {
         return Response.ok(challengeService.findAllTechnologiesByChallengeId(challengeId)).build();
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
+    @PermitAll
     @GET
     public Response findAllChallengeWithPaging(
             @QueryParam("page") Integer page,
