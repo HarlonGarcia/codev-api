@@ -1,12 +1,16 @@
 package com.codev.utils.helpers;
 
+import org.modelmapper.ModelMapper;
+
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.modelmapper.ModelMapper;
-
 public class DtoTransformer<T, U> {
-    private ModelMapper modelMapper = new ModelMapper();
+    private final ModelMapper modelMapper;
+
+    public DtoTransformer() {
+        this.modelMapper = new ModelMapper();
+    }
 
     public List<U> transformToDTOList(List<T> entityList, Class<U> dtoClass) {
         return entityList.stream()
@@ -16,6 +20,10 @@ public class DtoTransformer<T, U> {
 
     private U convertToDTO(T entity, Class<U> dtoClass) {
         return modelMapper.map(entity, dtoClass);
+    }
+
+    public void copyProperties(T entity, U dto) {
+        modelMapper.map(entity, dto);
     }
 
 }

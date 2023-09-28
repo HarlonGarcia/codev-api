@@ -13,7 +13,7 @@ public class NullAwareBeanUtilsBean extends BeanUtilsBean {
         try {
             notNull.copyProperties(dest, orig);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
+            System.out.println(e);
         }
     }
 }

@@ -3,10 +3,10 @@ package com.codev.domain.dto.view;
 import com.codev.domain.model.Label;
 import com.codev.domain.model.Role;
 import com.codev.domain.model.User;
+import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,15 +32,8 @@ public class UserDTOView {
     private Set<Role> roles;
 
     public UserDTOView(User user) {
-        this.id = user.getId();
-        this.name = user.getName();
-        this.email = user.getEmail();
-        this.additionalUrl = user.getAdditionalUrl();
-        this.githubUrl = user.getGithubUrl();
-        this.createdAt = user.getCreatedAt();
-        this.updatedAt = user.getUpdatedAt();
-        this.labels = user.getLabels();
-        this.roles = new HashSet<>(user.getRoles());
+        DtoTransformer<User, UserDTOView> transform = new DtoTransformer<>();
+        transform.copyProperties(user, this);
     }
 
     public UserDTOView() {}
