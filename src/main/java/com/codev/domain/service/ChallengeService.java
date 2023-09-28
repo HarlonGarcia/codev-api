@@ -2,7 +2,6 @@ package com.codev.domain.service;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
-import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
@@ -34,18 +33,12 @@ public class ChallengeService {
     private final ChallengeRepository challengeRepository;
 
     public Set<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
-        return challengeRepository.findAllChallengesWithPaging(page, size, categoryId, orderBy).stream().map(
-            challenge -> {
-                Set<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
-                    .map(TechnologyDTOView::new).collect(Collectors.toSet());
-
-                return new ChallengeDTOView(
-                    challenge, 
-                    challenge.getCategory(),
-                    technologiesDTOView
-                );
-            })
+        
+        return challengeRepository.findAllChallengesWithPaging(page, size, categoryId, orderBy)
+            .stream()
+            .map(ChallengeDTOView::new)
             .collect(Collectors.toSet());
+
     }
 
     public Challenge findById(UUID challengeId) {
@@ -79,11 +72,19 @@ public class ChallengeService {
             challengeDTOForm.setStatus(ChallengeStatus.TO_BEGIN);
         }
 
+        Challenge challenge = getChallenge(challengeDTOForm, author);
+
+        // TODO - Implement the technologies in the challenge
+
+        return new ChallengeDTOView(challenge);
+    }
+
+    private static Challenge getChallenge(ChallengeDTOForm challengeDTOForm, User author) {
         Challenge challenge = new Challenge(challengeDTOForm);
 
         UUID categoryId = challengeDTOForm.getCategoryId();
 
-        if (categoryId != null) {    
+        if (categoryId != null) {
             Category category = Category.findById(categoryId);
 
             if (category == null) {
@@ -96,14 +97,7 @@ public class ChallengeService {
         challenge.setAuthor(author);
 
         challenge.persist();
-
-        // TODO - Implement the technologies in the challenge
-
-        if (categoryId != null) {
-            return new ChallengeDTOView(challenge, challenge.getCategory());
-        }
-
-        return new ChallengeDTOView(challenge);
+        return challenge;
     }
 
     @Transactional

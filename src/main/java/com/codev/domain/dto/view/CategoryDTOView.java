@@ -1,6 +1,7 @@
 package com.codev.domain.dto.view;
 
 import com.codev.domain.model.Category;
+import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.util.UUID;
@@ -13,8 +14,10 @@ public class CategoryDTOView {
     private String name;
 
     public CategoryDTOView(Category category){
-        this.id = category.getId();
-        this.name = category.getName();
+        DtoTransformer<Category, CategoryDTOView> transform = new DtoTransformer<>();
+        transform.copyProperties(category, this);
     }
+
+    public CategoryDTOView() {}
 
 }

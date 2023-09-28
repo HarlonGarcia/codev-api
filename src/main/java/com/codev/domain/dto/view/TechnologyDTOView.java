@@ -1,6 +1,7 @@
 package com.codev.domain.dto.view;
 
 import com.codev.domain.model.Technology;
+import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.util.UUID;
@@ -17,10 +18,10 @@ public class TechnologyDTOView {
     private String color;
 
     public TechnologyDTOView(Technology technology) {
-        this.id = technology.getId();
-        this.name = technology.getName();
-        this.documentationLink = technology.getDocumentationLink();
-        this.color = technology.getColor();
+        DtoTransformer<Technology, TechnologyDTOView> transform = new DtoTransformer<>();
+        transform.copyProperties(technology, this);
     }
+
+    public TechnologyDTOView() {}
 
 }

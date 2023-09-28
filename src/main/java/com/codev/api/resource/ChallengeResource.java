@@ -4,7 +4,6 @@ import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
-import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
@@ -12,7 +11,6 @@ import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
-
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
@@ -27,7 +25,6 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Path("challenges")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -58,22 +55,17 @@ public class ChallengeResource {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        Set<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging    (page, size, categoryId, orderBy);
+        Set<ChallengeDTOView> challenges = challengeService.findAllChallengesWithPaging(page, size, categoryId, orderBy);
 
         return Response.ok(challenges).build();
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
+    @PermitAll
     @GET
     @Path("/{challengeId}")
     public Response findChallengeById(@PathParam("challengeId") UUID challengeId) {
         Challenge challenge = challengeService.findById(challengeId);
-
-        Set<TechnologyDTOView> technologiesDTOView = challenge.getTechnologies().stream()
-            .map(TechnologyDTOView::new).collect(Collectors.toSet());
-
-        ChallengeDTOView challengeDTOView = new ChallengeDTOView(challenge, challenge.getCategory(), technologiesDTOView);
-        
+        ChallengeDTOView challengeDTOView = new ChallengeDTOView(challenge);
         return Response.ok(challengeDTOView).build();
     }
 

@@ -1,12 +1,11 @@
 package com.codev.domain.dto.view;
 
 import com.codev.domain.enums.ChallengeStatus;
-import com.codev.domain.model.Category;
 import com.codev.domain.model.Challenge;
+import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -32,23 +31,10 @@ public class ChallengeDTOView {
     private Set<TechnologyDTOView> technologies;
 
     public ChallengeDTOView(Challenge challenge) {
-        this.id = challenge.getId();
-        this.title = challenge.getTitle();
-        this.description = challenge.getDescription();
-        this.createdAt = challenge.getCreatedAt();
-        this.endDate = challenge.getEndDate();
-        this.status = challenge.getStatus();
-        this.author = new UserDTOView(challenge.getAuthor());
+        DtoTransformer<Challenge, ChallengeDTOView> transformChallenge = new DtoTransformer<>();
+        transformChallenge.copyProperties(challenge, this);
     }
     
-    public ChallengeDTOView(Challenge challenge, Category category) {
-        this(challenge);
-        this.category = new CategoryDTOView(challenge.getCategory());
-    }
-
-    public ChallengeDTOView(Challenge challenge, Category category, Set<TechnologyDTOView> technologies) {
-        this(challenge, category);
-        this.technologies = technologies;
-    }
+    public ChallengeDTOView() {}
 
 }

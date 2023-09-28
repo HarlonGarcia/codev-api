@@ -2,6 +2,7 @@ package com.codev.domain.dto.view;
 
 import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
+import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.util.UUID;
@@ -33,12 +34,8 @@ public class SolutionDTOView {
     }
 
     public SolutionDTOView(Solution solution) {
-        this.solutionId = solution.getId();
-        this.challengeId = solution.getChallenge().getId();
-        this.author = new UserDTOView(solution.getAuthor());
-        this.repositoryUrl = solution.getRepositoryUrl();
-        this.deployUrl = solution.getDeployUrl();
-        this.likes = 0;
+        DtoTransformer<Solution, SolutionDTOView> transform = new DtoTransformer<>();
+        transform.copyProperties(solution, this);
     }
 
     public SolutionDTOView(){}
