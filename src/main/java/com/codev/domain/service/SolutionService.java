@@ -33,7 +33,7 @@ public class SolutionService {
 
     @Transactional
     public SolutionDTOView createSolution(UUID challengeId, SolutionDTOForm solutionDTOForm) {
-        Challenge challenge = challengeService.findById(challengeId);
+        Challenge challenge = challengeService.findChallengeById(challengeId);
         User author = User.findById(solutionDTOForm.getAuthorId());
 
         if (author == null || challenge == null)

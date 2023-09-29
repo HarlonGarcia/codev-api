@@ -21,6 +21,7 @@ public interface ChallengeRepository {
 
     boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException;
 
+    Challenge findChallengeById(UUID challengeId);
 
     List<Technology> findAllTechnologiesByChallengeId(UUID challengeId);
 
