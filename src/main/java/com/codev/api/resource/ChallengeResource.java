@@ -64,7 +64,7 @@ public class ChallengeResource {
     @GET
     @Path("/{challengeId}")
     public Response findChallengeById(@PathParam("challengeId") UUID challengeId) {
-        Challenge challenge = challengeService.findById(challengeId);
+        Challenge challenge = challengeService.findChallengeById(challengeId);
         ChallengeDTOView challengeDTOView = new ChallengeDTOView(challenge);
         return Response.ok(challengeDTOView).build();
     }

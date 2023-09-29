@@ -9,7 +9,6 @@ import com.codev.domain.model.Technology;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
@@ -76,6 +75,33 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
                 .setFirstResult(firstResult)
                 .setMaxResults(size)
                 .getResultList();
+
+    }
+
+    @Override
+    public Challenge findChallengeById(UUID challengeId) {
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
+
+        Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
+
+        criteriaQuery.select(challengeRoot);
+
+        criteriaQuery.where(
+            criteriaBuilder.equal(challengeRoot.get("id"), challengeId),
+            criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE)
+        );
+
+        challengeRoot.fetch("author", JoinType.LEFT)
+            .fetch("labels", JoinType.LEFT);
+        challengeRoot.fetch("author", JoinType.LEFT)
+            .fetch("roles", JoinType.LEFT);
+        challengeRoot.fetch("technologies", JoinType.LEFT);
+        challengeRoot.fetch("category", JoinType.LEFT);
+
+        return entityManager.createQuery(criteriaQuery)
+            .getSingleResult();
 
     }
 

@@ -41,13 +41,8 @@ public class ChallengeService {
 
     }
 
-    public Challenge findById(UUID challengeId) {
-        Challenge challenge = Challenge.findById(challengeId);
-
-        if (challenge == null)
-            throw new EntityNotFoundException("Challenge not found");
-
-        return challenge;
+    public Challenge findChallengeById(UUID challengeId) {
+        return challengeRepository.findChallengeById(challengeId);
     }
 
     public List<Technology> findAllTechnologiesByChallengeId(UUID challengeId) {
