@@ -57,18 +57,24 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTOView createUser(UserDTOForm userDTOForm) {
+    public AuthResponse createUser(UserDTOForm userDTOForm) throws GenerateTokenExcepetion {
 
-        User user = new User(userDTOForm);
-        user.setPassword(passwordEncoder.encode(userDTOForm.getPassword()));
+        try {
+            User user = new User(userDTOForm);
+            user.setPassword(passwordEncoder.encode(userDTOForm.getPassword()));
 
-        Role role = new Role("USER");
-        role.setId(GlobalConstants.USER_ROLE_ID);
+            Role role = new Role("USER");
+            role.setId(GlobalConstants.USER_ROLE_ID);
 
-        user.getRoles().add(role);
-        user.persist();
+            user.getRoles().add(role);
+            user.persist();
 
-        return new UserDTOView(user);
+            return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
+
+        } catch (Exception e) {
+            throw new IllegalStateException();
+        }
+
     }
 
     @Transactional
@@ -123,11 +129,7 @@ public class UserService {
         String passwordEncode = passwordEncoder.encode(authRequest.password);
 
         if (user != null && passwordEncode.equals(user.getPassword())) {
-            try {
-                return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
-            } catch (Exception e) {
-                throw new GenerateTokenExcepetion();
-            }
+            return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
         } else {
             throw new InvalidLoginException();
         }
