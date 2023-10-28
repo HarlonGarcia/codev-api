@@ -1,5 +1,7 @@
 package com.codev.api.security.token;
 
+import com.codev.api.security.auth.AuthResponse;
+import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
 import com.codev.domain.model.Role;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
@@ -17,22 +19,27 @@ public class TokenUtils {
 
     public static final long TOKEN_DURATION = 86400;
 
-    public static String generateToken(String username, List<Role> roles) throws Exception {
-        String privateKeyLocation = "/privatekey.pem";
-        PrivateKey privateKey = readPrivateKey(privateKeyLocation);
+    public static String generateToken(String username, List<Role> roles) throws GenerateTokenExcepetion {
+        try {
+            String privateKeyLocation = "/privatekey.pem";
+            PrivateKey privateKey = readPrivateKey(privateKeyLocation);
 
-        JwtClaimsBuilder claimsBuilder = Jwt.claims();
-        long currentTimeInSecs = currentTimeInSecs();
+            JwtClaimsBuilder claimsBuilder = Jwt.claims();
+            long currentTimeInSecs = currentTimeInSecs();
 
-        Set<String> groups = new HashSet<>();
-        for (Role role : roles) groups.add(role.getName());
+            Set<String> groups = new HashSet<>();
+            for (Role role : roles) groups.add(role.getName());
 
-        claimsBuilder.subject(username);
-        claimsBuilder.issuedAt(currentTimeInSecs);
-        claimsBuilder.expiresAt(currentTimeInSecs + TOKEN_DURATION);
-        claimsBuilder.groups(groups);
+            claimsBuilder.subject(username);
+            claimsBuilder.issuedAt(currentTimeInSecs);
+            claimsBuilder.expiresAt(currentTimeInSecs + TOKEN_DURATION);
+            claimsBuilder.groups(groups);
 
-        return claimsBuilder.jws().keyId(privateKeyLocation).sign(privateKey);
+            return claimsBuilder.jws().keyId(privateKeyLocation).sign(privateKey);
+
+        } catch (Exception e) {
+            throw new GenerateTokenExcepetion();
+        }
     }
 
     public static PrivateKey readPrivateKey(final String pemResName) throws Exception {

@@ -1,6 +1,7 @@
 package com.codev.api.resource;
 
 import com.codev.api.security.auth.AuthRequest;
+import com.codev.api.security.auth.AuthResponse;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
@@ -62,10 +63,10 @@ public class UserResource {
     @POST
     public Response createUser(@Valid UserDTOForm userDTOForm) {
         try {
-            UserDTOView userDTOView = userService.createUser(userDTOForm);
-            return Response.ok(userDTOView).status(Response.Status.CREATED).build();
+            AuthResponse authResponse = userService.createUser(userDTOForm);
+            return Response.ok(authResponse).status(Response.Status.CREATED).build();
+
         } catch (Exception e) {
-            e.printStackTrace();
             return Response.ok(e).status(Response.Status.BAD_REQUEST).build();
         }
     }
