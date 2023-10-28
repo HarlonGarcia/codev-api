@@ -5,10 +5,7 @@ import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
-import com.codev.domain.exceptions.users.UnathorizedLoginMessage;
-import com.codev.domain.exceptions.users.UserDeactivatedException;
-import com.codev.domain.exceptions.users.UserDoesNotExistResponse;
-import com.codev.domain.exceptions.users.UserHasAdminRoleException;
+import com.codev.domain.exceptions.users.*;
 import com.codev.domain.model.User;
 import com.codev.domain.service.UserService;
 import jakarta.annotation.security.PermitAll;
@@ -37,7 +34,7 @@ public class UserResource {
     @RolesAllowed({"ADMIN"})
     @GET
     public Response findAllUsers(
-            @QueryParam("startsWith") @DefaultValue("") String startsWith
+        @QueryParam("startsWith") @DefaultValue("") String startsWith
     ) {
         try {
             UserFiltersDTOForm filters = new UserFiltersDTOForm(startsWith);
@@ -91,8 +88,8 @@ public class UserResource {
     public Response login(AuthRequest authRequest) {
         try {
             return Response.ok(userService.login(authRequest)).build();
-        } catch (UnathorizedLoginMessage e) {
-            return Response.ok(e).status(Response.Status.UNAUTHORIZED).build();
+        } catch (InvalidLoginException e) {
+            return Response.ok(new InvalidLoginResponse()).status(Response.Status.UNAUTHORIZED).build();
         } catch (GenerateTokenExcepetion e) {
             return Response.ok(e).status(Response.Status.INTERNAL_SERVER_ERROR).build();
         } catch (NoResultException e) {
@@ -104,8 +101,9 @@ public class UserResource {
     @PUT
     @Path("/{userId}")
     public Response updateUser(
-            @PathParam("userId") UUID userId,
-            @Valid UserDTOForm userDTOForm) {
+        @PathParam("userId") UUID userId,
+        @Valid UserDTOForm userDTOForm
+    ) {
         try {
             UserDTOView userDTOView = userService.updateUser(userId, userDTOForm);
             return Response.ok(userDTOView).build();

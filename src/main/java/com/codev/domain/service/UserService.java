@@ -8,7 +8,7 @@ import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
-import com.codev.domain.exceptions.users.UnathorizedLoginMessage;
+import com.codev.domain.exceptions.users.InvalidLoginException;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.exceptions.users.UserHasAdminRoleException;
 import com.codev.domain.model.Role;
@@ -43,7 +43,7 @@ public class UserService {
 
         DtoTransformer<User, UserDTOView> transformer = new DtoTransformer<>();
         List<UserDTOView> userDTOList = transformer.transformToDTOList(users, UserDTOView.class);
-        
+
         return userDTOList;
     }
 
@@ -118,18 +118,18 @@ public class UserService {
     }
 
     @Transactional
-    public AuthResponse login(AuthRequest authRequest) throws GenerateTokenExcepetion, UnathorizedLoginMessage {
+    public AuthResponse login(AuthRequest authRequest) throws GenerateTokenExcepetion, InvalidLoginException {
         User user = userRepository.findByUsername(authRequest.username);
         String passwordEncode = passwordEncoder.encode(authRequest.password);
 
-        if (user != null && user.getPassword().equals(passwordEncode)) {
+        if (user != null && passwordEncode.equals(user.getPassword())) {
             try {
                 return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
             } catch (Exception e) {
                 throw new GenerateTokenExcepetion();
             }
         } else {
-            throw new UnathorizedLoginMessage();
+            throw new InvalidLoginException();
         }
     }
 
