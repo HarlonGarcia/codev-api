@@ -94,12 +94,9 @@ public class ChallengeResource {
 
     @RolesAllowed({"USER"})
     @POST
-    @Path("{challengeId}/solutions")
-    public Response createSolution(
-            @PathParam("challengeId") UUID challengeId,
-            @Valid SolutionDTOForm solutionDTOForm
-    ) {
-        return Response.ok(solutionService.createSolution(challengeId, solutionDTOForm)).build();
+    @Path("/solutions")
+    public Response createSolution(@Valid SolutionDTOForm solutionDTOForm) {
+        return Response.ok(solutionService.createSolution(solutionDTOForm)).build();
     }
 
     @RolesAllowed({"USER"})
