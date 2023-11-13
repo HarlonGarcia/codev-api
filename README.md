@@ -13,7 +13,12 @@ $ git clone https://github.com/HarlonGarcia/codev-api.git && cd codev-api
 
 ## Requirements, dependencies and execution
 
-...
+You will need to have installed on your machine to run the project:
+- [Docker](https://docs.docker.com/get-docker/)
+
+```bash
+$ docker compose up -d
+```
 
 ## Contributors ✨
 
