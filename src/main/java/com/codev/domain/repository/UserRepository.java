@@ -14,4 +14,6 @@ public interface UserRepository {
 
     User findById(UUID userId);
 
+    void createUser(User user);
+
 }

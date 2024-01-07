@@ -60,21 +60,37 @@ public class UserService {
     public AuthResponse createUser(UserDTOForm userDTOForm) throws GenerateTokenExcepetion {
 
         try {
+            initializeRoles();
+
             User user = new User(userDTOForm);
             user.setPassword(passwordEncoder.encode(userDTOForm.getPassword()));
 
-            Role role = new Role("USER");
-            role.setId(GlobalConstants.USER_ROLE_ID);
+            Role userRole = new Role("USER");
+            userRole.setId(GlobalConstants.USER_ROLE_ID);
 
-            user.getRoles().add(role);
-            user.persist();
+            user.getRoles().add(userRole);
+
+            userRepository.createUser(user);
+            roleRepository.addUserRoleInUser(user.getId());
 
             return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
 
         } catch (Exception e) {
-            throw new IllegalStateException();
+            throw new IllegalStateException(e);
         }
+    }
 
+    public void initializeRoles() {
+        if (Role.count() == 0) {
+            Role userRole = new Role("USER");
+            userRole.setId(GlobalConstants.USER_ROLE_ID);
+
+            Role userAdmin = new Role("ADMIN");
+            userRole.setId(GlobalConstants.ADMIN_ROLE_ID);
+
+            roleRepository.createRole(userRole);
+            roleRepository.createRole(userAdmin);
+        }
     }
 
     @Transactional

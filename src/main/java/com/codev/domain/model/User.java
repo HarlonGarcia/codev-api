@@ -55,6 +55,7 @@ public class User extends PanacheEntityBase {
     private List<Role> roles;
 
     public User(UserDTOForm userDTOForm) {
+        this.id = UUID.randomUUID();
         this.name = userDTOForm.getName();
         this.email = userDTOForm.getEmail();
         this.password = userDTOForm.getPassword();
