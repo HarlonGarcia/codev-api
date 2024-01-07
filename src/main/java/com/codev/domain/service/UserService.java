@@ -7,7 +7,7 @@ import com.codev.api.security.token.TokenUtils;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
-import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
+import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.InvalidLoginException;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.exceptions.users.UserHasAdminRoleException;
@@ -56,8 +56,17 @@ public class UserService {
         return user;
     }
 
+    public User findByEmail(String email) throws UserDeactivatedException {
+        User user = userRepository.findByEmail(email);
+
+        if (!user.isActive())
+            throw new UserDeactivatedException();
+
+        return user;
+    }
+
     @Transactional
-    public AuthResponse createUser(UserDTOForm userDTOForm) throws GenerateTokenExcepetion {
+    public AuthResponse createUser(UserDTOForm userDTOForm) throws GenerateTokenException {
 
         try {
             initializeRoles();
@@ -140,8 +149,8 @@ public class UserService {
     }
 
     @Transactional
-    public AuthResponse login(AuthRequest authRequest) throws GenerateTokenExcepetion, InvalidLoginException {
-        User user = userRepository.findByUsername(authRequest.username);
+    public AuthResponse login(AuthRequest authRequest) throws GenerateTokenException, InvalidLoginException {
+        User user = userRepository.findByEmail(authRequest.username);
         String passwordEncode = passwordEncoder.encode(authRequest.password);
 
         if (user != null && passwordEncode.equals(user.getPassword())) {

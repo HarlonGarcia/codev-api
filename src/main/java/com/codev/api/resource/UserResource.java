@@ -5,9 +5,8 @@ import com.codev.api.security.auth.AuthResponse;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
-import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
+import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.*;
-import com.codev.domain.model.User;
 import com.codev.domain.service.UserService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -47,18 +46,6 @@ public class UserResource {
         }
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
-    @GET
-    @Path("/{userId}")
-    public Response findUserById(@PathParam("userId") UUID userId) {
-        try {
-            User user = userService.findUserById(userId);
-            return Response.ok(new UserDTOView(user)).build();
-        } catch (UserDeactivatedException | EntityNotFoundException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
-        }
-    }
-
     @PermitAll
     @POST
     public Response createUser(@Valid UserDTOForm userDTOForm) {
@@ -91,7 +78,7 @@ public class UserResource {
             return Response.ok(userService.login(authRequest)).build();
         } catch (InvalidLoginException e) {
             return Response.ok(new InvalidLoginResponse()).status(Response.Status.UNAUTHORIZED).build();
-        } catch (GenerateTokenExcepetion e) {
+        } catch (GenerateTokenException e) {
             return Response.ok(e).status(Response.Status.INTERNAL_SERVER_ERROR).build();
         } catch (NoResultException e) {
             return Response.ok(new UserDoesNotExistResponse()).status(Response.Status.NOT_FOUND).build();

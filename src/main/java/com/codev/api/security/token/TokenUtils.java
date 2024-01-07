@@ -1,7 +1,6 @@
 package com.codev.api.security.token;
 
-import com.codev.api.security.auth.AuthResponse;
-import com.codev.domain.exceptions.token.GenerateTokenExcepetion;
+import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.model.Role;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
@@ -19,7 +18,7 @@ public class TokenUtils {
 
     public static final long TOKEN_DURATION = 86400;
 
-    public static String generateToken(String username, List<Role> roles) throws GenerateTokenExcepetion {
+    public static String generateToken(String username, List<Role> roles) throws GenerateTokenException {
         try {
             String privateKeyLocation = "/privatekey.pem";
             PrivateKey privateKey = readPrivateKey(privateKeyLocation);
@@ -38,7 +37,7 @@ public class TokenUtils {
             return claimsBuilder.jws().keyId(privateKeyLocation).sign(privateKey);
 
         } catch (Exception e) {
-            throw new GenerateTokenExcepetion();
+            throw new GenerateTokenException();
         }
     }
 

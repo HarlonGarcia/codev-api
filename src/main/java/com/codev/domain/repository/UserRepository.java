@@ -10,7 +10,7 @@ public interface UserRepository {
 
     List<User> findAllUsers(UserFiltersDTOForm filters);
 
-    User findByUsername(String email);
+    User findByEmail(String email);
 
     User findById(UUID userId);
 
