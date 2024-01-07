@@ -3,15 +3,15 @@ package com.codev.domain.exceptions.token;
 import lombok.Data;
 
 @Data
-public class GenerateTokenExcepetion extends Exception {
+public class GenerateTokenException extends Exception {
 
     private String message;
 
-    public GenerateTokenExcepetion() {
+    public GenerateTokenException() {
         this.message = "Token generation failed";
     }
 
-    public GenerateTokenExcepetion(String message) {
+    public GenerateTokenException(String message) {
         this.message = message;
     }
 
