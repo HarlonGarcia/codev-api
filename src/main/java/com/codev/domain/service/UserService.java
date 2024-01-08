@@ -94,11 +94,11 @@ public class UserService {
             Role userRole = new Role("USER");
             userRole.setId(GlobalConstants.USER_ROLE_ID);
 
-            Role userAdmin = new Role("ADMIN");
-            userRole.setId(GlobalConstants.ADMIN_ROLE_ID);
+            Role adminRole = new Role("ADMIN");
+            adminRole.setId(GlobalConstants.ADMIN_ROLE_ID);
 
             roleRepository.createRole(userRole);
-            roleRepository.createRole(userAdmin);
+            roleRepository.createRole(adminRole);
         }
     }
 
