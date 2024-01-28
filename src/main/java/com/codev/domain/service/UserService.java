@@ -160,7 +160,13 @@ public class UserService {
         }
     }
 
+    @Transactional
     public boolean followUser(UUID followedId, UUID followerId) {
         return userRepository.followUser(followedId, followerId);
+    }
+
+    @Transactional
+    public boolean unfollowUser(UUID followedId, UUID followerId) {
+        return userRepository.unfollowUser(followedId, followerId);
     }
 }

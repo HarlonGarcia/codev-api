@@ -8,7 +8,7 @@ public class UserIsAlreadyBeingFollowedResponse {
     private final String message;
 
     public UserIsAlreadyBeingFollowedResponse(){
-        this.message = "User is already being followed";
+        this.message = "User is already being followed.";
     }
 
     public UserIsAlreadyBeingFollowedResponse(String message){

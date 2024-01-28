@@ -135,8 +135,6 @@ public class UserRepositoryImpl implements UserRepository {
                 statement.setObject(1, followedId);
                 statement.setObject(2, followerId);
 
-                statement.executeUpdate();
-
                 int rowsAffected = statement.executeUpdate();
                 // Successful insertion
                 return rowsAffected > 0;
@@ -148,6 +146,24 @@ public class UserRepositoryImpl implements UserRepository {
             } else {
                 throw new RuntimeException(e); // Another type of exception
             }
+        }
+    }
+
+    @Override
+    public boolean unfollowUser(UUID followedId, UUID followerId) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "DELETE FROM tb_follow_user WHERE followed_id = ? AND follower_id = ?";
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setObject(1, followedId);
+                statement.setObject(2, followerId);
+
+                int rowsAffected = statement.executeUpdate();
+                // Successful deletion
+                return rowsAffected > 0;
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
     }
 

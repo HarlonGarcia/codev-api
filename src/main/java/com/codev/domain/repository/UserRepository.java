@@ -18,4 +18,6 @@ public interface UserRepository {
 
     boolean followUser(UUID followedId, UUID followerId);
 
+    boolean unfollowUser(UUID followedId, UUID followerId);
+
 }
