@@ -46,6 +46,31 @@ public class UserResource {
         }
     }
 
+    @RolesAllowed({"USER"})
+    @POST
+    @Path("followers/{followedId}")
+    public Response followUser(
+        @PathParam("followedId") UUID followedId,
+        @HeaderParam("X-User-ID") UUID followerId
+    ) {
+        try {
+            boolean followed = userService.followUser(followedId, followerId);
+
+            if (followed) {
+                return Response.ok().build();
+            } else {
+                return Response.ok(new UserIsAlreadyBeingFollowedResponse())
+                    .status(Response.Status.BAD_REQUEST)
+                    .build();
+            }
+
+        } catch (Exception e) {
+            return Response.ok(e.getMessage())
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
+                .build();
+        }
+    }
+
     @PermitAll
     @POST
     public Response createUser(@Valid UserDTOForm userDTOForm) {

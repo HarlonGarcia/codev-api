@@ -16,4 +16,6 @@ public interface UserRepository {
 
     void createUser(User user);
 
+    boolean followUser(UUID followedId, UUID followerId);
+
 }

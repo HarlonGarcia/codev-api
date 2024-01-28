@@ -160,4 +160,7 @@ public class UserService {
         }
     }
 
+    public boolean followUser(UUID followedId, UUID followerId) {
+        return userRepository.followUser(followedId, followerId);
+    }
 }

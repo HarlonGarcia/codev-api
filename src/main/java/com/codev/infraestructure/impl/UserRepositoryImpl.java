@@ -125,4 +125,30 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @Override
+    public boolean followUser(UUID followedId, UUID followerId) {
+        try (Connection connection = dataSource.getConnection()) {
+            String sql = "INSERT INTO tb_follow_user " +
+                "(followed_id, follower_id) VALUES (?, ?)";
+
+            try (PreparedStatement statement = connection.prepareStatement(sql)) {
+                statement.setObject(1, followedId);
+                statement.setObject(2, followerId);
+
+                statement.executeUpdate();
+
+                int rowsAffected = statement.executeUpdate();
+                // Successful insertion
+                return rowsAffected > 0;
+            }
+        } catch (SQLException e) {
+            // If the exception is related to a unique key violation, it means that the user is already being followed.
+            if (e.getMessage().contains("duplicate key value violates unique constraint \"tb_follow_user_pkey\"")) {
+                return false; // Aleady being followed.
+            } else {
+                throw new RuntimeException(e); // Another type of exception
+            }
+        }
+    }
+
 }
