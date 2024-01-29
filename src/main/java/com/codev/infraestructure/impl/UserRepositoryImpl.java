@@ -167,4 +167,18 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
+    @Override
+    public List<User> findAllfollowedUsers(UUID followerId) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+
+        Root<User> userRoot = criteriaQuery.from(User.class);
+        Join<User, User> followUserJoin = userRoot.join("usersFollowed");
+
+        criteriaQuery.select(followUserJoin)
+            .where(criteriaBuilder.equal(followUserJoin.get("id"), followerId));
+
+        return entityManager.createQuery(criteriaQuery).getResultList();
+    }
+
 }

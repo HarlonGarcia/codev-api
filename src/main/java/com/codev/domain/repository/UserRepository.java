@@ -20,4 +20,6 @@ public interface UserRepository {
 
     boolean unfollowUser(UUID followedId, UUID followerId);
 
+    List<User> findAllfollowedUsers(UUID followerId);
+
 }

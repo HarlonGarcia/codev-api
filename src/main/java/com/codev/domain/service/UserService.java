@@ -47,6 +47,15 @@ public class UserService {
         return userDTOList;
     }
 
+    public List<UserDTOView> findAllfollowedUsers(UUID followerId) {
+        List<User> users = userRepository.findAllfollowedUsers(followerId);
+
+        DtoTransformer<User, UserDTOView> transformer = new DtoTransformer<>();
+        List<UserDTOView> userDTOList = transformer.transformToDTOList(users, UserDTOView.class);
+
+        return userDTOList;
+    }
+
     public User findUserById(UUID userId) throws UserDeactivatedException {
         User user = userRepository.findById(userId);
 
@@ -63,6 +72,11 @@ public class UserService {
             throw new UserDeactivatedException();
 
         return user;
+    }
+
+    @Transactional
+    public boolean followUser(UUID followedId, UUID followerId) {
+        return userRepository.followUser(followedId, followerId);
     }
 
     @Transactional
@@ -158,11 +172,6 @@ public class UserService {
         } else {
             throw new InvalidLoginException();
         }
-    }
-
-    @Transactional
-    public boolean followUser(UUID followedId, UUID followerId) {
-        return userRepository.followUser(followedId, followerId);
     }
 
     @Transactional
