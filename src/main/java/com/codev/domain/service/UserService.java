@@ -38,13 +38,17 @@ public class UserService {
 
     private final PBKDF2Encoder passwordEncoder;
 
-    public List<UserDTOView> findAllUsers(UserFiltersDTOForm filters) {
-        List<User> users = userRepository.findAllUsers(filters);
+    public List<UserDTOView> findAllUsers(UserFiltersDTOForm filters, Integer page, Integer size) {
+        List<User> users = userRepository.findAllUsers(filters, page, size);
 
         DtoTransformer<User, UserDTOView> transformer = new DtoTransformer<>();
         List<UserDTOView> userDTOList = transformer.transformToDTOList(users, UserDTOView.class);
 
         return userDTOList;
+    }
+
+    public List<UserDTOView> findAllFollowedUsers(UUID followerId, Integer page, Integer size) {
+        return userRepository.findAllFollowedUsers(followerId, page, size);
     }
 
     public User findUserById(UUID userId) throws UserDeactivatedException {
@@ -63,6 +67,11 @@ public class UserService {
             throw new UserDeactivatedException();
 
         return user;
+    }
+
+    @Transactional
+    public boolean followUser(UUID followedId, UUID followerId) {
+        return userRepository.followUser(followedId, followerId);
     }
 
     @Transactional
@@ -160,4 +169,8 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public boolean unfollowUser(UUID followedId, UUID followerId) {
+        return userRepository.unfollowUser(followedId, followerId);
+    }
 }

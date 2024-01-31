@@ -31,18 +31,66 @@ public class UserResource {
 
     private final UserService userService;
 
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({"USER"})
     @GET
     public Response findAllUsers(
-        @QueryParam("startsWith") @DefaultValue("") String startsWith
+        @QueryParam("startsWith") @DefaultValue("") String startsWith,
+        @QueryParam("page") Integer page,
+        @QueryParam("size") Integer size
     ) {
+        page = page != null ? page : 0;
+        size = size != null ? size : 10;
+
         try {
             UserFiltersDTOForm filters = new UserFiltersDTOForm(startsWith);
-            List<UserDTOView> users = userService.findAllUsers(filters);
+            List<UserDTOView> users = userService.findAllUsers(filters, page, size);
+            return Response.ok(users).build();
+        } catch (Exception e) {
+            return Response.ok(e).status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
+    @RolesAllowed({"USER"})
+    @GET
+    @Path("followed")
+    public Response findAllFollowedUsers(
+        @HeaderParam("X-User-ID") UUID followerId,
+        @QueryParam("page") Integer page,
+        @QueryParam("size") Integer size
+    ) {
+        page = page != null ? page : 0;
+        size = size != null ? size : 10;
+
+        try {
+            List<UserDTOView> users = userService.findAllFollowedUsers(followerId, page, size);
             return Response.ok(users).build();
         } catch (Exception error) {
-            error.printStackTrace();
             return Response.ok(error).status(Response.Status.BAD_REQUEST).build();
+        }
+    }
+
+    @RolesAllowed({"USER"})
+    @POST
+    @Path("followed/{followedId}")
+    public Response followUser(
+        @PathParam("followedId") UUID followedId,
+        @HeaderParam("X-User-ID") UUID followerId
+    ) {
+        try {
+            boolean followed = userService.followUser(followedId, followerId);
+
+            if (followed) {
+                return Response.ok().build();
+            } else {
+                return Response.ok(new UserIsAlreadyBeingFollowedResponse())
+                    .status(Response.Status.BAD_REQUEST)
+                    .build();
+            }
+
+        } catch (Exception e) {
+            return Response.ok(e.getMessage())
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
+                .build();
         }
     }
 
@@ -117,6 +165,31 @@ public class UserResource {
         } catch (Exception e) {
             e.printStackTrace();
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).build();
+        }
+    }
+
+    @RolesAllowed({"USER"})
+    @DELETE
+    @Path("followed/{followedId}")
+    public Response unfollowUser(
+        @PathParam("followedId") UUID followedId,
+        @HeaderParam("X-User-ID") UUID followerId
+    ) {
+        try {
+            boolean unfollowed = userService.unfollowUser(followedId, followerId);
+
+            if (unfollowed) {
+                return Response.ok().build();
+            } else {
+                return Response.ok(new UserHasAlreadyUnfollowedResponse())
+                    .status(Response.Status.BAD_REQUEST)
+                    .build();
+            }
+
+        } catch (Exception e) {
+            return Response.ok(e.getMessage())
+                .status(Response.Status.INTERNAL_SERVER_ERROR)
+                .build();
         }
     }
 }
