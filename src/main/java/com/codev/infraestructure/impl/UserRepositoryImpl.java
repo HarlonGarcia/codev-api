@@ -1,6 +1,9 @@
 package com.codev.infraestructure.impl;
 
 import com.codev.domain.dto.form.UserFiltersDTOForm;
+import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.model.FollowUser;
+import com.codev.domain.model.Label;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
@@ -58,6 +61,51 @@ public class UserRepositoryImpl implements UserRepository {
 
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
+    }
+
+    public List<UserDTOView> findAllFollowedUsers(UUID followerId, Integer page, Integer size) {
+
+        if (page < 0) {
+            throw new IllegalArgumentException("Page must be a positive integer.");
+        }
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<UserDTOView> query = criteriaBuilder.createQuery(UserDTOView.class);
+
+        Root<User> userRoot = query.from(User.class);
+        Join<User, FollowUser> followJoin = userRoot.join("usersFollowed", JoinType.LEFT);
+
+        Predicate followedCondition = criteriaBuilder.equal(followJoin.get("id"), followerId);
+
+        Expression<Object> isFollowedExpression = criteriaBuilder.selectCase()
+            .when(followedCondition, criteriaBuilder.literal(true))
+            .otherwise(criteriaBuilder.literal(false));
+
+        query.select(
+            criteriaBuilder.construct(
+                UserDTOView.class,
+                userRoot.get("id"),
+                userRoot.get("name"),
+                userRoot.get("email"),
+                userRoot.get("githubUrl"),
+                userRoot.get("additionalUrl"),
+                userRoot.get("createdAt"),
+                userRoot.get("updatedAt"),
+                isFollowedExpression.alias("following")
+            )
+        );
+
+        query.where(
+            followedCondition,
+            criteriaBuilder.equal(userRoot.get("active"), GlobalConstants.ACTIVE)
+        );
+
+        int firstResult = page * size;
+
+        return entityManager.createQuery(query)
+            .setFirstResult(firstResult)
+            .setMaxResults(size)
+            .getResultList();
     }
 
     @Override
@@ -165,20 +213,6 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    @Override
-    public List<User> findAllfollowedUsers(UUID followerId) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
-
-        Root<User> userRoot = criteriaQuery.from(User.class);
-        Join<User, User> followUserJoin = userRoot.join("usersFollowed");
-
-        criteriaQuery.select(followUserJoin)
-            .where(criteriaBuilder.equal(followUserJoin.get("id"), followerId));
-
-        return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
 }

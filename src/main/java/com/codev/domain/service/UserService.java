@@ -47,13 +47,8 @@ public class UserService {
         return userDTOList;
     }
 
-    public List<UserDTOView> findAllfollowedUsers(UUID followerId) {
-        List<User> users = userRepository.findAllfollowedUsers(followerId);
-
-        DtoTransformer<User, UserDTOView> transformer = new DtoTransformer<>();
-        List<UserDTOView> userDTOList = transformer.transformToDTOList(users, UserDTOView.class);
-
-        return userDTOList;
+    public List<UserDTOView> findAllFollowedUsers(UUID followerId, Integer page, Integer size) {
+        return userRepository.findAllFollowedUsers(followerId, page, size);
     }
 
     public User findUserById(UUID userId) throws UserDeactivatedException {

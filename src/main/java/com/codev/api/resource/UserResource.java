@@ -48,9 +48,16 @@ public class UserResource {
     @RolesAllowed({"USER"})
     @GET
     @Path("followed")
-    public Response findAllfollowedUsers(@HeaderParam("X-User-ID") UUID followerId) {
+    public Response findAllFollowedUsers(
+        @HeaderParam("X-User-ID") UUID followerId,
+        @QueryParam("page") Integer page,
+        @QueryParam("size") Integer size
+    ) {
+        page = page != null ? page : 0;
+        size = size != null ? size : 10;
+
         try {
-            List<UserDTOView> users = userService.findAllfollowedUsers(followerId);
+            List<UserDTOView> users = userService.findAllFollowedUsers(followerId, page, size);
             return Response.ok(users).build();
         } catch (Exception error) {
             return Response.ok(error).status(Response.Status.BAD_REQUEST).build();

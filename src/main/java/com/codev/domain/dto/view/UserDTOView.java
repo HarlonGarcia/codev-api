@@ -7,6 +7,8 @@ import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,9 +33,24 @@ public class UserDTOView {
 
     private Set<Role> roles;
 
+    private boolean following;
+
     public UserDTOView(User user) {
         DtoTransformer<User, UserDTOView> transform = new DtoTransformer<>();
         transform.copyProperties(user, this);
+    }
+
+    public UserDTOView(UUID id, String name, String email, String githubUrl, String additionalUrl,
+                       LocalDateTime createdAt, LocalDateTime updatedAt, boolean following
+    ) {
+        this.id = id;
+        this.name = name;
+        this.email = email;
+        this.githubUrl = githubUrl;
+        this.additionalUrl = additionalUrl;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.following = following;
     }
 
     public UserDTOView() {}

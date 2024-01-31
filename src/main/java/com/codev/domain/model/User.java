@@ -57,8 +57,8 @@ public class User extends PanacheEntityBase {
     @ManyToMany
     @JoinTable(
         name = "tb_follow_user",
-        joinColumns = @JoinColumn(name = "follower_id"),
-        inverseJoinColumns = @JoinColumn(name = "followed_id"))
+        joinColumns = @JoinColumn(name = "followed_id"),
+        inverseJoinColumns = @JoinColumn(name = "follower_id"))
     private Set<User> usersFollowed;
 
     public User(UserDTOForm userDTOForm) {
