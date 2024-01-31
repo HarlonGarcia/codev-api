@@ -9,7 +9,7 @@ services:
             - 5173:5173
 
     backend:
-        image: brenoduarte655/codev-api:2.0
+        image: brenoduarte655/codev-api:2.1
         restart: unless-stopped
         environment:
             DATABASE_URL: jdbc:postgresql://db:5432/codev-db
