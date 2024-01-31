@@ -9,7 +9,7 @@ import java.util.UUID;
 
 public interface UserRepository {
 
-    List<User> findAllUsers(UserFiltersDTOForm filters);
+    List<User> findAllUsers(UserFiltersDTOForm filters, Integer page, Integer size);
 
     List<UserDTOView> findAllFollowedUsers(UUID followerId, Integer page, Integer size);
 

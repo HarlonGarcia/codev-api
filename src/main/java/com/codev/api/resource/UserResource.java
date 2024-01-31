@@ -31,14 +31,19 @@ public class UserResource {
 
     private final UserService userService;
 
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({"USER"})
     @GET
     public Response findAllUsers(
-        @QueryParam("startsWith") @DefaultValue("") String startsWith
+        @QueryParam("startsWith") @DefaultValue("") String startsWith,
+        @QueryParam("page") Integer page,
+        @QueryParam("size") Integer size
     ) {
+        page = page != null ? page : 0;
+        size = size != null ? size : 10;
+
         try {
             UserFiltersDTOForm filters = new UserFiltersDTOForm(startsWith);
-            List<UserDTOView> users = userService.findAllUsers(filters);
+            List<UserDTOView> users = userService.findAllUsers(filters, page, size);
             return Response.ok(users).build();
         } catch (Exception e) {
             return Response.ok(e).status(Response.Status.BAD_REQUEST).build();

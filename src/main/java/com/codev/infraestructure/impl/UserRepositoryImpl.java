@@ -34,7 +34,12 @@ public class UserRepositoryImpl implements UserRepository {
     private final DataSource dataSource;
 
     @Override
-    public List<User> findAllUsers(UserFiltersDTOForm filters) {
+    public List<User> findAllUsers(UserFiltersDTOForm filters, Integer page, Integer size) {
+
+        if (page < 0) {
+            throw new IllegalArgumentException("Page must be a positive integer.");
+        }
+
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
 
@@ -59,8 +64,12 @@ public class UserRepositoryImpl implements UserRepository {
                 criteriaBuilder.asc(userRoot.get("id"))
         );
 
+        int firstResult = page * size;
+
         return entityManager.createQuery(criteriaQuery)
-                .getResultList();
+            .setFirstResult(firstResult)
+            .setMaxResults(size)
+            .getResultList();
     }
 
     public List<UserDTOView> findAllFollowedUsers(UUID followerId, Integer page, Integer size) {
