@@ -13,7 +13,7 @@ import java.util.UUID;
 
 public interface ChallengeRepository {
 
-    Set<Challenge> findAllChallengesWithPaging(
+    Set<Challenge> findAllChallengeWithPagingByCategoryId(
         Integer page, Integer size, UUID categoryId, OrderBy orderBy
     );
 

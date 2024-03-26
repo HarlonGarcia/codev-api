@@ -32,9 +32,9 @@ public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
 
-    public Set<ChallengeDTOView> findAllChallengesWithPaging(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
+    public Set<ChallengeDTOView> findAllChallengeWithPagingByCategoryId(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
         
-        return challengeRepository.findAllChallengesWithPaging(page, size, categoryId, orderBy)
+        return challengeRepository.findAllChallengeWithPagingByCategoryId(page, size, categoryId, orderBy)
             .stream()
             .map(ChallengeDTOView::new)
             .collect(Collectors.toSet());
