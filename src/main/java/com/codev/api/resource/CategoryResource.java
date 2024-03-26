@@ -3,6 +3,8 @@ package com.codev.api.resource;
 import com.codev.domain.dto.form.CategoryDTOForm;
 import com.codev.domain.dto.view.CategoryDTOView;
 import com.codev.domain.service.CategoryService;
+import io.quarkus.cache.CacheInvalidateAll;
+import io.quarkus.cache.CacheResult;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -23,8 +25,9 @@ public class CategoryResource {
 
     private final CategoryService categoryService;
 
-    @RolesAllowed({"ADMIN", "USER"})
     @GET
+    @CacheResult(cacheName = "category-cache")
+    @RolesAllowed({"ADMIN", "USER"})
     public Response findAllCategories() {
         List<CategoryDTOView> categories = categoryService.findAllCategories()
                 .stream().map(CategoryDTOView::new).toList();
@@ -32,14 +35,16 @@ public class CategoryResource {
         return Response.ok(categories).build();
     }
 
-    @RolesAllowed({"ADMIN"})
     @POST
+    @CacheInvalidateAll(cacheName = "category-cache")
+    @RolesAllowed({"ADMIN"})
     public Response createCategory(@Valid CategoryDTOForm categoryDTOForm) {
         return Response.ok(new CategoryDTOView(categoryService.createCategory(categoryDTOForm))).build();
     }
 
-    @RolesAllowed({"ADMIN"})
     @PUT
+    @CacheInvalidateAll(cacheName = "category-cache")
+    @RolesAllowed({"ADMIN"})
     @Path("/{categoryId}")
     public Response updateCategory(
             @PathParam("categoryId") UUID categoryId,
@@ -48,8 +53,9 @@ public class CategoryResource {
         return Response.ok(new CategoryDTOView(categoryService.updateCategory(categoryId, categoryDTOForm))).build();
     }
 
-    @RolesAllowed({"ADMIN"})
     @DELETE
+    @CacheInvalidateAll(cacheName = "category-cache")
+    @RolesAllowed({"ADMIN"})
     @Path("/{categoryId}")
     public Response deleteCategory(@PathParam("categoryId") UUID categoryId) {
         categoryService.deleteCategory(categoryId);
