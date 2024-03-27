@@ -3,6 +3,8 @@ package com.codev.api.resource;
 import com.codev.domain.dto.form.TechnologyDTOForm;
 import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.service.TechnologyService;
+import io.quarkus.cache.CacheInvalidateAll;
+import io.quarkus.cache.CacheResult;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -23,8 +25,9 @@ public class TechnologyResource {
 
     private final TechnologyService technologyService;
 
-    @RolesAllowed({"ADMIN", "USER"})
     @GET
+    @CacheResult(cacheName = "technology-cache")
+    @RolesAllowed({"ADMIN", "USER"})
     public Response findAllTechnologies() {
         List<TechnologyDTOView> technologies = technologyService.findAllTechnologies()
             .stream().map(TechnologyDTOView::new).toList();
@@ -32,15 +35,17 @@ public class TechnologyResource {
         return Response.ok(technologies).build();
     }
 
-    @RolesAllowed({"ADMIN"})
     @POST
+    @CacheInvalidateAll(cacheName = "technology-cache")
+    @RolesAllowed({"ADMIN"})
     public Response createTechnology(@Valid TechnologyDTOForm technologyDTOForm) {
         return Response.ok(new TechnologyDTOView(technologyService.createTechnology(technologyDTOForm))).build();
     }
 
-    @RolesAllowed({"ADMIN"})
     @PUT
-    @Path("/{technologyId}")
+    @CacheInvalidateAll(cacheName = "technology-cache")
+    @RolesAllowed({"ADMIN"})
+    @Path("{technologyId}")
     public Response updateTechnology(
             @PathParam("technologyId") UUID technologyId,
             @Valid TechnologyDTOForm technologyDTOForm
@@ -48,8 +53,8 @@ public class TechnologyResource {
         return Response.ok(new TechnologyDTOView(technologyService.updateTechnology(technologyId, technologyDTOForm))).build();
     }
 
-    @RolesAllowed({"ADMIN"})
     @DELETE
+    @RolesAllowed({"ADMIN"})
     @Path("/{technologyId}")
     public Response deleteTechnology(@PathParam("technologyId") UUID technologyId) {
         technologyService.deleteTechnology(technologyId);
