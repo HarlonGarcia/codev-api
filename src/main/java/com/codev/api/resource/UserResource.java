@@ -100,6 +100,7 @@ public class UserResource {
     @POST
     @CacheInvalidateAll(cacheName = "user-cache")
     @PermitAll
+    @Path("/signup")
     public Response createUser(@Valid UserDTOForm userDTOForm) {
         try {
             AuthResponse authResponse = userService.createUser(userDTOForm);
