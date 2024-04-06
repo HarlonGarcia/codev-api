@@ -25,6 +25,7 @@ public class TechnologyService {
     @Transactional
     public Technology createTechnology(TechnologyDTOForm technologyDTOForm) {
         Technology technology = new Technology(technologyDTOForm);
+
         technology.persist();
         return technology;
     }

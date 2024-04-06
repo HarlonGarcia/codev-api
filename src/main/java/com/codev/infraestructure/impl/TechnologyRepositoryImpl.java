@@ -34,7 +34,6 @@ public class TechnologyRepositoryImpl implements TechnologyRepository {
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
-
     @Override
     public void deleteTechnology(UUID technologyId) {
 

@@ -13,7 +13,11 @@ import com.codev.domain.model.Technology;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
+import io.quarkus.cache.Cache;
+import io.quarkus.cache.CacheName;
+import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +30,15 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static io.smallrye.mutiny.operators.uni.UniBlockingAwait.await;
+
 @ApplicationScoped
 @RequiredArgsConstructor
 public class ChallengeService {
+
+    @Inject
+    @CacheName("technology-cache")
+    Cache cache;
 
     private final ChallengeRepository challengeRepository;
 
@@ -68,8 +78,6 @@ public class ChallengeService {
         }
 
         Challenge challenge = getChallenge(challengeDTOForm, author);
-
-        // TODO - Implement the technologies in the challenge
 
         return new ChallengeDTOView(challenge);
     }
