@@ -9,7 +9,7 @@ import lombok.ToString;
 @ToString
 public class  AuthRequest {
 
-    public String username;
+    public String email;
 
     public String password;
 

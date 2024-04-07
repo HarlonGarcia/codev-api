@@ -18,10 +18,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
     post:
@@ -35,10 +35,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /categories/{categoryId}:
@@ -59,10 +59,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
     delete:
@@ -77,10 +77,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges:
@@ -122,10 +122,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges/solutions:
@@ -140,10 +140,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges/{challengeId}:
@@ -176,10 +176,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
     delete:
@@ -194,10 +194,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges/{challengeId}/categories:
@@ -213,10 +213,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges/{challengeId}/categories/{categoryId}:
@@ -237,10 +237,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges/{challengeId}/join-challenge:
@@ -260,10 +260,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges/{challengeId}/solutions:
@@ -293,10 +293,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges/{challengeId}/technologies:
@@ -312,10 +312,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /challenges/{challengeId}/unjoin-challenge:
@@ -335,10 +335,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /me:
@@ -370,10 +370,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /solutions/{solutionId}/add-like:
@@ -393,10 +393,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /solutions/{solutionId}/remove-like:
@@ -416,10 +416,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /technologies:
@@ -429,10 +429,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
     post:
@@ -446,10 +446,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /technologies/{technologyId}:
@@ -470,10 +470,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
     delete:
@@ -488,10 +488,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /users:
@@ -517,23 +517,12 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
-    post:
-      tags:
-      - User
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/UserDTOForm'
-      responses:
-        "200":
-          description: OK
   /users/followed:
     get:
       tags:
@@ -556,10 +545,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /users/followed/{followedId}:
@@ -579,10 +568,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
     delete:
@@ -601,10 +590,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /users/login:
@@ -616,6 +605,18 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/AuthRequest'
+      responses:
+        "200":
+          description: OK
+  /users/signup:
+    post:
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTOForm'
       responses:
         "200":
           description: OK
@@ -637,10 +638,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
     delete:
@@ -655,10 +656,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
   /users/{userId}/add-admin-role:
@@ -674,10 +675,10 @@ paths:
       responses:
         "200":
           description: OK
-        "401":
-          description: Not Authorized
         "403":
           description: Not Allowed
+        "401":
+          description: Not Authorized
       security:
       - SecurityScheme: []
 components:
@@ -685,7 +686,7 @@ components:
     AuthRequest:
       type: object
       properties:
-        username:
+        email:
           type: string
         password:
           type: string
@@ -765,6 +766,8 @@ components:
           pattern: \S
           type: string
         color:
+          maxLength: 6
+          minLength: 6
           pattern: \S
           type: string
     UUID:
@@ -793,5 +796,4 @@ components:
     SecurityScheme:
       type: http
       description: Authentication
-      scheme: bearer
-      bearerFormat: JWT
+      scheme: basic
