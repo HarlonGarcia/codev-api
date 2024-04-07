@@ -21,6 +21,7 @@ services:
             db:
                 condition: service_started
 
+#    access on localhost
     swagger-ui:
         image: swaggerapi/swagger-ui
         container_name: swagger_ui_container
