@@ -15,7 +15,7 @@ public class Category extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
 
     public Category(String name) {

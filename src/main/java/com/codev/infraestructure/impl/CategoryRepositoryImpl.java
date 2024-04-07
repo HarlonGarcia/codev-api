@@ -1,12 +1,16 @@
 package com.codev.infraestructure.impl;
 
 import com.codev.domain.model.Category;
+import com.codev.domain.model.Technology;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 import java.util.List;
@@ -46,6 +50,25 @@ public class CategoryRepositoryImpl implements CategoryRepository {
                 .setParameter("categoryId", categoryId)
                 .executeUpdate();
 
+    }
+
+    @Override
+    public boolean existsByName(String name) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Category> categoryRoot = criteriaQuery.from(Category.class);
+
+        Predicate namePredicate = criteriaBuilder.equal(categoryRoot.get("name"), name);
+        criteriaQuery.where(namePredicate);
+
+        criteriaQuery.select(criteriaBuilder.count(categoryRoot));
+
+        TypedQuery<Long> query = entityManager.createQuery(criteriaQuery);
+        try {
+            return query.getSingleResult() > 0;
+        } catch (NoResultException e) {
+            return false;
+        }
     }
 
 }

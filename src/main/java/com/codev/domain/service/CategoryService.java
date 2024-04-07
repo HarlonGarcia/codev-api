@@ -1,6 +1,9 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.CategoryDTOForm;
+import com.codev.domain.exceptions.global.ErrorResponse;
+import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
+import com.codev.domain.exceptions.global.Violation;
 import com.codev.domain.model.Category;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -22,7 +25,17 @@ public class CategoryService {
     }
 
     @Transactional
-    public Category createCategory(CategoryDTOForm categoryDTOForm) {
+    public Category createCategory(CategoryDTOForm categoryDTOForm) throws UniqueConstraintViolationException {
+        boolean categoryExists = categoryRepository.existsByName(categoryDTOForm.getName());
+        if (categoryExists) {
+            Violation violation = new Violation("createCategory.categoryDTOForm.name", "Unique constraint violation on a field that must be unique.");
+
+            ErrorResponse errorResponse =
+                new ErrorResponse(400, "Unique Constraint Violation", violation);
+
+            throw new UniqueConstraintViolationException(errorResponse);
+        }
+
         Category category = new Category(categoryDTOForm.getName());
         category.persist();
         return category;

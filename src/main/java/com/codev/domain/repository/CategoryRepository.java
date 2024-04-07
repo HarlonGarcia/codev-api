@@ -11,4 +11,5 @@ public interface CategoryRepository {
 
     void deleteCategory(UUID categoryId);
 
+    boolean existsByName(String name);
 }
