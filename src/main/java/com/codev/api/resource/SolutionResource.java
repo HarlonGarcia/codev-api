@@ -3,6 +3,7 @@ package com.codev.api.resource;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.service.SolutionService;
+import io.quarkus.cache.CacheInvalidateAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -22,8 +23,8 @@ public class SolutionResource {
 
     private final SolutionService solutionService;
 
-    @RolesAllowed({"USER"})
     @POST
+    @RolesAllowed({"USER"})
     @Path("/{solutionId}/add-like")
     public Response addLike(
             @PathParam("solutionId") UUID solutionId,
@@ -39,8 +40,9 @@ public class SolutionResource {
         }
     }
 
-    @RolesAllowed({"USER"})
     @DELETE
+    @CacheInvalidateAll(cacheName = "solution-cache")
+    @RolesAllowed({"USER"})
     @Path("/{solutionId}")
     public Response deleteSolution(
             @PathParam("solutionId") UUID solutionId,
@@ -55,8 +57,8 @@ public class SolutionResource {
         }
     }
 
-    @RolesAllowed({"USER"})
     @DELETE
+    @RolesAllowed({"USER"})
     @Path("/{solutionId}/remove-like")
     public Response removeLike(
             @PathParam("solutionId") UUID solutionId,

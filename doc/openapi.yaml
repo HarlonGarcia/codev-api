@@ -1,0 +1,799 @@
+---
+openapi: 3.0.3
+info:
+  title: codev-api API
+  version: 1.0.0-SNAPSHOT
+tags:
+- name: Category
+- name: Challenge
+- name: Me
+- name: Solution
+- name: Technology
+- name: User
+paths:
+  /categories:
+    get:
+      tags:
+      - Category
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+    post:
+      tags:
+      - Category
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryDTOForm'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /categories/{categoryId}:
+    put:
+      tags:
+      - Category
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryDTOForm'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - Category
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges:
+    get:
+      tags:
+      - Challenge
+      parameters:
+      - name: category
+        in: query
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: orderBy
+        in: query
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/OrderBy'
+          - default: ASC
+      - name: page
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      responses:
+        "200":
+          description: OK
+    post:
+      tags:
+      - Challenge
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChallengeDTOForm'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges/solutions:
+    post:
+      tags:
+      - Challenge
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SolutionDTOForm'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges/{challengeId}:
+    get:
+      tags:
+      - Challenge
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+      - Challenge
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ChallengeDTOForm'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - Challenge
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges/{challengeId}/categories:
+    delete:
+      tags:
+      - Challenge
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges/{challengeId}/categories/{categoryId}:
+    post:
+      tags:
+      - Challenge
+      parameters:
+      - name: categoryId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges/{challengeId}/join-challenge:
+    post:
+      tags:
+      - Challenge
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges/{challengeId}/solutions:
+    get:
+      tags:
+      - Challenge
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: page
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges/{challengeId}/technologies:
+    get:
+      tags:
+      - Challenge
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /challenges/{challengeId}/unjoin-challenge:
+    delete:
+      tags:
+      - Challenge
+      parameters:
+      - name: challengeId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /me:
+    get:
+      tags:
+      - Me
+      parameters:
+      - name: Access-Token
+        in: header
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+  /solutions/{solutionId}:
+    delete:
+      tags:
+      - Solution
+      parameters:
+      - name: solutionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /solutions/{solutionId}/add-like:
+    post:
+      tags:
+      - Solution
+      parameters:
+      - name: solutionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /solutions/{solutionId}/remove-like:
+    delete:
+      tags:
+      - Solution
+      parameters:
+      - name: solutionId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /technologies:
+    get:
+      tags:
+      - Technology
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+    post:
+      tags:
+      - Technology
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TechnologyDTOForm'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /technologies/{technologyId}:
+    put:
+      tags:
+      - Technology
+      parameters:
+      - name: technologyId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TechnologyDTOForm'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - Technology
+      parameters:
+      - name: technologyId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /users:
+    get:
+      tags:
+      - User
+      parameters:
+      - name: page
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: startsWith
+        in: query
+        schema:
+          default: ""
+          type: string
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /users/followed:
+    get:
+      tags:
+      - User
+      parameters:
+      - name: page
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: size
+        in: query
+        schema:
+          format: int32
+          type: integer
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /users/followed/{followedId}:
+    post:
+      tags:
+      - User
+      parameters:
+      - name: followedId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - User
+      parameters:
+      - name: followedId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      - name: X-User-ID
+        in: header
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /users/login:
+    post:
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AuthRequest'
+      responses:
+        "200":
+          description: OK
+  /users/signup:
+    post:
+      tags:
+      - User
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTOForm'
+      responses:
+        "200":
+          description: OK
+  /users/{userId}:
+    put:
+      tags:
+      - User
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserDTOForm'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+    delete:
+      tags:
+      - User
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+  /users/{userId}/add-admin-role:
+    post:
+      tags:
+      - User
+      parameters:
+      - name: userId
+        in: path
+        required: true
+        schema:
+          $ref: '#/components/schemas/UUID'
+      responses:
+        "200":
+          description: OK
+        "403":
+          description: Not Allowed
+        "401":
+          description: Not Authorized
+      security:
+      - SecurityScheme: []
+components:
+  schemas:
+    AuthRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    CategoryDTOForm:
+      required:
+      - name
+      type: object
+      properties:
+        name:
+          pattern: \S
+          type: string
+    ChallengeDTOForm:
+      required:
+      - title
+      - description
+      - authorId
+      - imageUrl
+      - categoryId
+      - status
+      type: object
+      properties:
+        title:
+          pattern: \S
+          type: string
+        description:
+          pattern: \S
+          type: string
+        authorId:
+          $ref: '#/components/schemas/UUID'
+        imageUrl:
+          pattern: \S
+          type: string
+        categoryId:
+          $ref: '#/components/schemas/UUID'
+        status:
+          $ref: '#/components/schemas/ChallengeStatus'
+    ChallengeStatus:
+      enum:
+      - TO_BEGIN
+      - IN_PROGRESS
+      - FINISHED
+      - CANCELED
+      type: string
+    OrderBy:
+      enum:
+      - ASC
+      - DESC
+      - LATEST
+      type: string
+    SolutionDTOForm:
+      required:
+      - challengeId
+      - authorId
+      - repositoryUrl
+      type: object
+      properties:
+        challengeId:
+          $ref: '#/components/schemas/UUID'
+        authorId:
+          $ref: '#/components/schemas/UUID'
+        repositoryUrl:
+          pattern: \S
+          type: string
+        deployUrl:
+          type: string
+    TechnologyDTOForm:
+      required:
+      - name
+      - documentationLink
+      - color
+      type: object
+      properties:
+        name:
+          pattern: \S
+          type: string
+        documentationLink:
+          pattern: \S
+          type: string
+        color:
+          maxLength: 6
+          minLength: 6
+          pattern: \S
+          type: string
+    UUID:
+      format: uuid
+      pattern: "[a-fA-F0-9]{8}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{4}-[a-fA-F0-9]{12}"
+      type: string
+    UserDTOForm:
+      required:
+      - name
+      - password
+      type: object
+      properties:
+        name:
+          pattern: \S
+          type: string
+        email:
+          type: string
+        password:
+          pattern: \S
+          type: string
+        githubUrl:
+          type: string
+        additionalUrl:
+          type: string
+  securitySchemes:
+    SecurityScheme:
+      type: http
+      description: Authentication
+      scheme: basic

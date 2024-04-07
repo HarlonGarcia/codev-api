@@ -17,13 +17,12 @@ public class Technology extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String name;
 
     @Column(name = "documentation_link")
     private String documentationLink;
 
-    @Size(min = 6, max = 6, message = "Color must be a valid 6-digit hexadecimal color.")
     @Column
     private String color;
 

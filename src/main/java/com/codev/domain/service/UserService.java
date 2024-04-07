@@ -159,7 +159,7 @@ public class UserService {
 
     @Transactional
     public AuthResponse login(AuthRequest authRequest) throws GenerateTokenException, InvalidLoginException {
-        User user = userRepository.findByEmail(authRequest.username);
+        User user = userRepository.findByEmail(authRequest.email);
         String passwordEncode = passwordEncoder.encode(authRequest.password);
 
         if (user != null && passwordEncode.equals(user.getPassword())) {

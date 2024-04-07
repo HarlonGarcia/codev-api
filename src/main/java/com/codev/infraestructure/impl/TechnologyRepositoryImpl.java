@@ -4,9 +4,12 @@ import com.codev.domain.model.Technology;
 import com.codev.domain.repository.TechnologyRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 
 import java.util.List;
@@ -34,7 +37,6 @@ public class TechnologyRepositoryImpl implements TechnologyRepository {
         return entityManager.createQuery(criteriaQuery)
                 .getResultList();
     }
-
     @Override
     public void deleteTechnology(UUID technologyId) {
 
@@ -49,5 +51,25 @@ public class TechnologyRepositoryImpl implements TechnologyRepository {
                 .executeUpdate();
 
     }
+
+    @Override
+    public boolean existsByName(String name) {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> criteriaQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Technology> technologyRoot = criteriaQuery.from(Technology.class);
+
+        Predicate namePredicate = criteriaBuilder.equal(technologyRoot.get("name"), name);
+        criteriaQuery.where(namePredicate);
+
+        criteriaQuery.select(criteriaBuilder.count(technologyRoot));
+
+        TypedQuery<Long> query = entityManager.createQuery(criteriaQuery);
+        try {
+            return query.getSingleResult() > 0;
+        } catch (NoResultException e) {
+            return false;
+        }
+    }
+
 
 }

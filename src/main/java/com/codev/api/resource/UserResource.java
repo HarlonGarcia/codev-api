@@ -8,6 +8,8 @@ import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.*;
 import com.codev.domain.service.UserService;
+import io.quarkus.cache.CacheInvalidateAll;
+import io.quarkus.cache.CacheResult;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,8 +33,9 @@ public class UserResource {
 
     private final UserService userService;
 
-    @RolesAllowed({"USER"})
     @GET
+    @CacheResult(cacheName = "user-cache")
+    @RolesAllowed({"USER"})
     public Response findAllUsers(
         @QueryParam("startsWith") @DefaultValue("") String startsWith,
         @QueryParam("page") Integer page,
@@ -69,8 +72,8 @@ public class UserResource {
         }
     }
 
-    @RolesAllowed({"USER"})
     @POST
+    @RolesAllowed({"USER"})
     @Path("followed/{followedId}")
     public Response followUser(
         @PathParam("followedId") UUID followedId,
@@ -94,8 +97,10 @@ public class UserResource {
         }
     }
 
-    @PermitAll
     @POST
+    @CacheInvalidateAll(cacheName = "user-cache")
+    @PermitAll
+    @Path("/signup")
     public Response createUser(@Valid UserDTOForm userDTOForm) {
         try {
             AuthResponse authResponse = userService.createUser(userDTOForm);
@@ -133,8 +138,9 @@ public class UserResource {
         }
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
     @PUT
+    @CacheInvalidateAll(cacheName = "user-cache")
+    @RolesAllowed({"ADMIN", "USER"})
     @Path("/{userId}")
     public Response updateUser(
         @PathParam("userId") UUID userId,
@@ -149,8 +155,9 @@ public class UserResource {
         }
     }
 
-    @RolesAllowed({"ADMIN", "USER"})
     @DELETE
+    @CacheInvalidateAll(cacheName = "user-cache")
+    @RolesAllowed({"ADMIN", "USER"})
     @Path("/{userId}")
     public Response deactivateUser(@PathParam("userId") UUID userId) {
         try {
@@ -168,8 +175,8 @@ public class UserResource {
         }
     }
 
-    @RolesAllowed({"USER"})
     @DELETE
+    @RolesAllowed({"USER"})
     @Path("followed/{followedId}")
     public Response unfollowUser(
         @PathParam("followedId") UUID followedId,

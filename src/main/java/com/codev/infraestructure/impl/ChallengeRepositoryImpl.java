@@ -137,7 +137,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public Set<Challenge> findAllChallengesWithPaging(
+    public Set<Challenge> findAllChallengeWithPagingByCategoryId(
         Integer page, Integer size, UUID categoryId, OrderBy orderBy
     ) {
         if (page < 0) {

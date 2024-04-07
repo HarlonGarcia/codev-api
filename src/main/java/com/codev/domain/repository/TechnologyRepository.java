@@ -9,5 +9,5 @@ public interface TechnologyRepository {
 
     List<Technology> findAllTechnologies();
     void deleteTechnology(UUID technologyId);
-
+    boolean existsByName(String name);
 }
