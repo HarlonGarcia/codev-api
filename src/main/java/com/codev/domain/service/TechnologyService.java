@@ -1,13 +1,19 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.TechnologyDTOForm;
+import com.codev.domain.exceptions.global.ErrorResponse;
+import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
+import com.codev.domain.exceptions.global.Violation;
 import com.codev.domain.model.Technology;
 import com.codev.domain.repository.TechnologyRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +29,17 @@ public class TechnologyService {
     }
 
     @Transactional
-    public Technology createTechnology(TechnologyDTOForm technologyDTOForm) {
+    public Technology createTechnology(TechnologyDTOForm technologyDTOForm) throws UniqueConstraintViolationException {
+        boolean technologyExists = technologyRepository.existsByName(technologyDTOForm.getName());
+        if (technologyExists) {
+            Violation violation = new Violation("createTechnology.technologyDTOForm.name", "Unique constraint violation on a field that must be unique.");
+
+            ErrorResponse errorResponse =
+                new ErrorResponse(400, "Unique Constraint Violation", violation);
+
+            throw new UniqueConstraintViolationException(errorResponse);
+        }
+
         Technology technology = new Technology(technologyDTOForm);
 
         technology.persist();
