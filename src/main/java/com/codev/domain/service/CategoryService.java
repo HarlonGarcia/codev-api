@@ -27,14 +27,8 @@ public class CategoryService {
     @Transactional
     public Category createCategory(CategoryDTOForm categoryDTOForm) throws UniqueConstraintViolationException {
         boolean categoryExists = categoryRepository.existsByName(categoryDTOForm.getName());
-        if (categoryExists) {
-            Violation violation = new Violation("createCategory.categoryDTOForm.name", "Unique constraint violation on a field that must be unique.");
-
-            ErrorResponse errorResponse =
-                new ErrorResponse(400, "Unique Constraint Violation", violation);
-
-            throw new UniqueConstraintViolationException(errorResponse);
-        }
+        if (categoryExists)
+            throw new UniqueConstraintViolationException("createCategory.categoryDTOForm.name");
 
         Category category = new Category(categoryDTOForm.getName());
         category.persist();

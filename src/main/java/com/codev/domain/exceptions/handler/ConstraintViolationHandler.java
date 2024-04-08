@@ -23,7 +23,7 @@ public class ConstraintViolationHandler implements ExceptionMapper<ConstraintVio
         }
 
         ErrorResponse errorResponse = new ErrorResponse(Response.Status.BAD_REQUEST.getStatusCode(),
-            "Constraint Violation", violations);
+            "constraint_violation", violations);
         return Response.status(Response.Status.BAD_REQUEST).entity(errorResponse).build();
     }
 }

@@ -31,14 +31,8 @@ public class TechnologyService {
     @Transactional
     public Technology createTechnology(TechnologyDTOForm technologyDTOForm) throws UniqueConstraintViolationException {
         boolean technologyExists = technologyRepository.existsByName(technologyDTOForm.getName());
-        if (technologyExists) {
-            Violation violation = new Violation("createTechnology.technologyDTOForm.name", "Unique constraint violation on a field that must be unique.");
-
-            ErrorResponse errorResponse =
-                new ErrorResponse(400, "Unique Constraint Violation", violation);
-
-            throw new UniqueConstraintViolationException(errorResponse);
-        }
+        if (technologyExists)
+            throw new UniqueConstraintViolationException("createTechnology.technologyDTOForm.name");
 
         Technology technology = new Technology(technologyDTOForm);
 
