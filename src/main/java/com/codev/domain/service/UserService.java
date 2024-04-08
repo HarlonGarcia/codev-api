@@ -135,7 +135,7 @@ public class UserService {
         User user = User.findById(userId);
 
         if (user == null)
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
 
         NullAwareBeanUtilsBean.getInstance().copyProperties(user, userDTOForm);
         user.setUpdatedAt(LocalDateTime.now());
@@ -149,7 +149,7 @@ public class UserService {
         User user = User.findById(userId);
 
         if (user == null)
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
         if (!user.isActive())
             throw new UserDeactivatedException();
 

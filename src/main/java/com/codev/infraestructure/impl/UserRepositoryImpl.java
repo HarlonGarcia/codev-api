@@ -152,7 +152,7 @@ public class UserRepositoryImpl implements UserRepository {
             return entityManager.createQuery(criteriaQuery)
                 .getSingleResult();
         } catch (NoResultException e) {
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
         }
     }
 

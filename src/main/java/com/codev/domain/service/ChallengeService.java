@@ -15,7 +15,6 @@ import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
-import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
@@ -29,8 +28,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
-
-import static io.smallrye.mutiny.operators.uni.UniBlockingAwait.await;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -71,7 +68,7 @@ public class ChallengeService {
         User author = User.findById(challengeDTOForm.getAuthorId());
 
         if (author == null)
-            throw new EntityNotFoundException("Author not found with id " + challengeDTOForm.getAuthorId());
+            throw new EntityNotFoundException(String.format("Author with id %s does not exist", challengeDTOForm.getAuthorId()));
 
         if (challengeDTOForm.getStatus() == null) {
             challengeDTOForm.setStatus(ChallengeStatus.TO_BEGIN);
@@ -91,7 +88,7 @@ public class ChallengeService {
             Category category = Category.findById(categoryId);
 
             if (category == null) {
-                throw new EntityNotFoundException("Category not found with id " + challengeDTOForm.getCategoryId());
+                throw new EntityNotFoundException(String.format("Category with id %s does not exist", challengeDTOForm.getCategoryId()));
             }
 
             challenge.setCategory(category);
@@ -111,7 +108,7 @@ public class ChallengeService {
         if (challengeDTOForm.getCategoryId() != null) {
             Category category = Category.findById(challengeDTOForm.getCategoryId());
             if (category == null)
-                throw new EntityNotFoundException("Category not found with id " + challengeDTOForm.getCategoryId());
+                throw new EntityNotFoundException(String.format("Category with id %s does not exist", challengeDTOForm.getCategoryId()));
 
             challenge.setCategory(category);
         }
@@ -146,7 +143,7 @@ public class ChallengeService {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
-            throw new EntityNotFoundException("Challenge not found with id " + challengeId);
+            throw new EntityNotFoundException(String.format("Challenge with id %s does not exist", challengeId));
 
         if (challenge.getCategory() != null)
             throw new CategoryAlreadyExistsInChallenge();
@@ -154,7 +151,7 @@ public class ChallengeService {
         Category category = Category.findById(categoryId);
 
         if (category == null)
-            throw new EntityNotFoundException("Category not found with id " + category);
+            throw new EntityNotFoundException(String.format("Challenge with id %s does not exist", challengeId));
 
         challengeRepository.addCategoryInChallenge(challengeId, categoryId);
 
@@ -167,7 +164,7 @@ public class ChallengeService {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
-            throw new EntityNotFoundException("Challenge not found with id " + challengeId);
+            throw new EntityNotFoundException(String.format("Challenge with id %s does not exist", challengeId));
 
         challengeRepository.removeCategoryInChallenge(challengeId);
 

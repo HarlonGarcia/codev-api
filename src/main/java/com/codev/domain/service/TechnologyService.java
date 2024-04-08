@@ -44,7 +44,7 @@ public class TechnologyService {
     public Technology updateTechnology(UUID technologyId, TechnologyDTOForm technologyDTOForm) {
         Technology technology = Technology.findById(technologyId);
         if (technology == null)
-            throw new EntityNotFoundException("Technology does not exist and therefore it was not possible to delete");
+            throw new EntityNotFoundException(String.format("Technology with id %s does not exist and therefore it was not possible to update", technologyId));
 
         technology = technology.copyProperties(technologyDTOForm);
         technology.persist();
@@ -55,7 +55,7 @@ public class TechnologyService {
     public void deleteTechnology(UUID technologyId) {
         Technology technology = Technology.findById(technologyId);
         if (technology == null)
-            throw new EntityNotFoundException("Technology does not exist and therefore it was not possible to delete");
+            throw new EntityNotFoundException(String.format("Technology with id %s does not exist and therefore it was not possible to delete", technologyId));
 
         technologyRepository.deleteTechnology(technologyId);
     }
