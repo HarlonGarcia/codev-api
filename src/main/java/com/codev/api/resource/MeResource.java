@@ -20,7 +20,7 @@ public class MeResource {
 
     @PermitAll
     @GET
-    public Response findMe(@HeaderParam("Access-Token") String token) throws Exception {
+    public Response findMe(@HeaderParam("Authorization") String token) throws Exception {
         if (token == null) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         } else {
