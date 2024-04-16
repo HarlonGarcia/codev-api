@@ -129,12 +129,12 @@ public class ChallengeService {
     }
 
     @Transactional
-    public boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException {
+    public boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException, SQLException {
         return challengeRepository.joinChallenge(challengeId, participantId);
     }
 
     @Transactional
-    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException {
+    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException, SQLException {
         return challengeRepository.unjoinChallenge(challengeId, participantId);
     }
 

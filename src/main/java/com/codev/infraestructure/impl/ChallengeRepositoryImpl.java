@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -107,7 +108,6 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     @Override
     public void addCategoryInChallenge(UUID challengeId, UUID categoryId) throws SQLException {
-        System.out.println("boramoreno");
         String sql = "UPDATE tb_challenge SET category_id = ? WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -118,7 +118,6 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             statement.executeUpdate();
 
         } catch (SQLException e) {
-            System.out.println("eeeeeeeeeeeeeeeeeepa");
             throw new SQLException("Unable to add category in challenge");
         }
     }
@@ -187,28 +186,18 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException {
-        String sql = "INSERT INTO tb_participant (challenge_id, participant_id) values (?, ?)";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-          
-            statement.setObject(1, challengeId);
-            statement.setObject(2, participantId);
-
-            int rowsInserted = statement.executeUpdate();
-            return rowsInserted > 0;
-
-        } catch (SQLException e) {
+    public boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException, SQLException {
+        if (!joinExists(challengeId, participantId)) {
+            return insertParticipant(challengeId, participantId);
+        } else {
             throw new JoinNotAcceptedException();
         }
     }
 
-    @Override
-    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException {
-
-        String sql = "DELETE FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
+    private boolean insertParticipant(UUID challengeId, UUID participantId) throws SQLException {
+        String insertParticipantQuery = "INSERT INTO tb_participant (challenge_id, participant_id) VALUES (?, ?)";
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(insertParticipantQuery)) {
 
             statement.setObject(1, challengeId);
             statement.setObject(2, participantId);
@@ -216,8 +205,42 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;
 
-        } catch (SQLException e) {
+        }
+    }
+
+    @Override
+    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException, SQLException {
+        if (joinExists(challengeId, participantId)) {
+            return deleteParticipant(challengeId, participantId);
+        } else {
             throw new UnjoinNotAcceptedException();
+        }
+    }
+
+    private boolean joinExists(UUID challengeId, UUID participantId) throws SQLException {
+        String joinExistsQuery = "SELECT COUNT(*) FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement checkStatement = connection.prepareStatement(joinExistsQuery)) {
+
+            checkStatement.setObject(1, challengeId);
+            checkStatement.setObject(2, participantId);
+
+            try (ResultSet resultSet = checkStatement.executeQuery()) {
+                return resultSet.next() && resultSet.getInt(1) > 0;
+            }
+        }
+    }
+
+    private boolean deleteParticipant(UUID challengeId, UUID participantId) throws SQLException {
+        String deleteParticipantQuery = "DELETE FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(deleteParticipantQuery)) {
+
+            statement.setObject(1, challengeId);
+            statement.setObject(2, participantId);
+
+            int rowsDeleted = statement.executeUpdate();
+            return rowsDeleted > 0;
         }
     }
 

@@ -6,7 +6,6 @@ import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
-import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
@@ -115,13 +114,9 @@ public class ChallengeResource {
     public Response joinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
-    ) {
-        try {
-            challengeService.joinChallenge(challengeId, participantId);
-            return Response.ok().build();
-        } catch (JoinNotAcceptedException e) {
-            return Response.ok(e).status(Response.Status.NOT_ACCEPTABLE).build();
-        }
+    ) throws SQLException {
+        challengeService.joinChallenge(challengeId, participantId);
+        return Response.ok().build();
     }
 
     @POST
@@ -159,13 +154,9 @@ public class ChallengeResource {
     public Response unjoinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
-    ) {
-        try {
-            challengeService.unjoinChallenge(challengeId, participantId);
-            return Response.ok().build();
-        } catch (UnjoinNotAcceptedException e) {
-            return Response.ok(e.getStackTrace()).status(Response.Status.NOT_ACCEPTABLE).build();
-        }
+    ) throws SQLException {
+        challengeService.unjoinChallenge(challengeId, participantId);
+        return Response.ok().build();
     }
 
     @DELETE
