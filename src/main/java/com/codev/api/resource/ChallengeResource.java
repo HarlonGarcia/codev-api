@@ -5,7 +5,7 @@ import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.enums.OrderBy;
-import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
+import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
@@ -120,7 +120,7 @@ public class ChallengeResource {
             challengeService.joinChallenge(challengeId, participantId);
             return Response.ok().build();
         } catch (JoinNotAcceptedException e) {
-            return Response.ok(e.getStackTrace()).status(Response.Status.NOT_ACCEPTABLE).build();
+            return Response.ok(e).status(Response.Status.NOT_ACCEPTABLE).build();
         }
     }
 
@@ -131,14 +131,10 @@ public class ChallengeResource {
     public Response addCategoryInChallenge(
             @PathParam("challengeId") UUID challengeId,
             @PathParam("categoryId") UUID categoryId
-    ) {
-        try {
-            Challenge challenge = challengeService.addCategoryInChallenge(challengeId, categoryId);
-            return Response.ok(new ChallengeDTOView(challenge)).build();
-
-        } catch (CategoryAlreadyExistsInChallenge | SQLException e) {
-            return Response.ok(e.getStackTrace()).status(Response.Status.BAD_REQUEST).build();
-        }
+    ) throws SQLException, CategoryExistsInChallengeException {
+        
+        Challenge challenge = challengeService.addCategoryInChallenge(challengeId, categoryId);
+        return Response.ok(new ChallengeDTOView(challenge)).build();
     }
 
     @PUT

@@ -4,7 +4,7 @@ import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.enums.OrderBy;
-import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
+import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Category;
@@ -139,14 +139,14 @@ public class ChallengeService {
     }
 
     @Transactional
-    public Challenge addCategoryInChallenge(UUID challengeId, UUID categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
+    public Challenge addCategoryInChallenge(UUID challengeId, UUID categoryId) throws CategoryExistsInChallengeException, SQLException {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
             throw new EntityNotFoundException(String.format("Challenge with id %s does not exist", challengeId));
 
         if (challenge.getCategory() != null)
-            throw new CategoryAlreadyExistsInChallenge();
+            throw new CategoryExistsInChallengeException();
 
         Category category = Category.findById(categoryId);
 

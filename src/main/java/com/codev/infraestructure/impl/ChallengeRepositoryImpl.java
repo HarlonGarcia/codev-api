@@ -107,6 +107,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     @Override
     public void addCategoryInChallenge(UUID challengeId, UUID categoryId) throws SQLException {
+        System.out.println("boramoreno");
         String sql = "UPDATE tb_challenge SET category_id = ? WHERE id = ?";
         try (Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql)) {
@@ -117,6 +118,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             statement.executeUpdate();
 
         } catch (SQLException e) {
+            System.out.println("eeeeeeeeeeeeeeeeeepa");
             throw new SQLException("Unable to add category in challenge");
         }
     }
