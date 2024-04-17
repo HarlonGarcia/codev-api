@@ -1,9 +1,12 @@
 package com.codev.api.security.token;
 
+import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.model.Role;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.ws.rs.core.Response;
 
 import java.io.InputStream;
 import java.security.KeyFactory;
@@ -14,9 +17,23 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@ApplicationScoped
 public class TokenUtils {
 
     public static final long TOKEN_DURATION = 86400;
+
+    public String getAccessToken(String authorizationHeader) {
+        if (authorizationHeader != null) {
+            if (authorizationHeader.startsWith("Bearer ")) {
+                String accessToken = authorizationHeader.substring("Bearer ".length()).trim();
+                return accessToken;
+            } else {
+                throw new IllegalArgumentException("The access token is not of type Bearer");
+            }
+        } else {
+            throw new IllegalArgumentException("Header authorization is null");
+        }
+    }
 
     public static String generateToken(String username, List<Role> roles) throws GenerateTokenException {
         try {
