@@ -1,6 +1,6 @@
 package com.codev.domain.model;
 
-import com.codev.domain.dto.form.ChallengeDTOForm;
+import com.codev.domain.dto.form.challenges.ChallengeDTOForm;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.utils.GlobalConstants;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -10,7 +10,6 @@ import lombok.Data;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Entity
@@ -47,17 +46,11 @@ public class Challenge extends PanacheEntityBase {
     private Category category;
 
     @ManyToMany
-    @JoinTable(name = "tb_challenge_technology",
-            joinColumns = @JoinColumn(name = "challenge_id"),
-            inverseJoinColumns = @JoinColumn(name = "technology_id")
-    )
-    private Set<Technology> technologies;
+    @JoinTable(name = "tb_challenge_technology", joinColumns = @JoinColumn(name = "challenge_id"), inverseJoinColumns = @JoinColumn(name = "technology_id"))
+    private List<Technology> technologies;
 
     @ManyToMany
-    @JoinTable(name = "tb_participant",
-            joinColumns = @JoinColumn(name = "challenge_id"),
-            inverseJoinColumns = @JoinColumn(name = "participant_id")
-    )
+    @JoinTable(name = "tb_participant", joinColumns = @JoinColumn(name = "challenge_id"), inverseJoinColumns = @JoinColumn(name = "participant_id"))
     @JsonBackReference
     private List<User> participants;
 
@@ -71,11 +64,13 @@ public class Challenge extends PanacheEntityBase {
         this.title = challengeDTOForm.getTitle();
         this.description = challengeDTOForm.getDescription();
         this.imageUrl = challengeDTOForm.getImageUrl();
+        this.technologies = challengeDTOForm.getTechnologies();
         this.active = GlobalConstants.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.endDate = createdAt.plusMonths(1);
         this.status = challengeDTOForm.getStatus();
     }
 
-    public Challenge(){}
+    public Challenge() {
+    }
 }

@@ -1,15 +1,15 @@
-package com.codev.domain.dto.form;
+package com.codev.domain.dto.form.challenges;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-
+import java.util.List;
 import java.util.UUID;
 
 import com.codev.domain.enums.ChallengeStatus;
 
 @Data
-public class ChallengeDTOForm {
+public class CreateChallengeDTOForm {
 
     @NotBlank
     private String title;
@@ -27,6 +27,8 @@ public class ChallengeDTOForm {
     private UUID categoryId;
 
     @NotNull
-    private ChallengeStatus status;
+    private List<UUID> technologies;
 
+    @NotNull
+    private ChallengeStatus status;
 }

@@ -1,7 +1,8 @@
 package com.codev.api.resource;
 
-import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.form.SolutionDTOForm;
+import com.codev.domain.dto.form.challenges.ChallengeDTOForm;
+import com.codev.domain.dto.form.challenges.CreateChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.enums.OrderBy;
@@ -40,7 +41,7 @@ public class ChallengeResource {
 
     private final SolutionService solutionService;
 
-    @RolesAllowed({"ADMIN", "USER"})
+    @RolesAllowed({ "ADMIN", "USER" })
     @GET
     @Path("/{challengeId}/technologies")
     public Response findAllTechnologiesByChallengeId(@PathParam("challengeId") UUID challengeId) {
@@ -54,12 +55,12 @@ public class ChallengeResource {
             @QueryParam("page") Integer page,
             @QueryParam("size") Integer size,
             @CacheKey @QueryParam("category") UUID categoryId,
-            @QueryParam("orderBy") @DefaultValue("ASC") OrderBy orderBy
-    ){
+            @QueryParam("orderBy") @DefaultValue("ASC") OrderBy orderBy) {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        Set<ChallengeDTOView> challenges = challengeService.findAllChallengeWithPagingByCategoryId(page, size, categoryId, orderBy);
+        Set<ChallengeDTOView> challenges = challengeService.findAllChallengeWithPagingByCategoryId(page, size,
+                categoryId, orderBy);
 
         return Response.ok(challenges).build();
     }
@@ -69,8 +70,7 @@ public class ChallengeResource {
     @PermitAll
     @Path("/{challengeId}")
     public Response findChallengeById(
-        @CacheKey @PathParam("challengeId") UUID challengeId
-    ) {
+            @CacheKey @PathParam("challengeId") UUID challengeId) {
         Challenge challenge = challengeService.findChallengeById(challengeId);
         ChallengeDTOView challengeDTOView = new ChallengeDTOView(challenge);
         return Response.ok(challengeDTOView).build();
@@ -78,44 +78,43 @@ public class ChallengeResource {
 
     @GET
     @CacheResult(cacheName = "solution-cache")
-    @RolesAllowed({"ADMIN", "USER"})
+    @RolesAllowed({ "ADMIN", "USER" })
     @Path("/{challengeId}/solutions")
     public Response findAllSolutionsByChallengeId(
             @CacheKey @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID userId,
             @QueryParam("page") Integer page,
-            @QueryParam("size") Integer size
-    ) {
+            @QueryParam("size") Integer size) {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<SolutionDTOView> solutions = solutionService.findAllSolutionsByChallengeId(challengeId, userId, page, size);
+        List<SolutionDTOView> solutions = solutionService.findAllSolutionsByChallengeId(challengeId, userId, page,
+                size);
         return Response.ok(solutions).build();
     }
 
     @POST
     @CacheInvalidateAll(cacheName = "challenge-cache")
-    @RolesAllowed({"ADMIN"})
-    public Response createChallenge(@Valid ChallengeDTOForm challengeDTOForm) {
-        ChallengeDTOView challengeDTOView = challengeService.createChallenge(challengeDTOForm);
+    @RolesAllowed({ "ADMIN" })
+    public Response createChallenge(@Valid CreateChallengeDTOForm challenge) {
+        ChallengeDTOView challengeDTOView = challengeService.createChallenge(challenge);
         return Response.ok(challengeDTOView).status(Response.Status.CREATED).build();
     }
 
     @POST
     @CacheInvalidateAll(cacheName = "solution-cache")
-    @RolesAllowed({"USER"})
+    @RolesAllowed({ "USER" })
     @Path("/solutions")
     public Response createSolution(@Valid SolutionDTOForm solutionDTOForm) {
         return Response.ok(solutionService.createSolution(solutionDTOForm)).build();
     }
 
     @POST
-    @RolesAllowed({"USER"})
+    @RolesAllowed({ "USER" })
     @Path("{challengeId}/join-challenge")
     public Response joinChallenge(
             @PathParam("challengeId") UUID challengeId,
-            @HeaderParam("X-User-ID") UUID participantId
-    ) {
+            @HeaderParam("X-User-ID") UUID participantId) {
         try {
             challengeService.joinChallenge(challengeId, participantId);
             return Response.ok().build();
@@ -125,13 +124,12 @@ public class ChallengeResource {
     }
 
     @POST
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ "ADMIN" })
     @CacheInvalidateAll(cacheName = "challenge-cache")
     @Path("/{challengeId}/categories/{categoryId}")
     public Response addCategoryInChallenge(
             @PathParam("challengeId") UUID challengeId,
-            @PathParam("categoryId") UUID categoryId
-    ) {
+            @PathParam("categoryId") UUID categoryId) {
         try {
             Challenge challenge = challengeService.addCategoryInChallenge(challengeId, categoryId);
             return Response.ok(new ChallengeDTOView(challenge)).build();
@@ -143,12 +141,11 @@ public class ChallengeResource {
 
     @PUT
     @CacheInvalidateAll(cacheName = "challenge-cache")
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ "ADMIN" })
     @Path("/{challengeId}")
     public Response updateChallenge(
             @PathParam("challengeId") UUID challengeId,
-            @Valid ChallengeDTOForm challengeDTOForm
-    ){
+            @Valid ChallengeDTOForm challengeDTOForm) {
         try {
             Challenge challenge = challengeService.updateChallenge(challengeId, challengeDTOForm);
             return Response.ok(new ChallengeDTOView(challenge)).build();
@@ -158,12 +155,11 @@ public class ChallengeResource {
     }
 
     @DELETE
-    @RolesAllowed({"USER"})
+    @RolesAllowed({ "USER" })
     @Path("{challengeId}/unjoin-challenge")
     public Response unjoinChallenge(
             @PathParam("challengeId") UUID challengeId,
-            @HeaderParam("X-User-ID") UUID participantId
-    ) {
+            @HeaderParam("X-User-ID") UUID participantId) {
         try {
             challengeService.unjoinChallenge(challengeId, participantId);
             return Response.ok().build();
@@ -174,17 +170,17 @@ public class ChallengeResource {
 
     @DELETE
     @CacheInvalidateAll(cacheName = "challenge-cache")
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ "ADMIN" })
     @Path("/{challengeId}")
-    public Response deactivateChallenge(@PathParam("challengeId") UUID challengeId){
+    public Response deactivateChallenge(@PathParam("challengeId") UUID challengeId) {
         challengeService.deactivateChallenge(challengeId);
         return Response.ok().build();
     }
 
     @DELETE
-    @RolesAllowed({"ADMIN"})
+    @RolesAllowed({ "ADMIN" })
     @Path("/{challengeId}/categories")
-    public Response removeCategoryInChallenge(@PathParam("challengeId") UUID challengeId){
+    public Response removeCategoryInChallenge(@PathParam("challengeId") UUID challengeId) {
         try {
             challengeService.removeCategoryInChallenge(challengeId);
             return Response.ok().build();

@@ -1,6 +1,7 @@
 package com.codev.domain.service;
 
-import com.codev.domain.dto.form.ChallengeDTOForm;
+import com.codev.domain.dto.form.challenges.ChallengeDTOForm;
+import com.codev.domain.dto.form.challenges.CreateChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.enums.OrderBy;
@@ -15,7 +16,6 @@ import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import io.quarkus.cache.Cache;
 import io.quarkus.cache.CacheName;
-import io.smallrye.mutiny.Uni;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
@@ -30,8 +30,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-import static io.smallrye.mutiny.operators.uni.UniBlockingAwait.await;
-
 @ApplicationScoped
 @RequiredArgsConstructor
 public class ChallengeService {
@@ -41,14 +39,15 @@ public class ChallengeService {
     Cache cache;
 
     private final ChallengeRepository challengeRepository;
+    private final TechnologyService technologyService;
 
-    public Set<ChallengeDTOView> findAllChallengeWithPagingByCategoryId(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
-        
+    public Set<ChallengeDTOView> findAllChallengeWithPagingByCategoryId(Integer page, Integer size, UUID categoryId,
+            OrderBy orderBy) {
+
         return challengeRepository.findAllChallengeWithPagingByCategoryId(page, size, categoryId, orderBy)
-            .stream()
-            .map(ChallengeDTOView::new)
-            .collect(Collectors.toSet());
-
+                .stream()
+                .map(ChallengeDTOView::new)
+                .collect(Collectors.toSet());
     }
 
     public Challenge findChallengeById(UUID challengeId) {
@@ -67,15 +66,23 @@ public class ChallengeService {
     }
 
     @Transactional
-    public ChallengeDTOView createChallenge(ChallengeDTOForm challengeDTOForm) {
-        User author = User.findById(challengeDTOForm.getAuthorId());
+    public ChallengeDTOView createChallenge(CreateChallengeDTOForm newChallenge) {
+        User author = User.findById(newChallenge.getAuthorId());
+        List<Technology> technologies = technologyService.findAllTechnologies();
+
+        List<Technology> challengeTechnologies = technologies.stream()
+                .filter(technology -> newChallenge.getTechnologies().contains(technology.getId()))
+                .collect(Collectors.toList());
 
         if (author == null)
-            throw new EntityNotFoundException("Author not found with id " + challengeDTOForm.getAuthorId());
+            throw new EntityNotFoundException("Author not found with id " + newChallenge.getAuthorId());
 
-        if (challengeDTOForm.getStatus() == null) {
-            challengeDTOForm.setStatus(ChallengeStatus.TO_BEGIN);
+        if (newChallenge.getStatus() == null) {
+            newChallenge.setStatus(ChallengeStatus.TO_BEGIN);
         }
+
+        ChallengeDTOForm challengeDTOForm = new ChallengeDTOForm(newChallenge);
+        challengeDTOForm.setTechnologies(challengeTechnologies);
 
         Challenge challenge = getChallenge(challengeDTOForm, author);
 
@@ -104,7 +111,8 @@ public class ChallengeService {
     }
 
     @Transactional
-    public Challenge updateChallenge(UUID challengeId, ChallengeDTOForm challengeDTOForm) throws InvocationTargetException, IllegalAccessException {
+    public Challenge updateChallenge(UUID challengeId, ChallengeDTOForm challengeDTOForm)
+            throws InvocationTargetException, IllegalAccessException {
         Challenge challenge = Challenge.findById(challengeId);
         BeanUtils.copyProperties(challenge, challengeDTOForm);
 
@@ -119,7 +127,7 @@ public class ChallengeService {
         challenge.persist();
         return challenge;
     }
-    
+
     @Transactional
     public void deactivateChallenge(UUID challengeId) {
         Challenge challenge = Challenge.findById(challengeId);
@@ -142,7 +150,8 @@ public class ChallengeService {
     }
 
     @Transactional
-    public Challenge addCategoryInChallenge(UUID challengeId, UUID categoryId) throws CategoryAlreadyExistsInChallenge, SQLException {
+    public Challenge addCategoryInChallenge(UUID challengeId, UUID categoryId)
+            throws CategoryAlreadyExistsInChallenge, SQLException {
         Challenge challenge = Challenge.findById(challengeId);
 
         if (challenge == null)
