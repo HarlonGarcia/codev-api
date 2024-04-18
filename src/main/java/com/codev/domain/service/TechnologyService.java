@@ -9,11 +9,8 @@ import com.codev.domain.repository.TechnologyRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -23,7 +20,6 @@ public class TechnologyService {
 
     private final TechnologyRepository technologyRepository;
 
-
     public List<Technology> findAllTechnologies() {
         return technologyRepository.findAllTechnologies();
     }
@@ -32,10 +28,10 @@ public class TechnologyService {
     public Technology createTechnology(TechnologyDTOForm technologyDTOForm) throws UniqueConstraintViolationException {
         boolean technologyExists = technologyRepository.existsByName(technologyDTOForm.getName());
         if (technologyExists) {
-            Violation violation = new Violation("createTechnology.technologyDTOForm.name", "Unique constraint violation on a field that must be unique.");
+            Violation violation = new Violation("createTechnology.technologyDTOForm.name",
+                    "Unique constraint violation on a field that must be unique.");
 
-            ErrorResponse errorResponse =
-                new ErrorResponse(400, "Unique Constraint Violation", violation);
+            ErrorResponse errorResponse = new ErrorResponse(400, "Unique Constraint Violation", violation);
 
             throw new UniqueConstraintViolationException(errorResponse);
         }
