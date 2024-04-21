@@ -10,6 +10,8 @@ import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -81,29 +83,31 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     @Override
     public Challenge findChallengeById(UUID challengeId) {
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
 
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
+            Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
 
-        Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
+            criteriaQuery.select(challengeRoot);
 
-        criteriaQuery.select(challengeRoot);
+            criteriaQuery.where(
+                criteriaBuilder.equal(challengeRoot.get("id"), challengeId),
+                criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE)
+            );
 
-        criteriaQuery.where(
-            criteriaBuilder.equal(challengeRoot.get("id"), challengeId),
-            criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE)
-        );
+            challengeRoot.fetch("author", JoinType.LEFT)
+                .fetch("labels", JoinType.LEFT);
+            challengeRoot.fetch("author", JoinType.LEFT)
+                .fetch("roles", JoinType.LEFT);
+            challengeRoot.fetch("technologies", JoinType.LEFT);
+            challengeRoot.fetch("category", JoinType.LEFT);
 
-        challengeRoot.fetch("author", JoinType.LEFT)
-            .fetch("labels", JoinType.LEFT);
-        challengeRoot.fetch("author", JoinType.LEFT)
-            .fetch("roles", JoinType.LEFT);
-        challengeRoot.fetch("technologies", JoinType.LEFT);
-        challengeRoot.fetch("category", JoinType.LEFT);
-
-        return entityManager.createQuery(criteriaQuery)
-            .getSingleResult();
-
+            return entityManager.createQuery(criteriaQuery)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException(String.format("Challenge with id %s not found", challengeId));
+        }
     }
 
     @Override

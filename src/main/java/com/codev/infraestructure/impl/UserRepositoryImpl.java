@@ -119,20 +119,24 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByEmail(String email) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
 
-        Root<User> userRoot = criteriaQuery.from(User.class);
-        userRoot.fetch("roles", JoinType.LEFT);
-        userRoot.fetch("labels", JoinType.LEFT);
+            Root<User> userRoot = criteriaQuery.from(User.class);
+            userRoot.fetch("roles", JoinType.LEFT);
+            userRoot.fetch("labels", JoinType.LEFT);
 
-        criteriaQuery.where(
+            criteriaQuery.where(
                 criteriaBuilder.equal(userRoot.get("email"), email),
                 criteriaBuilder.equal(userRoot.get("active"), GlobalConstants.ACTIVE)
-        );
+            );
 
-        return entityManager.createQuery(criteriaQuery)
+            return entityManager.createQuery(criteriaQuery)
                 .getSingleResult();
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException("usuario tantantan");
+        }
     }
 
     @Override

@@ -12,7 +12,7 @@ public class IllegalArgumentHandler implements ExceptionMapper<IllegalArgumentEx
 
     @Override
     public Response toResponse(IllegalArgumentException exception) {
-        ExceptionResponse response = null;
+        ExceptionResponse response;
 
         if (exception.getMessage() != null) {
              response = new ExceptionResponse(
