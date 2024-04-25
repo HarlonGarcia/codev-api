@@ -2,8 +2,8 @@ package com.codev.infraestructure.impl;
 
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.model.FollowUser;
-import com.codev.domain.model.Label;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
@@ -119,20 +119,24 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public User findByEmail(String email) {
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
 
-        Root<User> userRoot = criteriaQuery.from(User.class);
-        userRoot.fetch("roles", JoinType.LEFT);
-        userRoot.fetch("labels", JoinType.LEFT);
+            Root<User> userRoot = criteriaQuery.from(User.class);
+            userRoot.fetch("roles", JoinType.LEFT);
+            userRoot.fetch("labels", JoinType.LEFT);
 
-        criteriaQuery.where(
+            criteriaQuery.where(
                 criteriaBuilder.equal(userRoot.get("email"), email),
                 criteriaBuilder.equal(userRoot.get("active"), GlobalConstants.ACTIVE)
-        );
+            );
 
-        return entityManager.createQuery(criteriaQuery)
+            return entityManager.createQuery(criteriaQuery)
                 .getSingleResult();
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException(String.format("User with email %s does not exist", email));
+        }
     }
 
     @Override
@@ -152,7 +156,7 @@ public class UserRepositoryImpl implements UserRepository {
             return entityManager.createQuery(criteriaQuery)
                 .getSingleResult();
         } catch (NoResultException e) {
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
         }
     }
 
@@ -178,12 +182,12 @@ public class UserRepositoryImpl implements UserRepository {
                 statement.executeUpdate();
             }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new UniqueConstraintViolationException("createUser.User.email");
         }
     }
 
     @Override
-    public boolean followUser(UUID followedId, UUID followerId) {
+    public void followUser(UUID followedId, UUID followerId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "INSERT INTO tb_follow_user " +
                 "(followed_id, follower_id) VALUES (?, ?)";
@@ -192,22 +196,15 @@ public class UserRepositoryImpl implements UserRepository {
                 statement.setObject(1, followedId);
                 statement.setObject(2, followerId);
 
-                int rowsAffected = statement.executeUpdate();
-                // Successful insertion
-                return rowsAffected > 0;
+                statement.executeUpdate();
             }
         } catch (SQLException e) {
-            // If the exception is related to a unique key violation, it means that the user is already being followed.
-            if (e.getMessage().contains("duplicate key value violates unique constraint \"tb_follow_user_pkey\"")) {
-                return false; // Aleady being followed.
-            } else {
-                throw new RuntimeException(e); // Another type of exception
-            }
+            throw new RuntimeException(e);
         }
     }
 
     @Override
-    public boolean unfollowUser(UUID followedId, UUID followerId) {
+    public void unfollowUser(UUID followedId, UUID followerId) {
         try (Connection connection = dataSource.getConnection()) {
             String sql = "DELETE FROM tb_follow_user WHERE followed_id = ? AND follower_id = ?";
 
@@ -215,9 +212,7 @@ public class UserRepositoryImpl implements UserRepository {
                 statement.setObject(1, followedId);
                 statement.setObject(2, followerId);
 
-                int rowsAffected = statement.executeUpdate();
-                // Successful deletion
-                return rowsAffected > 0;
+                statement.executeUpdate();
             }
         } catch (SQLException e) {
             throw new RuntimeException(e);

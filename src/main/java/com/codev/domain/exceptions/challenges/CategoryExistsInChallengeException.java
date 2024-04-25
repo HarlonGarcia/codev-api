@@ -7,18 +7,19 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class JoinNotAcceptedException extends RuntimeException {
+public class CategoryExistsInChallengeException extends RuntimeException {
 
     private ExceptionResponse exceptionResponse;
 
-    public JoinNotAcceptedException() {
-        super("Join not accepted: The user has already given a join");
+    public CategoryExistsInChallengeException() {
+        super("Category already exists in challenge");
 
         this.exceptionResponse =
             new ExceptionResponse(
                 Response.Status.BAD_REQUEST.getStatusCode(),
-                "Join not accepted: The user has already given a join.",
+                "Category already exists in challenge",
                 ""
             );
     }
+
 }

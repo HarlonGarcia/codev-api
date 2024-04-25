@@ -5,6 +5,7 @@ import com.codev.api.security.auth.AuthResponse;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.*;
 import com.codev.domain.service.UserService;
@@ -12,8 +13,6 @@ import io.quarkus.cache.CacheInvalidateAll;
 import io.quarkus.cache.CacheResult;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.NoResultException;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -21,6 +20,7 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,13 +44,9 @@ public class UserResource {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        try {
-            UserFiltersDTOForm filters = new UserFiltersDTOForm(startsWith);
-            List<UserDTOView> users = userService.findAllUsers(filters, page, size);
-            return Response.ok(users).build();
-        } catch (Exception e) {
-            return Response.ok(e).status(Response.Status.BAD_REQUEST).build();
-        }
+        UserFiltersDTOForm filters = new UserFiltersDTOForm(startsWith);
+        List<UserDTOView> users = userService.findAllUsers(filters, page, size);
+        return Response.ok(users).build();
     }
 
     @RolesAllowed({"USER"})
@@ -64,12 +60,8 @@ public class UserResource {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        try {
-            List<UserDTOView> users = userService.findAllFollowedUsers(followerId, page, size);
-            return Response.ok(users).build();
-        } catch (Exception error) {
-            return Response.ok(error).status(Response.Status.BAD_REQUEST).build();
-        }
+        List<UserDTOView> users = userService.findAllFollowedUsers(followerId, page, size);
+        return Response.ok(users).build();
     }
 
     @POST
@@ -79,36 +71,17 @@ public class UserResource {
         @PathParam("followedId") UUID followedId,
         @HeaderParam("X-User-ID") UUID followerId
     ) {
-        try {
-            boolean followed = userService.followUser(followedId, followerId);
-
-            if (followed) {
-                return Response.ok().build();
-            } else {
-                return Response.ok(new UserIsAlreadyBeingFollowedResponse())
-                    .status(Response.Status.BAD_REQUEST)
-                    .build();
-            }
-
-        } catch (Exception e) {
-            return Response.ok(e.getMessage())
-                .status(Response.Status.INTERNAL_SERVER_ERROR)
-                .build();
-        }
+        userService.followUser(followedId, followerId);
+        return Response.ok(new UserIsAlreadyBeingFollowedResponse()).status(Response.Status.BAD_REQUEST).build();
     }
 
     @POST
     @CacheInvalidateAll(cacheName = "user-cache")
     @PermitAll
     @Path("/signup")
-    public Response createUser(@Valid UserDTOForm userDTOForm) {
-        try {
-            AuthResponse authResponse = userService.createUser(userDTOForm);
-            return Response.ok(authResponse).status(Response.Status.CREATED).build();
-
-        } catch (Exception e) {
-            return Response.ok(e).status(Response.Status.BAD_REQUEST).build();
-        }
+    public Response createUser(@Valid UserDTOForm userDTOForm) throws GenerateTokenException {
+        AuthResponse authResponse = userService.createUser(userDTOForm);
+        return Response.ok(authResponse).status(Response.Status.CREATED).build();
     }
 
     @RolesAllowed({"ADMIN"})
@@ -118,8 +91,14 @@ public class UserResource {
         try {
             UserDTOView userDTOView = userService.addAdminRoleInUser(userId);
             return Response.ok(userDTOView).build();
-        } catch (UserDeactivatedException | UserHasAdminRoleException e) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).entity(e.getMessage()).build();
+
+        } catch (UserDeactivatedException e) {
+            ExceptionResponse response = e.getExceptionResponse();
+            return Response.ok(response).status(response.getStatusCode()).build();
+
+        } catch (UserHasAdminRoleException e) {
+            ExceptionResponse response = e.getExceptionResponse();
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 
@@ -129,12 +108,10 @@ public class UserResource {
     public Response login(AuthRequest authRequest) {
         try {
             return Response.ok(userService.login(authRequest)).build();
+
         } catch (InvalidLoginException e) {
-            return Response.ok(new InvalidLoginResponse()).status(Response.Status.UNAUTHORIZED).build();
-        } catch (GenerateTokenException e) {
-            return Response.ok(e).status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        } catch (NoResultException e) {
-            return Response.ok(new UserDoesNotExistResponse()).status(Response.Status.NOT_FOUND).build();
+            ExceptionResponse response = e.getExceptionResponse();
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 
@@ -149,9 +126,15 @@ public class UserResource {
         try {
             UserDTOView userDTOView = userService.updateUser(userId, userDTOForm);
             return Response.ok(userDTOView).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.BAD_REQUEST).build();
+
+        } catch (InvocationTargetException | IllegalAccessException e) {
+            ExceptionResponse response = new ExceptionResponse(
+                Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                e.getMessage(),
+                ""
+            );
+
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 
@@ -163,15 +146,9 @@ public class UserResource {
         try {
             userService.deactivateUser(userId);
             return Response.status(Response.Status.OK.getStatusCode()).build();
-        } catch (EntityNotFoundException e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.NOT_FOUND.getStatusCode()).entity(e.getMessage()).build();
+
         } catch (UserDeactivatedException e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.NOT_ACCEPTABLE.getStatusCode()).entity(e.getMessage()).build();
-        } catch (Exception e) {
-            e.printStackTrace();
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR.getStatusCode()).build();
+            return Response.ok().status(Response.Status.NOT_ACCEPTABLE.getStatusCode()).build();
         }
     }
 
@@ -182,21 +159,7 @@ public class UserResource {
         @PathParam("followedId") UUID followedId,
         @HeaderParam("X-User-ID") UUID followerId
     ) {
-        try {
-            boolean unfollowed = userService.unfollowUser(followedId, followerId);
-
-            if (unfollowed) {
-                return Response.ok().build();
-            } else {
-                return Response.ok(new UserHasAlreadyUnfollowedResponse())
-                    .status(Response.Status.BAD_REQUEST)
-                    .build();
-            }
-
-        } catch (Exception e) {
-            return Response.ok(e.getMessage())
-                .status(Response.Status.INTERNAL_SERVER_ERROR)
-                .build();
-        }
+        userService.unfollowUser(followedId, followerId);
+        return Response.ok(new UserHasAlreadyUnfollowedResponse()).status(Response.Status.BAD_REQUEST).build();
     }
 }

@@ -345,11 +345,6 @@ paths:
     get:
       tags:
       - Me
-      parameters:
-      - name: Access-Token
-        in: header
-        schema:
-          type: string
       responses:
         "200":
           description: OK
@@ -684,11 +679,14 @@ paths:
 components:
   schemas:
     AuthRequest:
+      required:
+      - password
       type: object
       properties:
         email:
           type: string
         password:
+          pattern: \S
           type: string
     CategoryDTOForm:
       required:
@@ -796,4 +794,5 @@ components:
     SecurityScheme:
       type: http
       description: Authentication
-      scheme: basic
+      scheme: bearer
+      bearerFormat: JWT

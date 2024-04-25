@@ -5,9 +5,8 @@ import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.enums.OrderBy;
-import com.codev.domain.exceptions.challenges.CategoryAlreadyExistsInChallenge;
-import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
-import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
+import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
+import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
@@ -115,13 +114,9 @@ public class ChallengeResource {
     public Response joinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
-    ) {
-        try {
-            challengeService.joinChallenge(challengeId, participantId);
-            return Response.ok().build();
-        } catch (JoinNotAcceptedException e) {
-            return Response.ok(e.getStackTrace()).status(Response.Status.NOT_ACCEPTABLE).build();
-        }
+    ) throws SQLException {
+        challengeService.joinChallenge(challengeId, participantId);
+        return Response.ok().build();
     }
 
     @POST
@@ -136,8 +131,13 @@ public class ChallengeResource {
             Challenge challenge = challengeService.addCategoryInChallenge(challengeId, categoryId);
             return Response.ok(new ChallengeDTOView(challenge)).build();
 
-        } catch (CategoryAlreadyExistsInChallenge | SQLException e) {
-            return Response.ok(e.getStackTrace()).status(Response.Status.BAD_REQUEST).build();
+        } catch (CategoryExistsInChallengeException | SQLException e) {
+            ExceptionResponse response = new ExceptionResponse(
+                Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                e.getMessage(),
+                ""
+            );
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 
@@ -152,8 +152,14 @@ public class ChallengeResource {
         try {
             Challenge challenge = challengeService.updateChallenge(challengeId, challengeDTOForm);
             return Response.ok(new ChallengeDTOView(challenge)).build();
+
         } catch (InvocationTargetException | IllegalAccessException e) {
-            return Response.ok(e.getStackTrace()).status(Response.Status.BAD_REQUEST).build();
+            ExceptionResponse response = new ExceptionResponse(
+                Response.Status.BAD_REQUEST.getStatusCode(),
+                e.getMessage(),
+                ""
+            );
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 
@@ -167,8 +173,14 @@ public class ChallengeResource {
         try {
             challengeService.unjoinChallenge(challengeId, participantId);
             return Response.ok().build();
-        } catch (UnjoinNotAcceptedException e) {
-            return Response.ok(e.getStackTrace()).status(Response.Status.NOT_ACCEPTABLE).build();
+
+        } catch (SQLException e) {
+            ExceptionResponse response = new ExceptionResponse(
+                Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                e.getMessage(),
+                ""
+            );
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 
@@ -188,8 +200,14 @@ public class ChallengeResource {
         try {
             challengeService.removeCategoryInChallenge(challengeId);
             return Response.ok().build();
+
         } catch (SQLException e) {
-            return Response.ok(e.getStackTrace()).status(Response.Status.BAD_REQUEST).build();
+            ExceptionResponse response = new ExceptionResponse(
+                Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                e.getMessage(),
+                ""
+            );
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 

@@ -37,10 +37,10 @@ public class SolutionService {
         User author = User.findById(solutionDTOForm.getAuthorId());
 
         if (author == null)
-            throw new EntityNotFoundException("Author not found");
+            throw new EntityNotFoundException(String.format("Author with id %s does not exist", solutionDTOForm.getAuthorId()));
 
         if (challenge == null)
-            throw new EntityNotFoundException("Challenge not found");
+            throw new EntityNotFoundException(String.format("Challenge with id %s does not exist", solutionDTOForm.getChallengeId()));
 
         Solution solution = new Solution(solutionDTOForm);
         solution.setChallenge(challenge);

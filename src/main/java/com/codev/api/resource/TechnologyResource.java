@@ -55,7 +55,7 @@ public class TechnologyResource {
 
     @DELETE
     @RolesAllowed({"ADMIN"})
-    @Path("/{technologyId}")
+    @Path("{technologyId}")
     public Response deleteTechnology(@PathParam("technologyId") UUID technologyId) {
         technologyService.deleteTechnology(technologyId);
         return Response.ok().build();

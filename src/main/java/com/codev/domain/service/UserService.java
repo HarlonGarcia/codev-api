@@ -7,6 +7,7 @@ import com.codev.api.security.token.TokenUtils;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.InvalidLoginException;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
@@ -70,32 +71,26 @@ public class UserService {
     }
 
     @Transactional
-    public boolean followUser(UUID followedId, UUID followerId) {
-        return userRepository.followUser(followedId, followerId);
+    public void followUser(UUID followedId, UUID followerId) {
+        userRepository.followUser(followedId, followerId);
     }
 
     @Transactional
-    public AuthResponse createUser(UserDTOForm userDTOForm) throws GenerateTokenException {
+    public AuthResponse createUser(UserDTOForm userDTOForm) throws UniqueConstraintViolationException, GenerateTokenException {
+        initializeRoles();
 
-        try {
-            initializeRoles();
+        User user = new User(userDTOForm);
+        user.setPassword(passwordEncoder.encode(userDTOForm.getPassword()));
 
-            User user = new User(userDTOForm);
-            user.setPassword(passwordEncoder.encode(userDTOForm.getPassword()));
+        Role userRole = new Role("USER");
+        userRole.setId(GlobalConstants.USER_ROLE_ID);
 
-            Role userRole = new Role("USER");
-            userRole.setId(GlobalConstants.USER_ROLE_ID);
+        user.getRoles().add(userRole);
 
-            user.getRoles().add(userRole);
+        userRepository.createUser(user);
+        roleRepository.addUserRoleInUser(user.getId());
 
-            userRepository.createUser(user);
-            roleRepository.addUserRoleInUser(user.getId());
-
-            return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
-
-        } catch (Exception e) {
-            throw new IllegalStateException(e);
-        }
+        return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
     }
 
     public void initializeRoles() {
@@ -135,7 +130,7 @@ public class UserService {
         User user = User.findById(userId);
 
         if (user == null)
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
 
         NullAwareBeanUtilsBean.getInstance().copyProperties(user, userDTOForm);
         user.setUpdatedAt(LocalDateTime.now());
@@ -149,7 +144,7 @@ public class UserService {
         User user = User.findById(userId);
 
         if (user == null)
-            throw new EntityNotFoundException("User not found");
+            throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
         if (!user.isActive())
             throw new UserDeactivatedException();
 
@@ -158,7 +153,7 @@ public class UserService {
     }
 
     @Transactional
-    public AuthResponse login(AuthRequest authRequest) throws GenerateTokenException, InvalidLoginException {
+    public AuthResponse login(AuthRequest authRequest) throws InvalidLoginException {
         User user = userRepository.findByEmail(authRequest.email);
         String passwordEncode = passwordEncoder.encode(authRequest.password);
 
@@ -170,7 +165,7 @@ public class UserService {
     }
 
     @Transactional
-    public boolean unfollowUser(UUID followedId, UUID followerId) {
-        return userRepository.unfollowUser(followedId, followerId);
+    public void unfollowUser(UUID followedId, UUID followerId) {
+        userRepository.unfollowUser(followedId, followerId);
     }
 }

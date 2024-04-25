@@ -9,21 +9,21 @@ import java.util.List;
 public class ErrorResponse {
 
     private int status;
-    private String title;
+    private String type;
     private List<Violation> violations;
 
     public ErrorResponse() {
     }
 
-    public ErrorResponse(int status, String title, List<Violation> violations) {
+    public ErrorResponse(int status, String type, List<Violation> violations) {
         this.status = status;
-        this.title = title;
+        this.type = type;
         this.violations = violations;
     }
 
-    public ErrorResponse(int status, String title, Violation violation) {
+    public ErrorResponse(int status, String type, Violation violation) {
         this.status = status;
-        this.title = title;
+        this.type = type;
         this.violations = new ArrayList<>();
         addViolation(violation);
     }

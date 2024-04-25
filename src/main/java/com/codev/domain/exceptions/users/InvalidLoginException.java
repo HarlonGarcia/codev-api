@@ -1,21 +1,25 @@
 package com.codev.domain.exceptions.users;
 
+import com.codev.domain.exceptions.global.ExceptionResponse;
+import jakarta.ws.rs.core.Response;
+import lombok.Data;
+import lombok.Getter;
+
+@Getter
+@Data
 public class InvalidLoginException extends Exception {
 
+    private ExceptionResponse exceptionResponse;
+
     public InvalidLoginException() {
-        super("Username or password incorrect!");
-    }
+        super("Email or password is incorrect.");
 
-    public InvalidLoginException(String message) {
-        super(message);
-    }
-
-    public InvalidLoginException(String message, Throwable cause) {
-        super(message, cause);
-    }
-
-    public InvalidLoginException(Throwable cause) {
-        super("Username or password incorrect!", cause);
+        this.exceptionResponse =
+            new ExceptionResponse(
+                Response.Status.UNAUTHORIZED.getStatusCode(),
+                "Email or password is incorrect.",
+                ""
+            );
     }
 
 }

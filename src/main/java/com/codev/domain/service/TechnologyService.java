@@ -31,14 +31,8 @@ public class TechnologyService {
     @Transactional
     public Technology createTechnology(TechnologyDTOForm technologyDTOForm) throws UniqueConstraintViolationException {
         boolean technologyExists = technologyRepository.existsByName(technologyDTOForm.getName());
-        if (technologyExists) {
-            Violation violation = new Violation("createTechnology.technologyDTOForm.name", "Unique constraint violation on a field that must be unique.");
-
-            ErrorResponse errorResponse =
-                new ErrorResponse(400, "Unique Constraint Violation", violation);
-
-            throw new UniqueConstraintViolationException(errorResponse);
-        }
+        if (technologyExists)
+            throw new UniqueConstraintViolationException("createTechnology.technologyDTOForm.name");
 
         Technology technology = new Technology(technologyDTOForm);
 
@@ -50,7 +44,7 @@ public class TechnologyService {
     public Technology updateTechnology(UUID technologyId, TechnologyDTOForm technologyDTOForm) {
         Technology technology = Technology.findById(technologyId);
         if (technology == null)
-            throw new EntityNotFoundException("Technology does not exist and therefore it was not possible to delete");
+            throw new EntityNotFoundException(String.format("Technology with id %s does not exist and therefore it was not possible to update", technologyId));
 
         technology = technology.copyProperties(technologyDTOForm);
         technology.persist();
@@ -61,7 +55,7 @@ public class TechnologyService {
     public void deleteTechnology(UUID technologyId) {
         Technology technology = Technology.findById(technologyId);
         if (technology == null)
-            throw new EntityNotFoundException("Technology does not exist and therefore it was not possible to delete");
+            throw new EntityNotFoundException(String.format("Technology with id %s does not exist and therefore it was not possible to delete", technologyId));
 
         technologyRepository.deleteTechnology(technologyId);
     }

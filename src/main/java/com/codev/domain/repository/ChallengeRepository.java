@@ -17,9 +17,9 @@ public interface ChallengeRepository {
         Integer page, Integer size, UUID categoryId, OrderBy orderBy
     );
 
-    boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException;
+    boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException, SQLException;
 
-    boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException;
+    boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException, SQLException;
 
     Challenge findChallengeById(UUID challengeId);
 

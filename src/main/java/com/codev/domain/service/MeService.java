@@ -24,7 +24,7 @@ public class MeService {
 
     private final UserService userService;
 
-    public UserDTOView findMe(String token) throws Exception {
+    public UserDTOView findMe(String token) throws ExtractEmailFromTokenException, UserDeactivatedException {
 
         String email = extractEmail(token);
 

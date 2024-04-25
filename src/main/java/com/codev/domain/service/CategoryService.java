@@ -27,14 +27,8 @@ public class CategoryService {
     @Transactional
     public Category createCategory(CategoryDTOForm categoryDTOForm) throws UniqueConstraintViolationException {
         boolean categoryExists = categoryRepository.existsByName(categoryDTOForm.getName());
-        if (categoryExists) {
-            Violation violation = new Violation("createCategory.categoryDTOForm.name", "Unique constraint violation on a field that must be unique.");
-
-            ErrorResponse errorResponse =
-                new ErrorResponse(400, "Unique Constraint Violation", violation);
-
-            throw new UniqueConstraintViolationException(errorResponse);
-        }
+        if (categoryExists)
+            throw new UniqueConstraintViolationException("createCategory.categoryDTOForm.name");
 
         Category category = new Category(categoryDTOForm.getName());
         category.persist();
@@ -45,7 +39,7 @@ public class CategoryService {
     public Category updateCategory(UUID categoryId, CategoryDTOForm categoryDTOForm) {
         Category category = Category.findById(categoryId);
         if (category == null)
-            throw new EntityNotFoundException("Category does not exist and therefore it was not possible to delete");
+            throw new EntityNotFoundException(String.format("Category with id %s does not exist and therefore it was not possible to update", categoryId));
 
         category.setName(categoryDTOForm.getName());
         category.persist();
@@ -56,7 +50,7 @@ public class CategoryService {
     public void deleteCategory(UUID categoryId) {
         Category category = Category.findById(categoryId);
         if (category == null)
-            throw new EntityNotFoundException("Category does not exist and therefore it was not possible to delete");
+            throw new EntityNotFoundException(String.format("Category with id %s does not exist and therefore it was not possible to delete", categoryId));
 
         categoryRepository.deleteCategory(categoryId);
     }

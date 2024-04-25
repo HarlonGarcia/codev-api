@@ -10,6 +10,8 @@ import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +19,7 @@ import lombok.RequiredArgsConstructor;
 import javax.sql.DataSource;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -80,29 +83,31 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     @Override
     public Challenge findChallengeById(UUID challengeId) {
+        try {
+            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
 
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
+            Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
 
-        Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
+            criteriaQuery.select(challengeRoot);
 
-        criteriaQuery.select(challengeRoot);
+            criteriaQuery.where(
+                criteriaBuilder.equal(challengeRoot.get("id"), challengeId),
+                criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE)
+            );
 
-        criteriaQuery.where(
-            criteriaBuilder.equal(challengeRoot.get("id"), challengeId),
-            criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE)
-        );
+            challengeRoot.fetch("author", JoinType.LEFT)
+                .fetch("labels", JoinType.LEFT);
+            challengeRoot.fetch("author", JoinType.LEFT)
+                .fetch("roles", JoinType.LEFT);
+            challengeRoot.fetch("technologies", JoinType.LEFT);
+            challengeRoot.fetch("category", JoinType.LEFT);
 
-        challengeRoot.fetch("author", JoinType.LEFT)
-            .fetch("labels", JoinType.LEFT);
-        challengeRoot.fetch("author", JoinType.LEFT)
-            .fetch("roles", JoinType.LEFT);
-        challengeRoot.fetch("technologies", JoinType.LEFT);
-        challengeRoot.fetch("category", JoinType.LEFT);
-
-        return entityManager.createQuery(criteriaQuery)
-            .getSingleResult();
-
+            return entityManager.createQuery(criteriaQuery)
+                .getSingleResult();
+        } catch (NoResultException e) {
+            throw new EntityNotFoundException(String.format("Challenge with id %s not found", challengeId));
+        }
     }
 
     @Override
@@ -185,28 +190,18 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException {
-        String sql = "INSERT INTO tb_participant (challenge_id, participant_id) values (?, ?)";
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
-          
-            statement.setObject(1, challengeId);
-            statement.setObject(2, participantId);
-
-            int rowsInserted = statement.executeUpdate();
-            return rowsInserted > 0;
-
-        } catch (SQLException e) {
+    public boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException, SQLException {
+        if (!joinExists(challengeId, participantId)) {
+            return insertParticipant(challengeId, participantId);
+        } else {
             throw new JoinNotAcceptedException();
         }
     }
 
-    @Override
-    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException {
-
-        String sql = "DELETE FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
+    private boolean insertParticipant(UUID challengeId, UUID participantId) throws SQLException {
+        String insertParticipantQuery = "INSERT INTO tb_participant (challenge_id, participant_id) VALUES (?, ?)";
         try (Connection connection = dataSource.getConnection();
-             PreparedStatement statement = connection.prepareStatement(sql)) {
+             PreparedStatement statement = connection.prepareStatement(insertParticipantQuery)) {
 
             statement.setObject(1, challengeId);
             statement.setObject(2, participantId);
@@ -214,8 +209,42 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             int rowsInserted = statement.executeUpdate();
             return rowsInserted > 0;
 
-        } catch (SQLException e) {
+        }
+    }
+
+    @Override
+    public boolean unjoinChallenge(UUID challengeId, UUID participantId) throws UnjoinNotAcceptedException, SQLException {
+        if (joinExists(challengeId, participantId)) {
+            return deleteParticipant(challengeId, participantId);
+        } else {
             throw new UnjoinNotAcceptedException();
+        }
+    }
+
+    private boolean joinExists(UUID challengeId, UUID participantId) throws SQLException {
+        String joinExistsQuery = "SELECT COUNT(*) FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement checkStatement = connection.prepareStatement(joinExistsQuery)) {
+
+            checkStatement.setObject(1, challengeId);
+            checkStatement.setObject(2, participantId);
+
+            try (ResultSet resultSet = checkStatement.executeQuery()) {
+                return resultSet.next() && resultSet.getInt(1) > 0;
+            }
+        }
+    }
+
+    private boolean deleteParticipant(UUID challengeId, UUID participantId) throws SQLException {
+        String deleteParticipantQuery = "DELETE FROM tb_participant WHERE challenge_id = ? AND participant_id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(deleteParticipantQuery)) {
+
+            statement.setObject(1, challengeId);
+            statement.setObject(2, participantId);
+
+            int rowsDeleted = statement.executeUpdate();
+            return rowsDeleted > 0;
         }
     }
 
