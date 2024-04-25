@@ -2,6 +2,9 @@ package com.codev.api.resource;
 
 import com.codev.api.security.token.TokenUtils;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.exceptions.global.ExceptionResponse;
+import com.codev.domain.exceptions.token.ExtractEmailFromTokenException;
+import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.service.MeService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.*;
@@ -23,10 +26,19 @@ public class MeResource {
 
     @PermitAll
     @GET
-    public Response findMe(@HeaderParam("Authorization") String authorizationHeader) throws Exception {
-        String accessToken = tokenUtils.getAccessToken(authorizationHeader);
-        UserDTOView user = meService.findMe(accessToken);
-        return Response.status(Response.Status.OK).entity(user).build();
-    }
+    public Response findMe(@HeaderParam("Authorization") String token) {
+        try {
+            String accessToken = tokenUtils.getAccessToken(token);
+            UserDTOView user = meService.findMe(accessToken);
+            return Response.ok(user).build();
 
+        } catch (ExtractEmailFromTokenException e) {
+            ExceptionResponse response = e.getExceptionResponse();
+            return Response.ok(response).status(response.getStatusCode()).build();
+
+        } catch (UserDeactivatedException e) {
+            ExceptionResponse response = e.getExceptionResponse();
+            return Response.ok(response).status(response.getStatusCode()).build();
+        }
+    }
 }

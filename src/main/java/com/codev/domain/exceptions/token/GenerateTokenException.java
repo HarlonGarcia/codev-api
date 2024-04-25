@@ -1,18 +1,24 @@
 package com.codev.domain.exceptions.token;
 
+import com.codev.domain.exceptions.global.ExceptionResponse;
+import jakarta.ws.rs.core.Response;
 import lombok.Data;
+import lombok.Getter;
 
+@Getter
 @Data
-public class GenerateTokenException extends Exception {
+public class GenerateTokenException extends RuntimeException {
 
-    private String message;
+    private ExceptionResponse exceptionResponse;
 
     public GenerateTokenException() {
-        this.message = "Token generation failed";
-    }
+        super("Token generation failed.");
 
-    public GenerateTokenException(String message) {
-        this.message = message;
+        this.exceptionResponse =
+            new ExceptionResponse(
+                Response.Status.BAD_REQUEST.getStatusCode(),
+                "Token generation failed.",
+                ""
+            );
     }
-
 }

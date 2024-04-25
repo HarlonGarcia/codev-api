@@ -17,18 +17,16 @@ public class IllegalArgumentHandler implements ExceptionMapper<IllegalArgumentEx
         if (exception.getMessage() != null) {
              response = new ExceptionResponse(
                 Response.Status.BAD_REQUEST.getStatusCode(),
-                "Bad Request",
                 exception.getMessage(),
-                LocalDateTime.now()
+                 ""
             );
         } else {
             response = new ExceptionResponse(
                 Response.Status.BAD_REQUEST.getStatusCode(),
-                "Bad Request",
                 "IllegalArgumentException",
-                LocalDateTime.now()
+                ""
             );
         }
-        return Response.status(response.getStatus()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 }

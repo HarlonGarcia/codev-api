@@ -5,8 +5,6 @@ import jakarta.ws.rs.core.Response;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class UnjoinNotAcceptedException extends RuntimeException {
@@ -19,10 +17,8 @@ public class UnjoinNotAcceptedException extends RuntimeException {
         this.exceptionResponse =
             new ExceptionResponse(
                 Response.Status.BAD_REQUEST.getStatusCode(),
-                "Bad Request",
                 "Unjoin not accepted: The user has already unjoined the challenge",
-                LocalDateTime.now()
+                ""
             );
     }
-
 }

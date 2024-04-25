@@ -5,8 +5,6 @@ import jakarta.ws.rs.core.Response;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import java.time.LocalDateTime;
-
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class JoinNotAcceptedException extends RuntimeException {
@@ -19,10 +17,8 @@ public class JoinNotAcceptedException extends RuntimeException {
         this.exceptionResponse =
             new ExceptionResponse(
                 Response.Status.BAD_REQUEST.getStatusCode(),
-                "Bad Request",
                 "Join not accepted: The user has already given a join.",
-                LocalDateTime.now()
+                ""
             );
     }
-
 }

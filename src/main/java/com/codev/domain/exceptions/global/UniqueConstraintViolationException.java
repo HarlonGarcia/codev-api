@@ -8,13 +8,17 @@ import lombok.Getter;
 @Data
 public class UniqueConstraintViolationException extends RuntimeException {
 
-    private final ErrorResponse errorResponse;
+    private ExceptionResponse exceptionResponse;
 
-    public UniqueConstraintViolationException(String fieldName) {
+    public UniqueConstraintViolationException(String details) {
         super("Unique constraint violation on a field that must be unique.");
 
-        Violation violation = new Violation(fieldName, "Unique constraint violation on a field that must be unique.");
-        this.errorResponse = new ErrorResponse(Response.Status.BAD_REQUEST.getStatusCode(), "unique_constraint_violation", violation);
+        this.exceptionResponse =
+            new ExceptionResponse(
+            Response.Status.BAD_REQUEST.getStatusCode(),
+            "Unique constraint violation on a field that must be unique.",
+            details
+        );
     }
 
 }

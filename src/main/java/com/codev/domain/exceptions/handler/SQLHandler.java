@@ -5,7 +5,6 @@ import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.ext.ExceptionMapper;
 
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 
 public class SQLHandler implements ExceptionMapper<SQLException> {
     @Override
@@ -13,9 +12,8 @@ public class SQLHandler implements ExceptionMapper<SQLException> {
         ExceptionResponse response = new ExceptionResponse(
             Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
             "Internal Server Error",
-            exception.getMessage(),
-            LocalDateTime.now()
+            exception.getMessage()
         );
-        return Response.status(response.getStatus()).entity(response).build();
+        return Response.status(response.getStatusCode()).entity(response).build();
     }
 }

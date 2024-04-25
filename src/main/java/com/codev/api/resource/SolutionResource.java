@@ -1,5 +1,6 @@
 package com.codev.api.resource;
 
+import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.service.SolutionService;
@@ -11,7 +12,6 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import java.util.NoSuchElementException;
 import java.util.UUID;
 
 @Path("solutions")
@@ -35,6 +35,7 @@ public class SolutionResource {
                 return Response.status(Response.Status.BAD_REQUEST).entity("User ID not provided in the header.").build();
             }
             return Response.ok(solutionService.addLike(solutionId, userId)).build();
+
         } catch (LikeNotAcceptedException e) {
             return Response.status(Response.Status.NOT_ACCEPTABLE).build();
         }
@@ -51,8 +52,10 @@ public class SolutionResource {
         try {
             solutionService.deleteSolution(solutionId, authorId);
             return Response.ok().build();
-        } catch (NoSuchElementException | SolutionNotDeletedException e) {
-            return Response.status(Response.Status.NOT_FOUND).entity(e.getMessage()).build();
+
+        } catch (SolutionNotDeletedException e) {
+            ExceptionResponse response = e.getExceptionResponse();
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 
@@ -65,8 +68,10 @@ public class SolutionResource {
     ) {
         try {
             return Response.ok(solutionService.removeLike(solutionId, userId)).build();
+
         } catch (LikeNotAcceptedException e) {
-            return Response.status(Response.Status.NOT_ACCEPTABLE).build();
+            ExceptionResponse response = e.getExceptionResponse();
+            return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 

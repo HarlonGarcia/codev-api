@@ -35,7 +35,7 @@ public class TokenUtils {
         }
     }
 
-    public static String generateToken(String username, List<Role> roles) throws GenerateTokenException {
+    public static String generateToken(String username, List<Role> roles) {
         try {
             String privateKeyLocation = "/privatekey.pem";
             PrivateKey privateKey = readPrivateKey(privateKeyLocation);
