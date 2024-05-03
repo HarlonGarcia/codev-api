@@ -18,22 +18,22 @@ public class User extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(unique = true, nullable = false)
+    @Column(unique = true, length = 65, nullable = false)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 40)
     private String password;
 
     @Column(nullable = false)
     private boolean active;
 
-    @Column(name = "github_url")
+    @Column(name = "github_url", length = 150)
     private String githubUrl;
 
-    @Column(name = "additional_url")
+    @Column(name = "additional_url", length = 150)
     private String additionalUrl;
 
     @Column(name = "created_at", nullable = false)

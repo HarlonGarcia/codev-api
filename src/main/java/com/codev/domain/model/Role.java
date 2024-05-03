@@ -15,7 +15,7 @@ public class Role extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 15)
     private String name;
 
     public Role(String name) {

@@ -25,10 +25,10 @@ public class Solution extends PanacheEntityBase {
     @JoinColumn(name = "author_id", nullable = false)
     private User author;
 
-    @Column(name = "repository_url", nullable = false)
+    @Column(name = "repository_url", length = 150, nullable = false)
     private String repositoryUrl;
 
-    @Column(name = "deploy_url")
+    @Column(name = "deploy_url", length = 150)
     private String deployUrl;
 
     @ManyToMany
