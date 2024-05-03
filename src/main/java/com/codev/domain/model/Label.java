@@ -14,7 +14,7 @@ public class Label {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 30)
     private String title;
 
     @Column

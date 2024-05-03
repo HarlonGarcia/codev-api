@@ -22,7 +22,7 @@ public class Challenge extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String title;
 
     @ManyToOne
@@ -39,7 +39,7 @@ public class Challenge extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
-    @Column
+    @Column(length = 255)
     private String imageUrl;
 
     @ManyToOne

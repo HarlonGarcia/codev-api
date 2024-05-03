@@ -17,13 +17,13 @@ public class Technology extends PanacheEntityBase {
     @GeneratedValue
     public UUID id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 50)
     private String name;
 
-    @Column(name = "documentation_link")
+    @Column(name = "documentation_link", length = 150)
     private String documentationLink;
 
-    @Column
+    @Column(length = 6)
     private String color;
 
     public Technology(TechnologyDTOForm technologyDTOForm) {
