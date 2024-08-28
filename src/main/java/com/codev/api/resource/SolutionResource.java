@@ -4,7 +4,6 @@ import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.service.SolutionService;
-import io.quarkus.cache.CacheInvalidateAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
@@ -42,7 +41,6 @@ public class SolutionResource {
     }
 
     @DELETE
-    @CacheInvalidateAll(cacheName = "solution-cache")
     @RolesAllowed({"USER"})
     @Path("/{solutionId}")
     public Response deleteSolution(

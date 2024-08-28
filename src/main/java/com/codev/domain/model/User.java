@@ -2,12 +2,16 @@ package com.codev.domain.model;
 
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.utils.GlobalConstants;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 @Entity
 @Data
@@ -54,11 +58,13 @@ public class User extends PanacheEntityBase {
             inverseJoinColumns = @JoinColumn(name = "role_id"))
     private List<Role> roles;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
         name = "tb_follow_user",
         joinColumns = @JoinColumn(name = "followed_id"),
-        inverseJoinColumns = @JoinColumn(name = "follower_id"))
+        inverseJoinColumns = @JoinColumn(name = "follower_id")
+    )
+    @JsonIgnore
     private Set<User> usersFollowed;
 
     public User(UserDTOForm userDTOForm) {
