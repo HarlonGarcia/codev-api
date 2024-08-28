@@ -9,8 +9,6 @@ import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.*;
 import com.codev.domain.service.UserService;
-import io.quarkus.cache.CacheInvalidateAll;
-import io.quarkus.cache.CacheResult;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
@@ -34,7 +32,6 @@ public class UserResource {
     private final UserService userService;
 
     @GET
-    @CacheResult(cacheName = "user-cache")
     @RolesAllowed({"USER"})
     public Response findAllUsers(
         @QueryParam("startsWith") @DefaultValue("") String startsWith,
@@ -76,7 +73,6 @@ public class UserResource {
     }
 
     @POST
-    @CacheInvalidateAll(cacheName = "user-cache")
     @PermitAll
     @Path("/signup")
     public Response createUser(@Valid UserDTOForm userDTOForm) throws GenerateTokenException {
@@ -116,7 +112,6 @@ public class UserResource {
     }
 
     @PUT
-    @CacheInvalidateAll(cacheName = "user-cache")
     @RolesAllowed({"ADMIN", "USER"})
     @Path("/{userId}")
     public Response updateUser(
@@ -139,7 +134,6 @@ public class UserResource {
     }
 
     @DELETE
-    @CacheInvalidateAll(cacheName = "user-cache")
     @RolesAllowed({"ADMIN", "USER"})
     @Path("/{userId}")
     public Response deactivateUser(@PathParam("userId") UUID userId) {

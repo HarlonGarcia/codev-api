@@ -13,10 +13,7 @@ import com.codev.domain.model.Technology;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
-import io.quarkus.cache.Cache;
-import io.quarkus.cache.CacheName;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -32,10 +29,6 @@ import java.util.stream.Collectors;
 @ApplicationScoped
 @RequiredArgsConstructor
 public class ChallengeService {
-
-    @Inject
-    @CacheName("technology-cache")
-    Cache cache;
 
     private final ChallengeRepository challengeRepository;
 

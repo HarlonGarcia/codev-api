@@ -3,8 +3,6 @@ package com.codev.api.resource;
 import com.codev.domain.dto.form.TechnologyDTOForm;
 import com.codev.domain.dto.view.TechnologyDTOView;
 import com.codev.domain.service.TechnologyService;
-import io.quarkus.cache.CacheInvalidateAll;
-import io.quarkus.cache.CacheResult;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -26,8 +24,6 @@ public class TechnologyResource {
     private final TechnologyService technologyService;
 
     @GET
-    @CacheResult(cacheName = "technology-cache")
-    @RolesAllowed({"ADMIN", "USER"})
     public Response findAllTechnologies() {
         List<TechnologyDTOView> technologies = technologyService.findAllTechnologies()
             .stream().map(TechnologyDTOView::new).toList();
@@ -36,14 +32,12 @@ public class TechnologyResource {
     }
 
     @POST
-    @CacheInvalidateAll(cacheName = "technology-cache")
     @RolesAllowed({"ADMIN"})
     public Response createTechnology(@Valid TechnologyDTOForm technologyDTOForm) {
         return Response.ok(new TechnologyDTOView(technologyService.createTechnology(technologyDTOForm))).build();
     }
 
     @PUT
-    @CacheInvalidateAll(cacheName = "technology-cache")
     @RolesAllowed({"ADMIN"})
     @Path("{technologyId}")
     public Response updateTechnology(
