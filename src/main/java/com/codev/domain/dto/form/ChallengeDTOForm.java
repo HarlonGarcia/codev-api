@@ -20,7 +20,7 @@ public class ChallengeDTOForm {
     @NotNull
     private UUID authorId;
 
-    private List<ImageDTOForm> images;
+    private ImageDTOForm image;
 
     @NotNull
     private UUID categoryId;

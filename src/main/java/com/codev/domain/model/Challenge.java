@@ -40,12 +40,9 @@ public class Challenge extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
-    @ManyToMany
-    @JoinTable(name = "tb_challenge_image",
-        joinColumns = @JoinColumn(name = "challenge_id"),
-        inverseJoinColumns = @JoinColumn(name = "image_id")
-    )
-    private List<Image> images;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -75,10 +72,7 @@ public class Challenge extends PanacheEntityBase {
     public Challenge(ChallengeDTOForm challengeDTOForm) {
         this.title = challengeDTOForm.getTitle();
         this.description = challengeDTOForm.getDescription();
-        this.images = challengeDTOForm.getImages()
-            .stream()
-            .map(Image::new)
-            .collect(Collectors.toList());
+        this.image = new Image(challengeDTOForm.getImage());
         this.active = GlobalConstants.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.endDate = createdAt.plusMonths(1);

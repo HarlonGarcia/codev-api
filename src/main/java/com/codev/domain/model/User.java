@@ -67,7 +67,7 @@ public class User extends PanacheEntityBase {
     @JsonIgnore
     private Set<User> usersFollowed;
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "image_id")
     private Image image;
 
