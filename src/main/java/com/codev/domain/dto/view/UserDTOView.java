@@ -7,8 +7,6 @@ import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +18,8 @@ public class UserDTOView {
     private String name;
 
     private String email;
+
+    private String image;
 
     private String githubUrl;
 

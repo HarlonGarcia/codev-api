@@ -1,5 +1,6 @@
 package com.codev.domain.service;
 
+import com.codev.domain.dto.form.ImageDTOForm;
 import com.codev.domain.model.Image;
 import com.codev.domain.repository.ImageRepository;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -15,7 +16,8 @@ public class ImageService {
     ImageRepository imageRepository;
 
     @Transactional
-    public Image saveImage(Image image) {
+    public Image saveImage(ImageDTOForm imageDTOForm) {
+        Image image = new Image(imageDTOForm);
         imageRepository.persist(image);
         return image;
     }

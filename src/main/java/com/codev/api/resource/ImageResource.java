@@ -1,5 +1,6 @@
 package com.codev.api.resource;
 
+import com.codev.domain.dto.form.ImageDTOForm;
 import com.codev.domain.model.Image;
 import com.codev.domain.service.ImageService;
 import jakarta.inject.Inject;
@@ -18,7 +19,7 @@ public class ImageResource {
     ImageService imageService;
 
     @POST
-    public Response uploadImage(Image image) {
+    public Response uploadImage(ImageDTOForm image) {
         Image savedImage = imageService.saveImage(image);
         return Response.ok(savedImage).build();
     }

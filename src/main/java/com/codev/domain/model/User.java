@@ -67,6 +67,10 @@ public class User extends PanacheEntityBase {
     @JsonIgnore
     private Set<User> usersFollowed;
 
+    @OneToOne
+    @JoinColumn(name = "image_id")
+    private Image image;
+
     public User(UserDTOForm userDTOForm) {
         this.id = UUID.randomUUID();
         this.name = userDTOForm.getName();
@@ -78,6 +82,7 @@ public class User extends PanacheEntityBase {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.roles = new ArrayList<>();
+        this.image = new Image(userDTOForm.getImage());
     }
 
     public User(){}
