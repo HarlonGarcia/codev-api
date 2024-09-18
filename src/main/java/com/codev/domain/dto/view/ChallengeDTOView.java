@@ -32,7 +32,7 @@ public class ChallengeDTOView {
 
     private Set<TechnologyDTOView> technologies;
 
-    private List<Image> images;
+    private Image image;
 
     public ChallengeDTOView(Challenge challenge) {
         DtoTransformer<Challenge, ChallengeDTOView> transformChallenge = new DtoTransformer<>();

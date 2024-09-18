@@ -1,5 +1,6 @@
 package com.codev.domain.dto.view;
 
+import com.codev.domain.model.Image;
 import com.codev.domain.model.Label;
 import com.codev.domain.model.Role;
 import com.codev.domain.model.User;
@@ -19,7 +20,7 @@ public class UserDTOView {
 
     private String email;
 
-    private String image;
+    private Image image;
 
     private String githubUrl;
 

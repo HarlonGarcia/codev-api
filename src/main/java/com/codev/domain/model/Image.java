@@ -16,7 +16,7 @@ public class Image {
     @Column(name = "file_name")
     private String fileName;
 
-    @Column(length = 500000)
+    @Column(length = 7000000)
     private String file;
 
     public Image(ImageDTOForm imageDTOForm) {

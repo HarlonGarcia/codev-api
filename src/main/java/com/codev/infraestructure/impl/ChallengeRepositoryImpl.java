@@ -71,6 +71,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         );
 
         challengeRoot.fetch("author", JoinType.LEFT);
+        challengeRoot.fetch("image", JoinType.LEFT);
 
         int firstResult = page * size;
 
