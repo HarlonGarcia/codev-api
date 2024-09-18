@@ -1,5 +1,6 @@
 package com.codev.domain.dto.view;
 
+import com.codev.domain.dto.form.ImageDTOForm;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Image;
