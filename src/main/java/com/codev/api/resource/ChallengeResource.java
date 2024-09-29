@@ -154,8 +154,8 @@ public class ChallengeResource {
     }
 
     @DELETE
-    @RolesAllowed({"USER"})
-    @Path("{challengeId}/unjoin-challenge")
+    @RolesAllowed({"ADMIN", "USER"})
+    @Path("/{challengeId}/users")
     public Response unjoinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
