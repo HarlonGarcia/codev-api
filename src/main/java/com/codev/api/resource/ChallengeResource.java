@@ -102,7 +102,7 @@ public class ChallengeResource {
 
     @POST
     @RolesAllowed({"USER"})
-    @Path("{challengeId}/join-challenge")
+    @Path("{challengeId}/users")
     public Response joinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
@@ -155,7 +155,7 @@ public class ChallengeResource {
 
     @DELETE
     @RolesAllowed({"USER"})
-    @Path("{challengeId}/unjoin-challenge")
+    @Path("{challengeId}/users")
     public Response unjoinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
