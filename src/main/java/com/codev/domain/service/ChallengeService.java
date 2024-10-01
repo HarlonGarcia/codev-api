@@ -56,6 +56,13 @@ public class ChallengeService {
                 .toList();
     }
 
+    public List<ChallengeDTOView> findAllParticipatingChallenges(UUID challengeId, UUID userId, Integer page, Integer size) {
+        return challengeRepository.findAllParticipatingChallenges(challengeId, userId, page, size)
+            .stream()
+            .map(ChallengeDTOView::new)
+            .toList();
+    }
+
     @Transactional
     public ChallengeDTOView createChallenge(ChallengeDTOForm challengeDTOForm) {
         User author = User.findById(challengeDTOForm.getAuthorId());
