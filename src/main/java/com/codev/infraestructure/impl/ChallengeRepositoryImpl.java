@@ -6,6 +6,7 @@ import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.ChallengeTechnology;
 import com.codev.domain.model.Technology;
+import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -141,6 +142,43 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             throw new SQLException("Unable to remove category in challenge");
         }
     }
+
+    @Override
+    public List<Challenge> findAllParticipatingChallenges(
+        UUID challengeId, UUID userId, Integer page, Integer size
+    ) {
+        if (page < 0) {
+            throw new IllegalArgumentException("Page must be a positive integer.");
+        }
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
+
+        Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
+
+        Join<Challenge, User> participantJoin = challengeRoot.join("participants");
+
+        Predicate userPredicate = criteriaBuilder.equal(participantJoin.get("id"), userId);
+        Predicate challengePredicate = criteriaBuilder.equal(challengeRoot.get("id"), challengeId);
+
+        criteriaQuery.select(challengeRoot)
+            .where(criteriaBuilder.and(userPredicate, challengePredicate));
+
+        challengeRoot.fetch("author", JoinType.LEFT)
+            .fetch("labels", JoinType.LEFT);
+        challengeRoot.fetch("author", JoinType.LEFT)
+            .fetch("roles", JoinType.LEFT);
+        challengeRoot.fetch("technologies", JoinType.LEFT);
+        challengeRoot.fetch("category", JoinType.LEFT);
+
+        int firstResult = page * size;
+
+        return entityManager.createQuery(criteriaQuery)
+            .setFirstResult(firstResult)
+            .setMaxResults(size)
+            .getResultList();
+    }
+
 
     @Override
     public Set<Challenge> findAllChallengeWithPagingByCategoryId(

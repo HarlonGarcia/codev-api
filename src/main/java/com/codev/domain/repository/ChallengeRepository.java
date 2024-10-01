@@ -7,6 +7,7 @@ import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Technology;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -31,4 +32,5 @@ public interface ChallengeRepository {
 
     void removeCategoryInChallenge(UUID challengeId) throws SQLException;
 
+    List<Challenge> findAllParticipatingChallenges(UUID challengeId, UUID userId, Integer page, Integer size);
 }

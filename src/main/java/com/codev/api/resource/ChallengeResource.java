@@ -86,6 +86,22 @@ public class ChallengeResource {
         return Response.ok(solutions).build();
     }
 
+    @GET
+    @RolesAllowed({"USER"})
+    @Path("{challengeId}/users")
+    public Response findAllParticipatingChallenges(
+        @PathParam("challengeId") UUID challengeId,
+        @HeaderParam("X-User-ID") UUID userId,
+        @QueryParam("page") Integer page,
+        @QueryParam("size") Integer size
+    ) {
+        page = page != null ? page : 0;
+        size = size != null ? size : 10;
+
+        List<ChallengeDTOView> challenges = challengeService.findAllParticipatingChallenges(challengeId, userId, page, size);
+        return Response.ok(challenges).build();
+    }
+
     @POST
     @RolesAllowed({"ADMIN"})
     public Response createChallenge(@Valid ChallengeDTOForm challengeDTOForm) {
