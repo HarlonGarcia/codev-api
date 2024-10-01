@@ -106,9 +106,19 @@ public class ChallengeResource {
     public Response joinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
-    ) throws SQLException {
-        challengeService.joinChallenge(challengeId, participantId);
-        return Response.ok().build();
+    ) {
+        try {
+            challengeService.joinChallenge(challengeId, participantId);
+            return Response.ok().build();
+
+        } catch (SQLException e) {
+            ExceptionResponse response = new ExceptionResponse(
+                Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                e.getMessage(),
+                ""
+            );
+            return Response.ok(response).status(response.getStatusCode()).build();
+        }
     }
 
     @POST
@@ -154,8 +164,8 @@ public class ChallengeResource {
     }
 
     @DELETE
-    @RolesAllowed({"USER"})
-    @Path("{challengeId}/users")
+    @RolesAllowed({"ADMIN", "USER"})
+    @Path("/{challengeId}/users")
     public Response unjoinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
