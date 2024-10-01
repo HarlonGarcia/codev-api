@@ -1,5 +1,6 @@
 package com.codev.domain.dto.view;
 
+import com.codev.domain.model.Image;
 import com.codev.domain.model.Label;
 import com.codev.domain.model.Role;
 import com.codev.domain.model.User;
@@ -7,8 +8,6 @@ import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -20,6 +19,8 @@ public class UserDTOView {
     private String name;
 
     private String email;
+
+    private Image image;
 
     private String githubUrl;
 

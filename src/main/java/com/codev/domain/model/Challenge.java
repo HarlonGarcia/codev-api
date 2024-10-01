@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -39,8 +40,9 @@ public class Challenge extends PanacheEntityBase {
     @Enumerated(EnumType.STRING)
     private ChallengeStatus status;
 
-    @Column(length = 255)
-    private String imageUrl;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @ManyToOne
     @JoinColumn(name = "category_id")
@@ -70,7 +72,7 @@ public class Challenge extends PanacheEntityBase {
     public Challenge(ChallengeDTOForm challengeDTOForm) {
         this.title = challengeDTOForm.getTitle();
         this.description = challengeDTOForm.getDescription();
-        this.imageUrl = challengeDTOForm.getImageUrl();
+        this.image = new Image(challengeDTOForm.getImage());
         this.active = GlobalConstants.ACTIVE;
         this.createdAt = LocalDateTime.now();
         this.endDate = createdAt.plusMonths(1);

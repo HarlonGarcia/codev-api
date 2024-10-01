@@ -22,4 +22,8 @@ public class UserDTOForm {
 
     private String additionalUrl;
 
+    private ImageDTOForm image;
+
+    public UserDTOForm() {}
+
 }

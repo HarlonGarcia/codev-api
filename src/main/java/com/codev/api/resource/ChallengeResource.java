@@ -102,13 +102,23 @@ public class ChallengeResource {
 
     @POST
     @RolesAllowed({"USER"})
-    @Path("{challengeId}/join-challenge")
+    @Path("{challengeId}/users")
     public Response joinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId
-    ) throws SQLException {
-        challengeService.joinChallenge(challengeId, participantId);
-        return Response.ok().build();
+    ) {
+        try {
+            challengeService.joinChallenge(challengeId, participantId);
+            return Response.ok().build();
+
+        } catch (SQLException e) {
+            ExceptionResponse response = new ExceptionResponse(
+                Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
+                e.getMessage(),
+                ""
+            );
+            return Response.ok(response).status(response.getStatusCode()).build();
+        }
     }
 
     @POST

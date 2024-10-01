@@ -1,12 +1,12 @@
 package com.codev.domain.dto.form;
 
+import com.codev.domain.enums.ChallengeStatus;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 
+import java.util.List;
 import java.util.UUID;
-
-import com.codev.domain.enums.ChallengeStatus;
 
 @Data
 public class ChallengeDTOForm {
@@ -20,8 +20,7 @@ public class ChallengeDTOForm {
     @NotNull
     private UUID authorId;
 
-    @NotBlank
-    private String imageUrl;
+    private ImageDTOForm image;
 
     @NotNull
     private UUID categoryId;
