@@ -2,6 +2,7 @@ package com.codev.domain.service;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
+import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
@@ -12,6 +13,7 @@ import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Technology;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
+import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityNotFoundException;
@@ -31,6 +33,8 @@ import java.util.stream.Collectors;
 public class ChallengeService {
 
     private final ChallengeRepository challengeRepository;
+
+    private final UserRepository userRepository;
 
     public Set<ChallengeDTOView> findAllChallengeWithPagingByCategoryId(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
         
@@ -60,6 +64,13 @@ public class ChallengeService {
         return challengeRepository.findAllParticipatingChallenges(challengeId, userId, page, size)
             .stream()
             .map(ChallengeDTOView::new)
+            .toList();
+    }
+
+    public List<UserDTOView> findAllUsersForChallenge(UUID challengeId, UUID userId, Integer page, Integer size) {
+        return userRepository.findAllUsersForChallenge(challengeId, userId, page, size)
+            .stream()
+            .map(UserDTOView::new)
             .toList();
     }
 
@@ -171,5 +182,4 @@ public class ChallengeService {
         challenge.setCategory(null);
         return challenge;
     }
-
 }
