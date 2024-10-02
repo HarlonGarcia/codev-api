@@ -4,8 +4,6 @@ import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.model.User;
 
-import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
