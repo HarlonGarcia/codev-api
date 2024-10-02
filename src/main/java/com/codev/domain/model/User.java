@@ -82,7 +82,13 @@ public class User extends PanacheEntityBase {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.roles = new ArrayList<>();
-        this.image = new Image(userDTOForm.getImage());
+
+        Image imageDTO = null;
+        if(null != userDTOForm.getImage()){
+            imageDTO = new Image(userDTOForm.getImage());
+        }
+
+        this.image = imageDTO;
     }
 
     public User(){}
