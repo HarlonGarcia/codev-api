@@ -2,7 +2,6 @@ package com.codev.domain.dto.view;
 
 import com.codev.domain.model.Image;
 import com.codev.domain.model.Label;
-import com.codev.domain.model.Role;
 import com.codev.domain.model.User;
 import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
@@ -37,6 +36,12 @@ public class UserDTOView {
     public UserDTOView(User user) {
         DtoTransformer<User, UserDTOView> transform = new DtoTransformer<>();
         transform.copyProperties(user, this);
+
+        if (user.getImage() == null) {
+            this.image = null;
+        } else {
+            this.image = user.getImage();
+        }
     }
 
     public UserDTOView(UUID id, String name, String email, String githubUrl, String additionalUrl,
