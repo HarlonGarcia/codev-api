@@ -4,10 +4,12 @@ import com.codev.api.security.auth.AuthRequest;
 import com.codev.api.security.auth.AuthResponse;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
+import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.*;
+import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.UserService;
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
@@ -30,6 +32,8 @@ import java.util.UUID;
 public class UserResource {
 
     private final UserService userService;
+
+    private final ChallengeService challengeService;
 
     @GET
     @RolesAllowed({"USER"})
@@ -59,6 +63,22 @@ public class UserResource {
 
         List<UserDTOView> users = userService.findAllFollowedUsers(followerId, page, size);
         return Response.ok(users).build();
+    }
+
+    @GET
+    @RolesAllowed({"USER"})
+    @Path("challenges")
+    public Response findAllParticipatingChallenges(
+        @PathParam("challengeId") UUID challengeId,
+        @HeaderParam("X-User-ID") UUID userId,
+        @QueryParam("page") Integer page,
+        @QueryParam("size") Integer size
+    ) {
+        page = page != null ? page : 0;
+        size = size != null ? size : 10;
+
+        List<ChallengeDTOView> challenges = challengeService.findAllParticipatingChallenges(challengeId, userId, page, size);
+        return Response.ok(challenges).build();
     }
 
     @POST

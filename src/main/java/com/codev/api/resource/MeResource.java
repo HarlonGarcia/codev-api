@@ -1,6 +1,7 @@
 package com.codev.api.resource;
 
 import com.codev.api.security.token.TokenUtils;
+import com.codev.domain.dto.view.MeDTOView;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.token.ExtractEmailFromTokenException;
@@ -29,7 +30,7 @@ public class MeResource {
     public Response findMe(@HeaderParam("Authorization") String token) {
         try {
             String accessToken = tokenUtils.getAccessToken(token);
-            UserDTOView user = meService.findMe(accessToken);
+            MeDTOView user = meService.findMe(accessToken);
             return Response.ok(user).build();
 
         } catch (ExtractEmailFromTokenException e) {
