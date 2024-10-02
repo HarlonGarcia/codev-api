@@ -32,8 +32,6 @@ public class UserDTOView {
 
     private Set<Label> labels;
 
-    private Set<Role> roles;
-
     private boolean following;
 
     public UserDTOView(User user) {

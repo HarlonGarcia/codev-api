@@ -3,6 +3,7 @@ package com.codev.infraestructure.impl;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
+import com.codev.domain.model.Challenge;
 import com.codev.domain.model.FollowUser;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.UserRepository;
@@ -116,6 +117,39 @@ public class UserRepositoryImpl implements UserRepository {
             .setMaxResults(size)
             .getResultList();
     }
+
+    @Override
+    public List<User> findAllUsersForChallenge(
+        UUID challengeId, UUID userId,Integer page, Integer size
+    ) {
+        if (page < 0 || size <= 0) {
+            throw new IllegalArgumentException("Page must be a positive integer and size must be greater than 0.");
+        }
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> criteriaQuery = criteriaBuilder.createQuery(User.class);
+
+        // Definindo a raiz como Challenge e fazendo join com a tabela de participantes (User)
+        Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
+        Join<Challenge, User> participantJoin = challengeRoot.join("participants");
+
+        // Criando o predicado para o ID do desafio
+        Predicate challengePredicate = criteriaBuilder.equal(challengeRoot.get("id"), challengeId);
+
+        // Selecionando os participantes (User) do desafio
+        criteriaQuery.select(participantJoin)
+            .where(challengePredicate)
+            .distinct(true); // Evita duplicatas de usuários
+
+        // Configurando a paginação
+        int firstResult = page * size;
+
+        return entityManager.createQuery(criteriaQuery)
+            .setFirstResult(firstResult)
+            .setMaxResults(size)
+            .getResultList();
+    }
+
 
     @Override
     public User findByEmail(String email) {

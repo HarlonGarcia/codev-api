@@ -5,6 +5,7 @@ import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.model.User;
 
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -24,4 +25,5 @@ public interface UserRepository {
 
     void unfollowUser(UUID followedId, UUID followerId);
 
+    List<User> findAllUsersForChallenge(UUID challengeId, UUID userId, Integer page, Integer size);
 }

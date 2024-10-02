@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
+import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
 import com.codev.domain.exceptions.global.ExceptionResponse;
@@ -89,7 +90,7 @@ public class ChallengeResource {
     @GET
     @RolesAllowed({"USER"})
     @Path("{challengeId}/users")
-    public Response findAllParticipatingChallenges(
+    public Response findAllUsersForChallenge(
         @PathParam("challengeId") UUID challengeId,
         @HeaderParam("X-User-ID") UUID userId,
         @QueryParam("page") Integer page,
@@ -98,8 +99,8 @@ public class ChallengeResource {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<ChallengeDTOView> challenges = challengeService.findAllParticipatingChallenges(challengeId, userId, page, size);
-        return Response.ok(challenges).build();
+        List<UserDTOView> users = challengeService.findAllUsersForChallenge(challengeId, userId, page, size);
+        return Response.ok(users).build();
     }
 
     @POST
