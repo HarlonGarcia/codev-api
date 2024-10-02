@@ -1,19 +1,14 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.TechnologyDTOForm;
-import com.codev.domain.exceptions.global.ErrorResponse;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
-import com.codev.domain.exceptions.global.Violation;
 import com.codev.domain.model.Technology;
 import com.codev.domain.repository.TechnologyRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.ConstraintViolationException;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 

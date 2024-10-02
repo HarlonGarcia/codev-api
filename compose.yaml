@@ -1,17 +1,17 @@
 services:
 
-    backend:
-        image: brenoduarte655/codev-api:2.1.2
-        restart: unless-stopped
-        environment:
-            DATABASE_URL: jdbc:postgresql://db:5432/codev-db
-            USERNAME: postgres
-            PASSWORD: postgres
-        ports:
-            - 8080:8080
-        depends_on:
-            db:
-                condition: service_started
+    # backend:
+    #     image: brenoduarte655/codev-api:2.1.2
+    #     restart: unless-stopped
+    #     environment:
+    #         DATABASE_URL: jdbc:postgresql://db:5432/codev-db
+    #         USERNAME: postgres
+    #         PASSWORD: postgres
+    #     ports:
+    #         - 8080:8080
+    #     depends_on:
+    #         db:
+    #             condition: service_started
 
 #    access on localhost:8081
     swagger-ui:

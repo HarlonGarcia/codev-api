@@ -1,6 +1,5 @@
 package com.codev.domain.dto.view;
 
-import com.codev.domain.dto.form.ImageDTOForm;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Image;
@@ -8,7 +7,6 @@ import com.codev.utils.helpers.DtoTransformer;
 import lombok.Data;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 

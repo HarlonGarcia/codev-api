@@ -1,12 +1,10 @@
 package com.codev.api.security.token;
 
-import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.model.Role;
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.ws.rs.core.Response;
 
 import java.io.InputStream;
 import java.security.KeyFactory;

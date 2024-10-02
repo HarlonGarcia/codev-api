@@ -2,7 +2,6 @@ package com.codev.api.resource;
 
 import com.codev.api.security.token.TokenUtils;
 import com.codev.domain.dto.view.MeDTOView;
-import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.token.ExtractEmailFromTokenException;
 import com.codev.domain.exceptions.users.UserDeactivatedException;

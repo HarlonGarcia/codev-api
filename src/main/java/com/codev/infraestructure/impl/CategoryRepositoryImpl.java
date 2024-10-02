@@ -1,7 +1,6 @@
 package com.codev.infraestructure.impl;
 
 import com.codev.domain.model.Category;
-import com.codev.domain.model.Technology;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;

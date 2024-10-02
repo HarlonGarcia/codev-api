@@ -120,7 +120,7 @@ public class UserRepositoryImpl implements UserRepository {
 
     @Override
     public List<User> findAllUsersForChallenge(
-        UUID challengeId, UUID userId,Integer page, Integer size
+        UUID challengeId,Integer page, Integer size
     ) {
         if (page < 0 || size <= 0) {
             throw new IllegalArgumentException("Page must be a positive integer and size must be greater than 0.");

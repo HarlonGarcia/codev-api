@@ -23,5 +23,5 @@ public interface UserRepository {
 
     void unfollowUser(UUID followedId, UUID followerId);
 
-    List<User> findAllUsersForChallenge(UUID challengeId, UUID userId, Integer page, Integer size);
+    List<User> findAllUsersForChallenge(UUID challengeId, Integer page, Integer size);
 }

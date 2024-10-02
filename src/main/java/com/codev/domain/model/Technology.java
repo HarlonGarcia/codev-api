@@ -3,7 +3,6 @@ package com.codev.domain.model;
 import com.codev.domain.dto.form.TechnologyDTOForm;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 import java.util.UUID;

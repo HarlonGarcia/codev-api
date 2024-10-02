@@ -7,7 +7,6 @@ import com.codev.domain.model.Challenge;
 import com.codev.domain.model.Technology;
 
 import java.sql.SQLException;
-import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;

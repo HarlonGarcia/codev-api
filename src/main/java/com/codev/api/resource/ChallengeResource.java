@@ -88,18 +88,17 @@ public class ChallengeResource {
     }
 
     @GET
-    @RolesAllowed({"USER"})
-    @Path("{challengeId}/users")
+    @RolesAllowed({"ADMIN", "USER"})
+    @Path("/{challengeId}/users")
     public Response findAllUsersForChallenge(
         @PathParam("challengeId") UUID challengeId,
-        @HeaderParam("X-User-ID") UUID userId,
         @QueryParam("page") Integer page,
         @QueryParam("size") Integer size
     ) {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<UserDTOView> users = challengeService.findAllUsersForChallenge(challengeId, userId, page, size);
+        List<UserDTOView> users = challengeService.findAllUsersForChallenge(challengeId, page, size);
         return Response.ok(users).build();
     }
 
@@ -118,8 +117,8 @@ public class ChallengeResource {
     }
 
     @POST
-    @RolesAllowed({"USER"})
-    @Path("{challengeId}/users")
+    @RolesAllowed({"ADMIN", "USER"})
+    @Path("/{challengeId}/users")
     public Response joinChallenge(
             @PathParam("challengeId") UUID challengeId,
             @HeaderParam("X-User-ID") UUID participantId

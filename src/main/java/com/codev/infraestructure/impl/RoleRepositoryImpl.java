@@ -4,7 +4,6 @@ import com.codev.domain.model.Role;
 import com.codev.domain.repository.RoleRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
 
 import javax.sql.DataSource;

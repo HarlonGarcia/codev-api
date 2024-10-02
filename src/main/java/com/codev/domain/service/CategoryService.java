@@ -1,9 +1,7 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.CategoryDTOForm;
-import com.codev.domain.exceptions.global.ErrorResponse;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
-import com.codev.domain.exceptions.global.Violation;
 import com.codev.domain.model.Category;
 import com.codev.domain.repository.CategoryRepository;
 import jakarta.enterprise.context.ApplicationScoped;

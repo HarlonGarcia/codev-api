@@ -8,7 +8,6 @@ import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.SolutionRepository;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 import lombok.RequiredArgsConstructor;
 
 import javax.sql.DataSource;
