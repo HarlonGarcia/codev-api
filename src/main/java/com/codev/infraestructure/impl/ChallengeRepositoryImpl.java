@@ -159,10 +159,9 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         Join<Challenge, User> participantJoin = challengeRoot.join("participants");
 
         Predicate userPredicate = criteriaBuilder.equal(participantJoin.get("id"), userId);
-        Predicate challengePredicate = criteriaBuilder.equal(challengeRoot.get("id"), challengeId);
 
         criteriaQuery.select(challengeRoot)
-            .where(criteriaBuilder.and(userPredicate, challengePredicate));
+            .where(userPredicate);
 
         challengeRoot.fetch("author", JoinType.LEFT)
             .fetch("labels", JoinType.LEFT);
