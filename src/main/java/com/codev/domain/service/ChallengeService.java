@@ -60,8 +60,8 @@ public class ChallengeService {
                 .toList();
     }
 
-    public List<ChallengeDTOView> findAllParticipatingChallenges(UUID challengeId, UUID userId, Integer page, Integer size) {
-        return challengeRepository.findAllParticipatingChallenges(challengeId, userId, page, size)
+    public List<ChallengeDTOView> findUserChallenges(UUID userId, Integer page, Integer size) {
+        return challengeRepository.findUserChallenges(userId, page, size)
             .stream()
             .map(ChallengeDTOView::new)
             .toList();

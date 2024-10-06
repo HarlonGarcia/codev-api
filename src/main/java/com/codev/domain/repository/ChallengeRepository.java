@@ -31,5 +31,5 @@ public interface ChallengeRepository {
 
     void removeCategoryInChallenge(UUID challengeId) throws SQLException;
 
-    List<Challenge> findAllParticipatingChallenges(UUID challengeId, UUID userId, Integer page, Integer size);
+    List<Challenge> findUserChallenges(UUID userId, Integer page, Integer size);
 }

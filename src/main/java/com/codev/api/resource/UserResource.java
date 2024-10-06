@@ -66,18 +66,17 @@ public class UserResource {
     }
 
     @GET
-    @RolesAllowed({"USER"})
-    @Path("challenges")
-    public Response findAllParticipatingChallenges(
-        @PathParam("challengeId") UUID challengeId,
-        @HeaderParam("X-User-ID") UUID userId,
+    @RolesAllowed({"ADMIN", "USER"})
+    @Path("/{userId}/challenges")
+    public Response findUserChallenges(
+        @PathParam("userId") UUID userId,
         @QueryParam("page") Integer page,
         @QueryParam("size") Integer size
     ) {
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        List<ChallengeDTOView> challenges = challengeService.findAllParticipatingChallenges(challengeId, userId, page, size);
+        List<ChallengeDTOView> challenges = challengeService.findUserChallenges(userId, page, size);
         return Response.ok(challenges).build();
     }
 

@@ -144,8 +144,10 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public List<Challenge> findAllParticipatingChallenges(
-        UUID challengeId, UUID userId, Integer page, Integer size
+    public List<Challenge> findUserChallenges(
+        UUID userId,
+        Integer page,
+        Integer size
     ) {
         if (page < 0) {
             throw new IllegalArgumentException("Page must be a positive integer.");

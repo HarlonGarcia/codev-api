@@ -2,8 +2,10 @@ package com.codev.domain.exceptions.global;
 
 import jakarta.ws.rs.core.Response;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
+@EqualsAndHashCode(callSuper=false)
 @Getter
 @Data
 public class UniqueConstraintViolationException extends RuntimeException {

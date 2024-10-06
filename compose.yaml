@@ -14,16 +14,16 @@ services:
     #             condition: service_started
 
 #    access on localhost:8081
-    swagger-ui:
-        image: swaggerapi/swagger-ui
-        container_name: swagger_ui_container
-        ports:
-            - 8081:8081
-        volumes:
-            - ./doc:/usr/share/nginx/html/doc
-        environment:
-            PORT: 8081
-            API_URL: doc/openapi.yaml
+    # swagger-ui:
+    #     image: swaggerapi/swagger-ui
+    #     container_name: swagger_ui_container
+    #     ports:
+    #         - 8081:8081
+    #     volumes:
+    #         - ./doc:/usr/share/nginx/html/doc
+    #     environment:
+    #         PORT: 8081
+    #         API_URL: doc/openapi.yaml
 
     db:
         container_name: postgres
