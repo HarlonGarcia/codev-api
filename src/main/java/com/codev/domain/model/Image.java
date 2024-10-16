@@ -12,7 +12,6 @@ import java.util.UUID;
 @AllArgsConstructor
 @Data
 public class Image {
-
     @Id
     @GeneratedValue
     private UUID id;

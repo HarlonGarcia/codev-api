@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
-@EqualsAndHashCode(callSuper=false)
 @Getter
 @Data
 public class UniqueConstraintViolationException extends RuntimeException {

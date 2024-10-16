@@ -6,6 +6,7 @@ import com.codev.api.security.auth.PBKDF2Encoder;
 import com.codev.api.security.token.TokenUtils;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
+import com.codev.domain.dto.form.UserUpdateDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.exceptions.token.GenerateTokenException;
@@ -24,6 +25,7 @@ import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
+import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -126,13 +128,22 @@ public class UserService {
     }
 
     @Transactional
-    public UserDTOView updateUser(UUID userId, UserDTOForm userDTOForm) throws InvocationTargetException, IllegalAccessException {
+    public UserDTOView updateUser(
+        UUID userId,
+        UserUpdateDTOForm userDTOForm
+    ) throws IntrospectionException, InvocationTargetException, IllegalAccessException {
         User user = User.findById(userId);
 
         if (user == null)
             throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
 
-        NullAwareBeanUtilsBean.getInstance().copyProperties(user, userDTOForm);
+        if (userDTOForm.getAvatar() != null) {
+            user.setImage(userDTOForm.getAvatar());
+        }
+
+        NullAwareBeanUtilsBean copyUtils = new NullAwareBeanUtilsBean();
+        copyUtils.copyProperties(user, userDTOForm);
+
         user.setUpdatedAt(LocalDateTime.now());
         user.persist();
 

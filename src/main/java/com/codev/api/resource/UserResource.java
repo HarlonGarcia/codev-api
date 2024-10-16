@@ -4,6 +4,7 @@ import com.codev.api.security.auth.AuthRequest;
 import com.codev.api.security.auth.AuthResponse;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
+import com.codev.domain.dto.form.UserUpdateDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.global.ExceptionResponse;
@@ -20,7 +21,6 @@ import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
 import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.UUID;
 
@@ -135,13 +135,13 @@ public class UserResource {
     @Path("/{userId}")
     public Response updateUser(
         @PathParam("userId") UUID userId,
-        @Valid UserDTOForm userDTOForm
+        @Valid UserUpdateDTOForm userDTOForm
     ) {
         try {
             UserDTOView userDTOView = userService.updateUser(userId, userDTOForm);
-            return Response.ok(userDTOView).build();
 
-        } catch (InvocationTargetException | IllegalAccessException e) {
+            return Response.ok(userDTOView).build();
+        } catch (Exception e) {
             ExceptionResponse response = new ExceptionResponse(
                 Response.Status.INTERNAL_SERVER_ERROR.getStatusCode(),
                 e.getMessage(),
