@@ -1,6 +1,5 @@
 package com.codev.domain.model;
 
-import com.codev.domain.dto.form.ImageDTOForm;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.utils.GlobalConstants;
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -83,18 +82,7 @@ public class User extends PanacheEntityBase {
         this.createdAt = LocalDateTime.now();
         this.updatedAt = LocalDateTime.now();
         this.roles = new ArrayList<>();
-
-        Image imageDTO = null;
-
-        if (null != userDTOForm.getImage()){
-            imageDTO = new Image(userDTOForm.getImage());
-        }
-
-        this.image = imageDTO;
-    }
-
-    public void setImage(ImageDTOForm image) {
-        this.image = new Image(image);
+        this.image = new Image(userDTOForm.getImage());
     }
 
     public User(){}

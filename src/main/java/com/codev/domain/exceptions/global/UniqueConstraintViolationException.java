@@ -2,7 +2,6 @@ package com.codev.domain.exceptions.global;
 
 import jakarta.ws.rs.core.Response;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
 @Getter
