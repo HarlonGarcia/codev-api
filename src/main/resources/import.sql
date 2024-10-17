@@ -7,8 +7,8 @@ insert into tb_user (id, email, github_url, additional_url, name, password, acti
 insert into tb_role (id, name) values ('28439d95-3df9-41ac-9718-dc4a906ef9a9', 'ADMIN');
 insert into tb_role (id, name) values ('fc136e23-4bc9-468c-b4dd-cf99d0f1bd8b', 'USER');
 
-insert into tb_label (id, title, description) values ('4a4b8953-7f30-481d-9a4d-ec305039237a', '', '');
-insert into tb_label (id, title, description) values ('ae51aad2-d6ff-403e-8230-4b71afb6d580', '', '');
+insert into tb_label (id, title, description) values ('4a4b8953-7f30-481d-9a4d-ec305039237a', 'Challenger', 'Bla bla bla');
+insert into tb_label (id, title, description) values ('ae51aad2-d6ff-403e-8230-4b71afb6d580', 'Avançado', 'Lorem ipsum');
 
 insert into tb_category (id, name) values ('436de9e1-5ae5-470f-a014-e2d096376ec3', 'Backend');
 insert into tb_category (id, name) values ('b47afe2a-e870-45f6-a484-f2352ff92468', 'Frontend');

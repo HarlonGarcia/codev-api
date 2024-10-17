@@ -20,8 +20,11 @@ import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
 import com.codev.utils.helpers.DtoTransformer;
 import com.codev.utils.helpers.NullAwareBeanUtilsBean;
+
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 
@@ -35,10 +38,11 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class UserService {
 
+    @PersistenceContext
+    EntityManager entityManager;
+
     private final UserRepository userRepository;
-
     private final RoleRepository roleRepository;
-
     private final PBKDF2Encoder passwordEncoder;
 
     public List<UserDTOView> findAllUsers(UserFiltersDTOForm filters, Integer page, Integer size) {
@@ -135,10 +139,13 @@ public class UserService {
         User user = User.findById(userId);
 
         if (user == null)
-            throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
+            throw new EntityNotFoundException(
+                String.format("User with id %s does not exist", userId)
+            );
 
-        if (userDTOForm.getAvatar() != null) {
-            user.setImage(userDTOForm.getAvatar());
+        if (userDTOForm.getImage() == null) {
+            user.setImage(null);
+            entityManager.merge(user);
         }
 
         NullAwareBeanUtilsBean copyUtils = new NullAwareBeanUtilsBean();

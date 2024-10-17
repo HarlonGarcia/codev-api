@@ -18,7 +18,7 @@ public class UserUpdateDTOForm {
 
     private String additionalUrl;
 
-    private ImageDTOForm avatar;
+    private ImageDTOForm image;
 
     public UserUpdateDTOForm() {}
 
