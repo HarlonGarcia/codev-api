@@ -15,7 +15,7 @@ $ git clone https://github.com/HarlonGarcia/codev-api.git && cd codev-api
 
 You will need to have installed on your machine to run the project:
 
-- [Java](https://www.oracle.com/br/java/technologies/downloads/): 17.0.12^
+- [Java](https://www.oracle.com/br/java/technologies/downloads/) 17.0.12^
 - [Docker](https://docs.docker.com/get-docker/)
 
 Run the following command to run the Docker image
@@ -30,7 +30,8 @@ To run in the development environment, you may need to install maven CLI and run
 $ ./mvnw compile quarkus:dev
 ```
 
-In dev environment, the application port is set to [8000].
+In dev environment, the application port is set to [8000]().
+
 Also, there is a file `import.sql` in the resources folder that you can run to mock data;
 
 ## Contributors ✨
