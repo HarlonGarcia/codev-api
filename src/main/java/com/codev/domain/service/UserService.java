@@ -13,6 +13,7 @@ import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.InvalidLoginException;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.exceptions.users.UserHasAdminRoleException;
+import com.codev.domain.model.Image;
 import com.codev.domain.model.Role;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.RoleRepository;
@@ -143,13 +144,18 @@ public class UserService {
                 String.format("User with id %s does not exist", userId)
             );
 
+        if (userDTOForm.getImage() != null) {
+            user.setImage(new Image(userDTOForm.getImage()));
+            entityManager.merge(user);
+        }
+
         if (userDTOForm.getImage() == null) {
             user.setImage(null);
             entityManager.merge(user);
         }
 
         NullAwareBeanUtilsBean copyUtils = new NullAwareBeanUtilsBean();
-        copyUtils.copyProperties(user, userDTOForm);
+        copyUtils.copyProperties(user, userDTOForm, "image");
 
         user.setUpdatedAt(LocalDateTime.now());
         user.persist();
