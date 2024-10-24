@@ -5,6 +5,8 @@ import com.codev.domain.dto.form.SolutionDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.enums.ChallengeStatus;
+import com.codev.domain.enums.Order;
 import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
 import com.codev.domain.exceptions.global.ExceptionResponse;
@@ -44,18 +46,46 @@ public class ChallengeResource {
         return Response.ok(challengeService.findAllTechnologiesByChallengeId(challengeId)).build();
     }
 
+//    @GET
+//    @PermitAll
+//    public Response findAllChallengeWithPagingByCategoryId(
+//            @QueryParam("page") Integer page,
+//            @QueryParam("size") Integer size,
+//            @QueryParam("category") UUID categoryId,
+//            @QueryParam("orderBy") @DefaultValue("ASC") OrderBy orderBy
+//    ){
+//        page = page != null ? page : 0;
+//        size = size != null ? size : 10;
+//
+//        Set<ChallengeDTOView> challenges = challengeService.findAllChallengeWithPagingByCategoryId(page, size, categoryId, orderBy);
+//
+//        return Response.ok(challenges).build();
+//    }
+
     @GET
     @PermitAll
-    public Response findAllChallengeWithPagingByCategoryId(
-            @QueryParam("page") Integer page,
-            @QueryParam("size") Integer size,
-            @QueryParam("category") UUID categoryId,
-            @QueryParam("orderBy") @DefaultValue("ASC") OrderBy orderBy
+    public Response findAllChallengeWithFilters(
+        @QueryParam("page") Integer page,
+        @QueryParam("size") Integer size,
+        @QueryParam("status") ChallengeStatus status,
+        @QueryParam("category") String categoryName,
+        @QueryParam("technology") String technologyName,
+        @QueryParam("order") @DefaultValue("ASC") Order order,
+        @QueryParam("orderBy") OrderBy orderBy
     ){
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
-        Set<ChallengeDTOView> challenges = challengeService.findAllChallengeWithPagingByCategoryId(page, size, categoryId, orderBy);
+        List<ChallengeDTOView> challenges =
+            challengeService.findAllChallengeWithFilters(
+                page,
+                size,
+                status,
+                categoryName,
+                technologyName,
+                order,
+                orderBy
+            );
 
         return Response.ok(challenges).build();
     }

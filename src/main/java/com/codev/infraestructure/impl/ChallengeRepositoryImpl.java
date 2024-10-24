@@ -1,5 +1,7 @@
 package com.codev.infraestructure.impl;
 
+import com.codev.domain.enums.ChallengeStatus;
+import com.codev.domain.enums.Order;
 import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
@@ -183,7 +185,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
     @Override
     public Set<Challenge> findAllChallengeWithPagingByCategoryId(
-        Integer page, Integer size, UUID categoryId, OrderBy orderBy
+        Integer page, Integer size, UUID categoryId, Order order
     ) {
         if (page < 0) {
             throw new IllegalArgumentException("Page must be a positive integer.");
@@ -196,7 +198,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         
         criteriaQuery.select(challengeRoot);
         
-        if (orderBy == OrderBy.LATEST) {
+        if (order == Order.LATEST) {
             criteriaQuery.orderBy(criteriaBuilder.desc(
                 challengeRoot.get("createdAt")
             ));
@@ -227,6 +229,84 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
                 .setFirstResult(firstResult)
                 .setMaxResults(size)
                 .getResultList());
+    }
+
+    @Override
+    public List<Challenge> findAllChallengeWithFilters(
+        Integer page,
+        Integer size,
+        ChallengeStatus status,
+        String categoryName,
+        String technologyName,
+        Order order,
+        OrderBy orderBy
+    ) {
+        if (page < 0) {
+            throw new IllegalArgumentException("Page must be a positive integer.");
+        }
+
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
+
+        Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
+        criteriaQuery.select(challengeRoot);
+
+        List<Predicate> predicates = new ArrayList<>();
+
+        if (status != null) {
+            predicates.add(criteriaBuilder.equal(challengeRoot.get("status"), status));
+        }
+
+        if (categoryName != null && !categoryName.isEmpty()) {
+            predicates.add(criteriaBuilder.equal(challengeRoot.get("category").get("name"), categoryName));
+        }
+
+        if (technologyName != null && !technologyName.isEmpty()) {
+            predicates.add(criteriaBuilder.isMember(technologyName, challengeRoot.get("technologies")));
+        }
+
+        predicates.add(criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE));
+
+        criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
+
+        challengeRoot.fetch("author", JoinType.LEFT)
+            .fetch("labels", JoinType.LEFT);
+        challengeRoot.fetch("author", JoinType.LEFT)
+            .fetch("roles", JoinType.LEFT);
+        challengeRoot.fetch("technologies", JoinType.LEFT);
+        challengeRoot.fetch("category", JoinType.LEFT);
+
+        if (orderBy != null) {
+            switch (orderBy) {
+                case CREATED_AT:
+                    if (order == Order.DESC) {
+                        criteriaQuery.orderBy(criteriaBuilder.desc(challengeRoot.get("createdAt")));
+                    } else {
+                        criteriaQuery.orderBy(criteriaBuilder.asc(challengeRoot.get("createdAt")));
+                    }
+                    break;
+                case POPULARITY:
+                    Join<Challenge, User> participantsJoin = challengeRoot.join("participants", JoinType.LEFT);
+                    criteriaQuery.groupBy(challengeRoot);
+                    Expression<Long> participantCount = criteriaBuilder.count(participantsJoin);
+
+                    if (order == Order.DESC) {
+                        criteriaQuery.orderBy(criteriaBuilder.desc(participantCount));
+                    } else {
+                        criteriaQuery.orderBy(criteriaBuilder.asc(participantCount));
+                    }
+                    break;
+                default:
+                    throw new IllegalArgumentException("Invalid orderBy value");
+            }
+        }
+
+        int firstResult = page * size;
+
+        return new ArrayList<>(entityManager.createQuery(criteriaQuery)
+            .setFirstResult(firstResult)
+            .setMaxResults(size)
+            .getResultList());
     }
 
     @Override
