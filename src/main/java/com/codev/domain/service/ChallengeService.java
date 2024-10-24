@@ -4,6 +4,7 @@ import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.enums.ChallengeStatus;
+import com.codev.domain.enums.Order;
 import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
@@ -18,6 +19,8 @@ import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.DefaultValue;
+import jakarta.ws.rs.QueryParam;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -36,12 +39,37 @@ public class ChallengeService {
 
     private final UserRepository userRepository;
 
-    public Set<ChallengeDTOView> findAllChallengeWithPagingByCategoryId(Integer page, Integer size, UUID categoryId, OrderBy orderBy) {
+    public Set<ChallengeDTOView> findAllChallengeWithPagingByCategoryId(Integer page, Integer size, UUID categoryId, Order order) {
         
-        return challengeRepository.findAllChallengeWithPagingByCategoryId(page, size, categoryId, orderBy)
+        return challengeRepository.findAllChallengeWithPagingByCategoryId(page, size, categoryId, order)
             .stream()
             .map(ChallengeDTOView::new)
             .collect(Collectors.toSet());
+
+    }
+
+    public List<ChallengeDTOView> findAllChallengeWithFilters(
+        Integer page,
+        Integer size,
+        ChallengeStatus status,
+        String categoryName,
+        String technologyName,
+        Order order,
+        OrderBy orderBy
+    ) {
+
+        return challengeRepository.findAllChallengeWithFilters(
+                page,
+                size,
+                status,
+                categoryName,
+                technologyName,
+                order,
+                orderBy
+            )
+            .stream()
+            .map(ChallengeDTOView::new)
+            .collect(Collectors.toList());
 
     }
 
