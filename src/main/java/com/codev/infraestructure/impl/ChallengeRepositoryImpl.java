@@ -262,7 +262,12 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         }
 
         if (technologyName != null && !technologyName.isEmpty()) {
-            predicates.add(criteriaBuilder.isMember(technologyName, challengeRoot.get("technologies")));
+            Join<Challenge, Technology> technologyJoin = challengeRoot.join("technologies");
+
+            predicates.add(criteriaBuilder.like(
+                criteriaBuilder.lower(technologyJoin.get("name")),
+                "%" + technologyName.toLowerCase() + "%"
+            ));
         }
 
         predicates.add(criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE));
