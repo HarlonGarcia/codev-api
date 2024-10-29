@@ -285,9 +285,9 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             switch (orderBy) {
                 case CREATED_AT:
                     if (order == Order.DESC) {
-                        criteriaQuery.orderBy(criteriaBuilder.desc(challengeRoot.get("createdAt")));
+                        criteriaQuery.orderBy(criteriaBuilder.desc(challengeRoot.get("created_at")));
                     } else {
-                        criteriaQuery.orderBy(criteriaBuilder.asc(challengeRoot.get("createdAt")));
+                        criteriaQuery.orderBy(criteriaBuilder.asc(challengeRoot.get("created_at")));
                     }
                     break;
                 case POPULARITY:
@@ -302,7 +302,11 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
                     }
                     break;
                 default:
-                    throw new IllegalArgumentException("Invalid orderBy value");
+                    if (order == Order.DESC) {
+                        criteriaQuery.orderBy(criteriaBuilder.desc(challengeRoot.get("title")));
+                    } else {
+                        criteriaQuery.orderBy(criteriaBuilder.asc(challengeRoot.get("title")));
+                    }
             }
         }
 
