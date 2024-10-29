@@ -19,15 +19,12 @@ import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
-import jakarta.ws.rs.DefaultValue;
-import jakarta.ws.rs.QueryParam;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.beanutils.BeanUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -39,31 +36,22 @@ public class ChallengeService {
 
     private final UserRepository userRepository;
 
-    public Set<ChallengeDTOView> findAllChallengeWithPagingByCategoryId(Integer page, Integer size, UUID categoryId, Order order) {
-        
-        return challengeRepository.findAllChallengeWithPagingByCategoryId(page, size, categoryId, order)
-            .stream()
-            .map(ChallengeDTOView::new)
-            .collect(Collectors.toSet());
-
-    }
-
-    public List<ChallengeDTOView> findAllChallengeWithFilters(
+    public List<ChallengeDTOView> findChallenges(
         Integer page,
         Integer size,
         ChallengeStatus status,
-        String categoryName,
-        String technologyName,
+        UUID categoryId,
+        UUID technologyId,
         Order order,
         OrderBy orderBy
     ) {
 
-        return challengeRepository.findAllChallengeWithFilters(
+        return challengeRepository.findChallenges(
                 page,
                 size,
                 status,
-                categoryName,
-                technologyName,
+                categoryId,
+                technologyId,
                 order,
                 orderBy
             )

@@ -182,62 +182,13 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             .getResultList();
     }
 
-
     @Override
-    public Set<Challenge> findAllChallengeWithPagingByCategoryId(
-        Integer page, Integer size, UUID categoryId, Order order
-    ) {
-        if (page < 0) {
-            throw new IllegalArgumentException("Page must be a positive integer.");
-        }
-        
-        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
-
-        Root<Challenge> challengeRoot = criteriaQuery.from(Challenge.class);
-        
-        criteriaQuery.select(challengeRoot);
-        
-        if (order == Order.LATEST) {
-            criteriaQuery.orderBy(criteriaBuilder.desc(
-                challengeRoot.get("createdAt")
-            ));
-        }
-        
-        List<Predicate> predicates = new ArrayList<>();
-        
-        if (categoryId != null) {
-            predicates.add(criteriaBuilder.equal(
-                challengeRoot.get("category").get("id"), 
-                categoryId));
-        }
-
-        predicates.add(criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE));
-        
-        criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
-
-        challengeRoot.fetch("author", JoinType.LEFT)
-            .fetch("labels", JoinType.LEFT);
-        challengeRoot.fetch("author", JoinType.LEFT)
-            .fetch("roles", JoinType.LEFT);
-        challengeRoot.fetch("technologies", JoinType.LEFT);
-        challengeRoot.fetch("category", JoinType.LEFT);
-
-        int firstResult = page * size;
-
-        return new HashSet<>(entityManager.createQuery(criteriaQuery)
-                .setFirstResult(firstResult)
-                .setMaxResults(size)
-                .getResultList());
-    }
-
-    @Override
-    public List<Challenge> findAllChallengeWithFilters(
+    public List<Challenge> findChallenges(
         Integer page,
         Integer size,
         ChallengeStatus status,
-        String categoryName,
-        String technologyName,
+        UUID categoryId,
+        UUID technologyId,
         Order order,
         OrderBy orderBy
     ) {
@@ -257,17 +208,14 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             predicates.add(criteriaBuilder.equal(challengeRoot.get("status"), status));
         }
 
-        if (categoryName != null && !categoryName.isEmpty()) {
-            predicates.add(criteriaBuilder.equal(challengeRoot.get("category").get("name"), categoryName));
+        if (categoryId != null) {
+            predicates.add(criteriaBuilder.equal(challengeRoot.get("category").get("id"), categoryId));
         }
 
-        if (technologyName != null && !technologyName.isEmpty()) {
+        if (technologyId != null) {
             Join<Challenge, Technology> technologyJoin = challengeRoot.join("technologies");
 
-            predicates.add(criteriaBuilder.like(
-                criteriaBuilder.lower(technologyJoin.get("name")),
-                "%" + technologyName.toLowerCase() + "%"
-            ));
+            predicates.add(criteriaBuilder.equal(technologyJoin.get("id"), technologyId));
         }
 
         predicates.add(criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE));
@@ -281,33 +229,31 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         challengeRoot.fetch("technologies", JoinType.LEFT);
         challengeRoot.fetch("category", JoinType.LEFT);
 
-        if (orderBy != null) {
-            switch (orderBy) {
-                case CREATED_AT:
-                    if (order == Order.DESC) {
-                        criteriaQuery.orderBy(criteriaBuilder.desc(challengeRoot.get("created_at")));
-                    } else {
-                        criteriaQuery.orderBy(criteriaBuilder.asc(challengeRoot.get("created_at")));
-                    }
-                    break;
-                case POPULARITY:
-                    Join<Challenge, User> participantsJoin = challengeRoot.join("participants", JoinType.LEFT);
-                    criteriaQuery.groupBy(challengeRoot);
-                    Expression<Long> participantCount = criteriaBuilder.count(participantsJoin);
+        switch (orderBy) {
+            case CREATED_AT:
+                if (order == Order.DESC) {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(challengeRoot.get("createdAt")));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(challengeRoot.get("createdAt")));
+                }
+                break;
+            case POPULARITY:
+                Join<Challenge, User> participantsJoin = challengeRoot.join("participants", JoinType.LEFT);
+                criteriaQuery.groupBy(challengeRoot);
+                Expression<Long> participantCount = criteriaBuilder.count(participantsJoin);
 
-                    if (order == Order.DESC) {
-                        criteriaQuery.orderBy(criteriaBuilder.desc(participantCount));
-                    } else {
-                        criteriaQuery.orderBy(criteriaBuilder.asc(participantCount));
-                    }
-                    break;
-                default:
-                    if (order == Order.DESC) {
-                        criteriaQuery.orderBy(criteriaBuilder.desc(challengeRoot.get("title")));
-                    } else {
-                        criteriaQuery.orderBy(criteriaBuilder.asc(challengeRoot.get("title")));
-                    }
-            }
+                if (order == Order.DESC) {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(participantCount));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(participantCount));
+                }
+                break;
+            default:
+                if (order == Order.DESC) {
+                    criteriaQuery.orderBy(criteriaBuilder.desc(challengeRoot.get("title")));
+                } else {
+                    criteriaQuery.orderBy(criteriaBuilder.asc(challengeRoot.get("title")));
+                }
         }
 
         int firstResult = page * size;

@@ -25,7 +25,6 @@ import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.lang.reflect.InvocationTargetException;
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 @Path("challenges")
@@ -46,45 +45,40 @@ public class ChallengeResource {
         return Response.ok(challengeService.findAllTechnologiesByChallengeId(challengeId)).build();
     }
 
-//    @GET
-//    @PermitAll
-//    public Response findAllChallengeWithPagingByCategoryId(
-//            @QueryParam("page") Integer page,
-//            @QueryParam("size") Integer size,
-//            @QueryParam("category") UUID categoryId,
-//            @QueryParam("orderBy") @DefaultValue("ASC") OrderBy orderBy
-//    ){
-//        page = page != null ? page : 0;
-//        size = size != null ? size : 10;
-//
-//        Set<ChallengeDTOView> challenges = challengeService.findAllChallengeWithPagingByCategoryId(page, size, categoryId, orderBy);
-//
-//        return Response.ok(challenges).build();
-//    }
-
     @GET
     @PermitAll
-    public Response findAllChallengeWithFilters(
+    public Response findChallenges(
         @QueryParam("page") Integer page,
         @QueryParam("size") Integer size,
         @QueryParam("status") ChallengeStatus status,
-        @QueryParam("category") String categoryName,
-        @QueryParam("technology") String technologyName,
-        @QueryParam("order") @DefaultValue("ASC") Order order,
-        @QueryParam("orderBy") OrderBy orderBy
+        @QueryParam("category") UUID categoryId,
+        @QueryParam("technology") UUID technologyId,
+        @QueryParam("order") String order,
+        @QueryParam("orderBy") String orderBy
     ){
         page = page != null ? page : 0;
         size = size != null ? size : 10;
 
+        Order parsedOrder = Order.ASC;
+        OrderBy parsedOrderBy = OrderBy.TITLE;
+
+        if (order != null) {
+            parsedOrder = Order.valueOf(order.toUpperCase());
+        }
+
+        if (orderBy != null) {
+            parsedOrderBy = OrderBy.valueOf(orderBy.toUpperCase());
+        }
+    
         List<ChallengeDTOView> challenges =
-            challengeService.findAllChallengeWithFilters(
+            challengeService.findChallenges(
                 page,
                 size,
                 status,
-                categoryName,
-                technologyName,
-                order,
-                orderBy
+                categoryId,
+                technologyId,
+                parsedOrder,
+                parsedOrderBy
             );
 
         return Response.ok(challenges).build();

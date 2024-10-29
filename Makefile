@@ -1,4 +1,6 @@
+UP=docker compose up
 MVN=./mvnw
 
-start:
+dev:
+	$(UP) -d codev-db
 	$(MVN) compile quarkus:dev

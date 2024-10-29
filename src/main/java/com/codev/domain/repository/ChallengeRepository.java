@@ -10,21 +10,16 @@ import com.codev.domain.model.Technology;
 
 import java.sql.SQLException;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 public interface ChallengeRepository {
 
-    Set<Challenge> findAllChallengeWithPagingByCategoryId(
-        Integer page, Integer size, UUID categoryId, Order order
-    );
-
-    List<Challenge> findAllChallengeWithFilters(
+    List<Challenge> findChallenges(
         Integer page,
         Integer size,
         ChallengeStatus status,
-        String categoryName,
-        String technologyName,
+        UUID categoryId,
+        UUID technologyId,
         Order order,
         OrderBy orderBy
     );
