@@ -24,6 +24,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @ApplicationScoped
@@ -180,6 +181,60 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             .setFirstResult(firstResult)
             .setMaxResults(size)
             .getResultList();
+    }
+
+    @Override
+    public Challenge createChallenge(Challenge challenge) {
+        UUID challengeId = UUID.randomUUID();
+
+        String sqlChallenge = "INSERT INTO tb_challenge (id, title, author_id, description, active, status, image_id, category_id, created_at, end_date) " +
+            "VALUES (:id, :title, :authorId, :description, :active, :status, :imageId, :categoryId, :createdAt, :endDate)";
+
+        entityManager.createNativeQuery(sqlChallenge)
+            .setParameter("id", challengeId)
+            .setParameter("title", challenge.getTitle())
+            .setParameter("authorId", challenge.getAuthor().getId())
+            .setParameter("description", challenge.getDescription())
+            .setParameter("active", challenge.isActive())
+            .setParameter("status", challenge.getStatus().name())
+            .setParameter("imageId", challenge.getImage() != null ? challenge.getImage().getId() : null)
+            .setParameter("categoryId", challenge.getCategory() != null ? challenge.getCategory().getId() : null)
+            .setParameter("createdAt", challenge.getCreatedAt() != null ? challenge.getCreatedAt() : LocalDateTime.now())
+            .setParameter("endDate", challenge.getEndDate())
+            .executeUpdate();
+
+        if (challenge.getTechnologies() != null && !challenge.getTechnologies().isEmpty()) {
+            StringBuilder sqlChallengeTechnology = new StringBuilder("INSERT INTO tb_challenge_technology (id, challenge_id, technology_id) VALUES ");
+            int index = 0;
+
+            for (Technology tech : challenge.getTechnologies()) {
+                sqlChallengeTechnology.append("(:id")
+                    .append(index)
+                    .append(", :challengeId")
+                    .append(index)
+                    .append(", :technologyId")
+                    .append(index)
+                    .append("), ");
+                index++;
+            }
+
+            sqlChallengeTechnology.setLength(sqlChallengeTechnology.length() - 2);
+
+            var query = entityManager.createNativeQuery(sqlChallengeTechnology.toString());
+
+            index = 0;
+            for (Technology tech : challenge.getTechnologies()) {
+                query.setParameter("id" + index, UUID.randomUUID());
+                query.setParameter("challengeId" + index, challengeId);
+                query.setParameter("technologyId" + index, tech.getId());
+                index++;
+            }
+
+            query.executeUpdate();
+        }
+
+        challenge.setId(challengeId);
+        return challenge;
     }
 
     @Override

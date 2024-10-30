@@ -127,7 +127,8 @@ public class ChallengeResource {
     }
 
     @POST
-    @RolesAllowed({"ADMIN"})
+    @PermitAll
+//    @RolesAllowed({"ADMIN"})
     public Response createChallenge(@Valid ChallengeDTOForm challengeDTOForm) {
         ChallengeDTOView challengeDTOView = challengeService.createChallenge(challengeDTOForm);
         return Response.ok(challengeDTOView).status(Response.Status.CREATED).build();

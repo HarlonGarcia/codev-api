@@ -102,6 +102,7 @@ public class ChallengeService {
         }
 
         Challenge challenge = getChallenge(challengeDTOForm, author);
+        challenge = this.challengeRepository.createChallenge(challenge);
 
         return new ChallengeDTOView(challenge);
     }
@@ -123,7 +124,6 @@ public class ChallengeService {
 
         challenge.setAuthor(author);
 
-        challenge.persist();
         return challenge;
     }
 
