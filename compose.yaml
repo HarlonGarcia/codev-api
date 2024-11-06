@@ -14,28 +14,28 @@ services:
         networks:
             - codev-network
 
-#    codev-api:
-#        image: letscodev/codev-api
-#        container_name: codev-api
-#        environment:
-#            DATABASE_URL: jdbc:postgresql://codev-db:5432/codev-db
-#            USERNAME: postgres
-#            PASSWORD: postgres
-#        ports:
-#            - "8081:8081"
-#        depends_on:
-#            - codev-db
-#        networks:
-#            - codev-network
-#
-#    frontend:
-#        image: letscodev/frontend
-#        container_name: codev-frontend
-#        ports:
-#        - "8000:80"
-#        networks:
-#        - codev-network
-#
+    codev-api:
+        image: letscodev/codev-api
+        container_name: codev-api
+        environment:
+            DATABASE_URL: jdbc:postgresql://codev-db:5432/codev-db
+            USERNAME: postgres
+            PASSWORD: postgres
+        ports:
+            - "8081:8081"
+        depends_on:
+            - codev-db
+        networks:
+            - codev-network
+
+    frontend:
+        image: letscodev/frontend
+        container_name: codev-frontend
+        ports:
+        - "8000:80"
+        networks:
+        - codev-network
+
 ## access on localhost:8081
 #    swagger-ui:
 #        image: swaggerapi/swagger-ui
