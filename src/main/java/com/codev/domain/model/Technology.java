@@ -26,6 +26,7 @@ public class Technology extends PanacheEntityBase {
     private String color;
 
     public Technology(TechnologyDTOForm technologyDTOForm) {
+        this.id = technologyDTOForm.getId();
         this.name = technologyDTOForm.getName();
         this.documentationLink = technologyDTOForm.getDocumentationLink();
         this.color = technologyDTOForm.getColor();

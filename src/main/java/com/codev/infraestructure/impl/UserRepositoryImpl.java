@@ -2,6 +2,9 @@ package com.codev.infraestructure.impl;
 
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.dto.view.metrics.ChallengeStatusMetricsDto;
+import com.codev.domain.dto.view.metrics.CurrentMonthMetricsDto;
+import com.codev.domain.dto.view.metrics.UserMetricsDto;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.FollowUser;
@@ -9,10 +12,7 @@ import com.codev.domain.model.User;
 import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
 import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.NoResultException;
-import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.*;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 
@@ -21,6 +21,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -150,7 +151,6 @@ public class UserRepositoryImpl implements UserRepository {
             .getResultList();
     }
 
-
     @Override
     public User findByEmail(String email) {
         try {
@@ -192,6 +192,46 @@ public class UserRepositoryImpl implements UserRepository {
         } catch (NoResultException e) {
             throw new EntityNotFoundException(String.format("User with id %s does not exist", userId));
         }
+    }
+
+    public UserMetricsDto generateChallengesDashboardMetrics(UUID authorId) {
+        LocalDate now = LocalDate.now();
+
+        String sql = "SELECT " +
+            "(SELECT COUNT(*) FROM tb_participant p WHERE p.challenge_id IN " +
+            "(SELECT c.id FROM tb_challenge c WHERE c.author_id = :authorId)) AS participantsCount, " +
+            "COUNT(*) AS challengesCount, " +
+            "COALESCE((SELECT MAX(monthly_count) FROM (SELECT COUNT(*) AS monthly_count FROM tb_challenge c " +
+            "WHERE c.author_id = :authorId GROUP BY EXTRACT(YEAR FROM c.created_at), EXTRACT(MONTH FROM c.created_at)) AS subquery), 0) AS highestStreak, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month THEN 1 ELSE 0 END) AS currentMonthStreak, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month AND status = 'IN_PROGRESS' THEN 1 ELSE 0 END) AS inProgressCount, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month AND status = 'TO_BEGIN' THEN 1 ELSE 0 END) AS toBeginCount, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month AND status = 'FINISHED' THEN 1 ELSE 0 END) AS finishedCount, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month AND status = 'CANCELED' THEN 1 ELSE 0 END) AS canceledCount " +
+            "FROM tb_challenge WHERE author_id = :authorId";
+
+        Query query = entityManager.createNativeQuery(sql);
+        query.setParameter("authorId", authorId);
+        query.setParameter("year", now.getYear());
+        query.setParameter("month", now.getMonthValue());
+
+        Object[] result = (Object[]) query.getSingleResult();
+
+        return new UserMetricsDto(
+            ((Number) result[0]).longValue(),     // participantsCount
+            ((Number) result[1]).longValue(),     // challengesCount
+            ((Number) result[2]).longValue(),     // highestStreak
+            now.getMonth().name(),                // currentMonth
+            new CurrentMonthMetricsDto(
+                ((Number) result[3]).longValue(), // currentMonth.streak
+                new ChallengeStatusMetricsDto(
+                    ((Number) result[4]).longValue(), // inProgress
+                    ((Number) result[5]).longValue(), // toBegin
+                    ((Number) result[6]).longValue(), // finished
+                    ((Number) result[7]).longValue()  // canceled
+                )
+            )
+        );
     }
 
     @Override

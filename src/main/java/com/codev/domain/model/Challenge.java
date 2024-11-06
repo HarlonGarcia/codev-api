@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -47,7 +48,7 @@ public class Challenge extends PanacheEntityBase {
     @JoinColumn(name = "category_id")
     private Category category;
 
-    @ManyToMany
+    @ManyToMany(cascade = CascadeType.PERSIST)
     @JoinTable(name = "tb_challenge_technology",
             joinColumns = @JoinColumn(name = "challenge_id"),
             inverseJoinColumns = @JoinColumn(name = "technology_id")
@@ -76,6 +77,10 @@ public class Challenge extends PanacheEntityBase {
         this.createdAt = LocalDateTime.now();
         this.endDate = createdAt.plusMonths(1);
         this.status = challengeDTOForm.getStatus();
+        this.technologies = challengeDTOForm.getTechnologies()
+            .stream()
+            .map(Technology::new)
+            .collect(Collectors.toSet());
     }
 
     public Challenge(){}

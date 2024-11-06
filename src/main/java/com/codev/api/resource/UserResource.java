@@ -7,6 +7,7 @@ import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.form.UserUpdateDTOForm;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.dto.view.metrics.UserMetricsDto;
 import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.*;
@@ -78,6 +79,16 @@ public class UserResource {
 
         List<ChallengeDTOView> challenges = challengeService.findUserChallenges(userId, page, size);
         return Response.ok(challenges).build();
+    }
+
+    @GET
+    @PermitAll // add persmissao depois
+    @Path("/metrics")
+    public Response generateChallengesDashboardMetrics(
+        @HeaderParam("X-User-ID") UUID userId
+    ){
+        UserMetricsDto metrics = userService.generateChallengesDashboardMetrics(userId);
+        return Response.ok(metrics).build();
     }
 
     @POST

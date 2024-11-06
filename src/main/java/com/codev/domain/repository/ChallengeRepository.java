@@ -39,4 +39,6 @@ public interface ChallengeRepository {
     void removeCategoryInChallenge(UUID challengeId) throws SQLException;
 
     List<Challenge> findUserChallenges(UUID userId, Integer page, Integer size);
+
+    Challenge createChallenge(Challenge challenge);
 }

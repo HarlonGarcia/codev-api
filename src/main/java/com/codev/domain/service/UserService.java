@@ -8,6 +8,7 @@ import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.form.UserUpdateDTOForm;
 import com.codev.domain.dto.view.UserDTOView;
+import com.codev.domain.dto.view.metrics.UserMetricsDto;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.InvalidLoginException;
@@ -21,7 +22,6 @@ import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
 import com.codev.utils.helpers.DtoTransformer;
 import com.codev.utils.helpers.NullAwareBeanUtilsBean;
-
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
@@ -75,6 +75,10 @@ public class UserService {
             throw new UserDeactivatedException();
 
         return user;
+    }
+
+    public UserMetricsDto generateChallengesDashboardMetrics(UUID userId) {
+        return userRepository.generateChallengesDashboardMetrics(userId);
     }
 
     @Transactional
