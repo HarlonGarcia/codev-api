@@ -82,10 +82,10 @@ public class UserResource {
     }
 
     @GET
-    @PermitAll // add persmissao depois
-    @Path("/metrics")
+    @RolesAllowed({"ADMIN"})
+    @Path("/{userId}/metrics")
     public Response generateChallengesDashboardMetrics(
-        @HeaderParam("X-User-ID") UUID userId
+        @PathParam("userId") UUID userId
     ){
         UserMetricsDto metrics = userService.generateChallengesDashboardMetrics(userId);
         return Response.ok(metrics).build();
