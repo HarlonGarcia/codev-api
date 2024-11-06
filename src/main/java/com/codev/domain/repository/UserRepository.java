@@ -1,6 +1,7 @@
 package com.codev.domain.repository;
 
 import com.codev.domain.dto.form.UserFiltersDTOForm;
+import com.codev.domain.dto.view.DashboardMetricsDtoView;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.model.User;
 
@@ -24,4 +25,6 @@ public interface UserRepository {
     void unfollowUser(UUID followedId, UUID followerId);
 
     List<User> findAllUsersForChallenge(UUID challengeId, Integer page, Integer size);
+
+    DashboardMetricsDtoView generateChallengesDashboardMetrics(UUID userId);
 }

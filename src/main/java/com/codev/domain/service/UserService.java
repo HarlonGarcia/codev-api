@@ -7,6 +7,7 @@ import com.codev.api.security.token.TokenUtils;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.form.UserUpdateDTOForm;
+import com.codev.domain.dto.view.DashboardMetricsDtoView;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.exceptions.token.GenerateTokenException;
@@ -75,6 +76,10 @@ public class UserService {
             throw new UserDeactivatedException();
 
         return user;
+    }
+
+    public DashboardMetricsDtoView generateChallengesDashboardMetrics(UUID userId) {
+        return userRepository.generateChallengesDashboardMetrics(userId);
     }
 
     @Transactional
