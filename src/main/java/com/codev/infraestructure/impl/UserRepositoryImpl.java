@@ -1,9 +1,10 @@
 package com.codev.infraestructure.impl;
 
 import com.codev.domain.dto.form.UserFiltersDTOForm;
-import com.codev.domain.dto.view.DashboardMetricsDtoView;
 import com.codev.domain.dto.view.UserDTOView;
-import com.codev.domain.enums.ChallengeStatus;
+import com.codev.domain.dto.view.metrics.ChallengeStatusMetricsDto;
+import com.codev.domain.dto.view.metrics.CurrentMonthMetricsDto;
+import com.codev.domain.dto.view.metrics.UserMetricsDto;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.FollowUser;
@@ -21,7 +22,9 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -191,48 +194,44 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    public DashboardMetricsDtoView generateChallengesDashboardMetrics(UUID authorId) {
-        DashboardMetricsDtoView dashboardMetrics = new DashboardMetricsDtoView();
+    public UserMetricsDto generateChallengesDashboardMetrics(UUID authorId) {
+        LocalDate now = LocalDate.now();
 
-        Object[] result = getAllMetricsNative(authorId);
-
-        Long countToBegin = ((Number) result[0]).longValue();
-        Long countInProgress = ((Number) result[1]).longValue();
-        Long countFinished = ((Number) result[2]).longValue();
-        Long challengesCreatedThisMonth = ((Number) result[3]).longValue();
-        Long highestStreak = ((Number) result[4]).longValue();
-
-        dashboardMetrics.setCountToBegin(countToBegin);
-        dashboardMetrics.setCountInProgress(countInProgress);
-        dashboardMetrics.setCountFinished(countFinished);
-        dashboardMetrics.setChallengesCreatedThisMonth(challengesCreatedThisMonth);
-        dashboardMetrics.setCurrentMonth(LocalDate.now().getMonth().name());
-        dashboardMetrics.setHighestStreak(highestStreak);
-
-        long challengesToReachRecord = highestStreak - challengesCreatedThisMonth;
-        if (challengesToReachRecord < 0) {
-            challengesToReachRecord = 0L;
-        }
-        dashboardMetrics.setChallengesToReachRecord(challengesToReachRecord);
-
-        return dashboardMetrics;
-    }
-
-    private Object[] getAllMetricsNative(UUID authorId) {
         String sql = "SELECT " +
-            "SUM(CASE WHEN status = 'TO_BEGIN' THEN 1 ELSE 0 END) AS countToBegin, " +
-            "SUM(CASE WHEN status = 'IN_PROGRESS' THEN 1 ELSE 0 END) AS countInProgress, " +
-            "SUM(CASE WHEN status = 'FINISHED' THEN 1 ELSE 0 END) AS countFinished, " +
-            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month THEN 1 ELSE 0 END) AS challengesCreatedThisMonth, " +
-            "COALESCE((SELECT MAX(monthly_count) FROM (SELECT COUNT(*) AS monthly_count FROM tb_challenge WHERE author_id = :authorId GROUP BY EXTRACT(YEAR FROM created_at), EXTRACT(MONTH FROM created_at)) AS sub), 0) AS highestStreak " +
+            "(SELECT COUNT(*) FROM tb_participant p WHERE p.challenge_id IN " +
+            "(SELECT c.id FROM tb_challenge c WHERE c.author_id = :authorId)) AS participantsCount, " +
+            "COUNT(*) AS challengesCount, " +
+            "COALESCE((SELECT MAX(monthly_count) FROM (SELECT COUNT(*) AS monthly_count FROM tb_challenge c " +
+            "WHERE c.author_id = :authorId GROUP BY EXTRACT(YEAR FROM c.created_at), EXTRACT(MONTH FROM c.created_at)) AS subquery), 0) AS highestStreak, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month THEN 1 ELSE 0 END) AS currentMonthStreak, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month AND status = 'IN_PROGRESS' THEN 1 ELSE 0 END) AS inProgressCount, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month AND status = 'TO_BEGIN' THEN 1 ELSE 0 END) AS toBeginCount, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month AND status = 'FINISHED' THEN 1 ELSE 0 END) AS finishedCount, " +
+            "SUM(CASE WHEN EXTRACT(YEAR FROM created_at) = :year AND EXTRACT(MONTH FROM created_at) = :month AND status = 'CANCELED' THEN 1 ELSE 0 END) AS canceledCount " +
             "FROM tb_challenge WHERE author_id = :authorId";
 
         Query query = entityManager.createNativeQuery(sql);
-        query.setParameter("year", LocalDate.now().getYear());
-        query.setParameter("month", LocalDate.now().getMonthValue());
         query.setParameter("authorId", authorId);
+        query.setParameter("year", now.getYear());
+        query.setParameter("month", now.getMonthValue());
 
-        return (Object[]) query.getSingleResult();
+        Object[] result = (Object[]) query.getSingleResult();
+
+        return new UserMetricsDto(
+            ((Number) result[0]).longValue(),     // participantsCount
+            ((Number) result[1]).longValue(),     // challengesCount
+            ((Number) result[2]).longValue(),     // highestStreak
+            now.getMonth().name(),                // currentMonth
+            new CurrentMonthMetricsDto(
+                ((Number) result[3]).longValue(), // currentMonth.streak
+                new ChallengeStatusMetricsDto(
+                    ((Number) result[4]).longValue(), // inProgress
+                    ((Number) result[5]).longValue(), // toBegin
+                    ((Number) result[6]).longValue(), // finished
+                    ((Number) result[7]).longValue()  // canceled
+                )
+            )
+        );
     }
 
     @Override
