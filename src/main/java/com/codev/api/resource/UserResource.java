@@ -82,7 +82,7 @@ public class UserResource {
     }
 
     @GET
-    @PermitAll // add persmissao depois
+    @RolesAllowed({"ADMIN"})
     @Path("/metrics")
     public Response generateChallengesDashboardMetrics(
         @HeaderParam("X-User-ID") UUID userId
