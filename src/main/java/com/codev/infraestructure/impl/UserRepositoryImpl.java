@@ -194,7 +194,7 @@ public class UserRepositoryImpl implements UserRepository {
         }
     }
 
-    public UserMetricsDto generateChallengesDashboardMetrics(UUID authorId) {
+    public UserMetricsDto getMetrics(UUID authorId) {
         LocalDate now = LocalDate.now();
 
         String sql = "SELECT " +

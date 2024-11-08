@@ -77,8 +77,8 @@ public class UserService {
         return user;
     }
 
-    public UserMetricsDto generateChallengesDashboardMetrics(UUID userId) {
-        return userRepository.generateChallengesDashboardMetrics(userId);
+    public UserMetricsDto getMetrics(UUID userId) {
+        return userRepository.getMetrics(userId);
     }
 
     @Transactional

@@ -26,5 +26,5 @@ public interface UserRepository {
 
     List<User> findAllUsersForChallenge(UUID challengeId, Integer page, Integer size);
 
-    UserMetricsDto generateChallengesDashboardMetrics(UUID userId);
+    UserMetricsDto getMetrics(UUID userId);
 }

@@ -84,10 +84,10 @@ public class UserResource {
     @GET
     @RolesAllowed({"ADMIN"})
     @Path("/{userId}/metrics")
-    public Response generateChallengesDashboardMetrics(
+    public Response getMetrics(
         @PathParam("userId") UUID userId
     ){
-        UserMetricsDto metrics = userService.generateChallengesDashboardMetrics(userId);
+        UserMetricsDto metrics = userService.getMetrics(userId);
         return Response.ok(metrics).build();
     }
 

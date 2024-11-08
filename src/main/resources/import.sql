@@ -25,7 +25,7 @@ VALUES
 INSERT INTO tb_challenge (id, description, title, author_id, active, status, category_id, created_at)
 VALUES
     ('dd57f958-586b-47d4-8868-f6f7e78aa387', 'Api de Rede Social com NodeJS e NoSQL', 'NodeJS + NoSQL', '0a10cc2c-d527-44bc-912f-95ea6aa94961', true, 'TO_BEGIN', '436de9e1-5ae5-470f-a014-e2d096376ec3', '2023-08-11T00:15:49.483342884'),
-    ('275a42b8-0d84-47fc-90d5-2b7c2b94c4b8', 'Fazer o front end do banco tal', 'Front end do banco tal', 'c114fe61-f54f-4858-9c4d-9f6d9d8207aa', true, 'TO_BEGIN', 'b47afe2a-e870-45f6-a484-f2352ff92468', '2023-08-12T00:15:49.483342884');
+    ('275a42b8-0d84-47fc-90d5-2b7c2b94c4b8', '# Header da descrição/n/n> pnpm install && pnpm dev', 'Interface Spotify', 'c114fe61-f54f-4858-9c4d-9f6d9d8207aa', true, 'TO_BEGIN', 'b47afe2a-e870-45f6-a484-f2352ff92468', '2023-08-12T00:15:49.483342884');
 
 INSERT INTO tb_technology (id, name, color, documentation_link)
 VALUES
