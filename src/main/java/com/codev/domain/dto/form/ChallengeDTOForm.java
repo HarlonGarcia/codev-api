@@ -25,7 +25,7 @@ public class ChallengeDTOForm {
     @NotNull
     private UUID categoryId;
 
-    private Set<TechnologyDTOForm> technologies;
+    private Set<UUID> technologies;
 
     @NotNull
     private ChallengeStatus status;

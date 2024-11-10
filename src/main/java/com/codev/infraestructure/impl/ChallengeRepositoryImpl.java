@@ -26,6 +26,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -183,7 +184,6 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             .getResultList();
     }
 
-    @Override
     public Challenge createChallenge(Challenge challenge) {
         UUID challengeId = UUID.randomUUID();
 
@@ -204,10 +204,18 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             .executeUpdate();
 
         if (challenge.getTechnologies() != null && !challenge.getTechnologies().isEmpty()) {
+            List<UUID> technologyIds = challenge.getTechnologies()
+                .stream()
+                .map(Technology::getId)
+                .collect(Collectors.toList());
+
+            List<Technology> fullTechnologies = fetchTechnologiesByIds(technologyIds);
+            challenge.setTechnologies(new HashSet<>(fullTechnologies));
+
             StringBuilder sqlChallengeTechnology = new StringBuilder("INSERT INTO tb_challenge_technology (id, challenge_id, technology_id) VALUES ");
             int index = 0;
 
-            for (Technology tech : challenge.getTechnologies()) {
+            for (Technology tech : fullTechnologies) {
                 sqlChallengeTechnology.append("(:id")
                     .append(index)
                     .append(", :challengeId")
@@ -223,7 +231,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             var query = entityManager.createNativeQuery(sqlChallengeTechnology.toString());
 
             index = 0;
-            for (Technology tech : challenge.getTechnologies()) {
+            for (Technology tech : fullTechnologies) {
                 query.setParameter("id" + index, UUID.randomUUID());
                 query.setParameter("challengeId" + index, challengeId);
                 query.setParameter("technologyId" + index, tech.getId());
@@ -235,6 +243,23 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
         challenge.setId(challengeId);
         return challenge;
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<Technology> fetchTechnologiesByIds(List<UUID> technologyIds) {
+        String sqlFetchTechnologies = "SELECT * FROM tb_technology WHERE id IN :technologyIds";
+        List<Technology> technologies = entityManager.createNativeQuery(sqlFetchTechnologies, Technology.class)
+            .setParameter("technologyIds", technologyIds)
+            .getResultList();
+
+        if (technologies.size() != technologyIds.size()) {
+            List<UUID> foundIds = technologies.stream().map(Technology::getId).toList();
+            List<UUID> missingIds = new ArrayList<>(technologyIds);
+            missingIds.removeAll(foundIds);
+            throw new EntityNotFoundException("Technologies not found: " + missingIds);
+        }
+
+        return technologies;
     }
 
     @Override
