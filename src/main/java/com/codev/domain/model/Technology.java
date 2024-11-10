@@ -4,14 +4,18 @@ import com.codev.domain.dto.form.TechnologyDTOForm;
 import io.quarkus.hibernate.orm.panache.PanacheEntityBase;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
 import java.util.UUID;
 
+@EqualsAndHashCode(callSuper = true)
 @Entity
 @Data
 @Table(name = "tb_technology")
 public class Technology extends PanacheEntityBase {
 
+    @Getter
     @Id
     @GeneratedValue
     public UUID id;
@@ -30,6 +34,10 @@ public class Technology extends PanacheEntityBase {
         this.name = technologyDTOForm.getName();
         this.documentationLink = technologyDTOForm.getDocumentationLink();
         this.color = technologyDTOForm.getColor();
+    }
+
+    public Technology(UUID id) {
+        this.id = id;
     }
 
     public Technology() {}
