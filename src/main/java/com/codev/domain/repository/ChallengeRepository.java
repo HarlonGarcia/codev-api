@@ -21,7 +21,8 @@ public interface ChallengeRepository {
         UUID categoryId,
         UUID technologyId,
         Order order,
-        OrderBy orderBy
+        OrderBy orderBy,
+        UUID authorId
     );
 
     boolean joinChallenge(UUID challengeId, UUID participantId) throws JoinNotAcceptedException, SQLException;

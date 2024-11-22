@@ -54,7 +54,8 @@ public class ChallengeResource {
         @QueryParam("category") UUID categoryId,
         @QueryParam("technology") UUID technologyId,
         @QueryParam("order") String order,
-        @QueryParam("orderBy") String orderBy
+        @QueryParam("orderBy") String orderBy,
+        @QueryParam("authorId") UUID authorId
     ){
         page = page != null ? page : 0;
         size = size != null ? size : 10;
@@ -78,7 +79,8 @@ public class ChallengeResource {
                 categoryId,
                 technologyId,
                 parsedOrder,
-                parsedOrderBy
+                parsedOrderBy,
+                authorId
             );
 
         return Response.ok(challenges).build();
