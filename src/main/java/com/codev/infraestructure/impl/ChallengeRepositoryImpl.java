@@ -270,7 +270,8 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         UUID categoryId,
         UUID technologyId,
         Order order,
-        OrderBy orderBy
+        OrderBy orderBy,
+        UUID authorId
     ) {
         if (page < 0) {
             throw new IllegalArgumentException("Page must be a positive integer.");
@@ -300,6 +301,9 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
         predicates.add(criteriaBuilder.equal(challengeRoot.get("active"), GlobalConstants.ACTIVE));
 
+        if (authorId != null) {
+            predicates.add(criteriaBuilder.equal(challengeRoot.get("author").get("id"), authorId));
+        }
         criteriaQuery.where(criteriaBuilder.and(predicates.toArray(new Predicate[0])));
 
         challengeRoot.fetch("author", JoinType.LEFT)

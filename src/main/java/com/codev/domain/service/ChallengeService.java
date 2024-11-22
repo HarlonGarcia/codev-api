@@ -43,7 +43,8 @@ public class ChallengeService {
         UUID categoryId,
         UUID technologyId,
         Order order,
-        OrderBy orderBy
+        OrderBy orderBy,
+        UUID authorId
     ) {
 
         return challengeRepository.findChallenges(
@@ -53,7 +54,8 @@ public class ChallengeService {
                 categoryId,
                 technologyId,
                 order,
-                orderBy
+                orderBy,
+                authorId
             )
             .stream()
             .map(ChallengeDTOView::new)
