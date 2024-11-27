@@ -9,10 +9,7 @@ import com.codev.domain.enums.OrderBy;
 import com.codev.domain.exceptions.challenges.CategoryExistsInChallengeException;
 import com.codev.domain.exceptions.challenges.JoinNotAcceptedException;
 import com.codev.domain.exceptions.challenges.UnjoinNotAcceptedException;
-import com.codev.domain.model.Category;
-import com.codev.domain.model.Challenge;
-import com.codev.domain.model.Technology;
-import com.codev.domain.model.User;
+import com.codev.domain.model.*;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
@@ -35,6 +32,8 @@ public class ChallengeService {
     private final ChallengeRepository challengeRepository;
 
     private final UserRepository userRepository;
+
+    private final ImageService imageService;
 
     public List<ChallengeDTOView> findChallenges(
         Integer page,
@@ -104,6 +103,10 @@ public class ChallengeService {
         }
 
         Challenge challenge = getChallenge(challengeDTOForm, author);
+
+        Image image = imageService.saveImage(challengeDTOForm.getImage());
+        challenge.setImage(image);
+
         challenge = this.challengeRepository.createChallenge(challenge);
 
         return new ChallengeDTOView(challenge);
