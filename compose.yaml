@@ -17,37 +17,18 @@ services:
 #            - codev-network
 
     codev-api:
-        build:
-            context: .
-            dockerfile: src/main/docker/Dockerfile.jvm
+        image: letscodev/codev-api:v4
         container_name: codev-api
         environment:
-#            QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://codev-db:5432/codev-db
-            QUARKUS_DATASOURCE_JDBC_URL: jdbc:postgresql://autorack.proxy.rlwy.net:40898/railway
-            QUARKUS_DATASOURCE_USERNAME: postgres
-            QUARKUS_DATASOURCE_PASSWORD: XHLlATqGZpnXfPICixQRrznPDAlifhcq
-            QUARKUS_FLYWAY_BASELINE_ON_MIGRATE: "true"
+            DATABASE_URL: jdbc:postgresql://autorack.proxy.rlwy.net:40898/railway
+            USERNAME: postgres
+            PASSWORD: XHLlATqGZpnXfPICixQRrznPDAlifhcq
         ports:
             - "8081:8081"
 #        depends_on:
 #            - codev-db
         networks:
             - codev-network
-
-
-#    codev-api:
-#        image: letscodev/codev-api
-#        container_name: codev-api
-#        environment:
-#            DATABASE_URL: jdbc:postgresql://codev-db:5432/codev-db
-#            USERNAME: postgres
-#            PASSWORD: postgres
-#        ports:
-#            - "8081:8081"
-#        depends_on:
-#            - codev-db
-#        networks:
-#            - codev-network
 #
 #    frontend:
 #        image: letscodev/frontend
