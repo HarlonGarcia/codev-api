@@ -17,7 +17,7 @@ services:
 #            - codev-network
 
     codev-api:
-        image: letscodev/codev-api:v4
+        image: letscodev/codev-api:v7
         container_name: codev-api
         environment:
             DATABASE_URL: jdbc:postgresql://autorack.proxy.rlwy.net:40898/railway
