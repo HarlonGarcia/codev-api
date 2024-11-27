@@ -1,6 +1,6 @@
 UP=docker compose up
-MVN=./mvnw
+DEV=./mvnw compile quarkus:dev
 
 dev:
 	$(UP) -d codev-db
-	$(MVN) compile quarkus:dev
+	$(DEV) -DPORT=8000

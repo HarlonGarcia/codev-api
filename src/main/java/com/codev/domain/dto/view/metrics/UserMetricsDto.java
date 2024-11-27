@@ -7,16 +7,13 @@ public class UserMetricsDto {
     private Long participantsCount;
     private Long challengesCount;
     private Long highestStreak;
-    private String currentMonth;
-    private CurrentMonthMetricsDto currentMonthMetrics;
+    private CurrentMonthMetricsDto currentMonth;
 
-    public UserMetricsDto(Long participantsCount, Long challengesCount, Long highestStreak,
-                          String currentMonth, CurrentMonthMetricsDto currentMonthMetrics) {
+    public UserMetricsDto(Long participantsCount, Long challengesCount, Long highestStreak, CurrentMonthMetricsDto currentMonth) {
         this.participantsCount = participantsCount;
         this.challengesCount = challengesCount;
         this.highestStreak = highestStreak;
         this.currentMonth = currentMonth;
-        this.currentMonthMetrics = currentMonthMetrics;
     }
 
     public UserMetricsDto() {}

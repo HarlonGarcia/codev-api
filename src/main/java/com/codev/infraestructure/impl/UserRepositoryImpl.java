@@ -5,6 +5,7 @@ import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.dto.view.metrics.ChallengeStatusMetricsDto;
 import com.codev.domain.dto.view.metrics.CurrentMonthMetricsDto;
 import com.codev.domain.dto.view.metrics.UserMetricsDto;
+import com.codev.domain.dto.view.metrics.UserMetricsResult;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.model.FollowUser;
@@ -216,19 +217,19 @@ public class UserRepositoryImpl implements UserRepository {
         query.setParameter("month", now.getMonthValue());
 
         Object[] result = (Object[]) query.getSingleResult();
+        UserMetricsResult metrics = UserMetricsResult.from(result);
 
         return new UserMetricsDto(
-            ((Number) result[0]).longValue(),     // participantsCount
-            ((Number) result[1]).longValue(),     // challengesCount
-            ((Number) result[2]).longValue(),     // highestStreak
-            now.getMonth().name(),                // currentMonth
+            metrics.participantsCount(),
+            metrics.challengesCount(),
+            metrics.highestStreak(),
             new CurrentMonthMetricsDto(
-                ((Number) result[3]).longValue(), // currentMonth.streak
+                metrics.currentMonthStreak(),
                 new ChallengeStatusMetricsDto(
-                    ((Number) result[4]).longValue(), // inProgress
-                    ((Number) result[5]).longValue(), // toBegin
-                    ((Number) result[6]).longValue(), // finished
-                    ((Number) result[7]).longValue()  // canceled
+                    metrics.inProgress(),
+                    metrics.toBegin(),
+                    metrics.finished(),          
+                    metrics.canceled()
                 )
             )
         );
