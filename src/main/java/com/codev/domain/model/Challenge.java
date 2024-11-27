@@ -41,7 +41,7 @@ public class Challenge extends PanacheEntityBase {
     private ChallengeStatus status;
 
     @OneToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "image_id")
+    @JoinColumn(name = "image_id", unique = false)
     private Image image;
 
     @ManyToOne

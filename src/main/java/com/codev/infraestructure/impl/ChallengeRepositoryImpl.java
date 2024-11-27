@@ -312,6 +312,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             .fetch("roles", JoinType.LEFT);
         challengeRoot.fetch("technologies", JoinType.LEFT);
         challengeRoot.fetch("category", JoinType.LEFT);
+        challengeRoot.fetch("image", JoinType.LEFT);
 
         switch (orderBy) {
             case CREATED_AT:
