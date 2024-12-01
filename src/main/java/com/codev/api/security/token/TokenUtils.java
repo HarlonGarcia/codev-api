@@ -2,6 +2,8 @@ package com.codev.api.security.token;
 
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.model.Role;
+import com.codev.utils.GlobalConstants;
+
 import io.smallrye.jwt.build.Jwt;
 import io.smallrye.jwt.build.JwtClaimsBuilder;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -17,26 +19,24 @@ import java.util.Set;
 
 @ApplicationScoped
 public class TokenUtils {
-
-    public static final long TOKEN_DURATION = 86400;
+    public final static String PRIVATE_KEY_LOCATION = "/privatekey.pem";;
 
     public String getAccessToken(String authorizationHeader) {
-        if (authorizationHeader != null) {
-            if (authorizationHeader.startsWith("Bearer ")) {
-                String accessToken = authorizationHeader.substring("Bearer ".length()).trim();
-                return accessToken;
-            } else {
-                throw new IllegalArgumentException("The access token is not of type Bearer");
-            }
-        } else {
+        if (authorizationHeader == null) {
             throw new IllegalArgumentException("Header authorization is null");
         }
+        
+        if (authorizationHeader.startsWith("Bearer ")) {
+            String accessToken = authorizationHeader.substring("Bearer ".length()).trim();
+            return accessToken;
+        }
+
+        throw new IllegalArgumentException("Header authorization is not a Bearer token");
     }
 
-    public static String generateToken(String username, List<Role> roles) {
+    public static String generateToken(String email, List<Role> roles) {
         try {
-            String privateKeyLocation = "/privatekey.pem";
-            PrivateKey privateKey = readPrivateKey(privateKeyLocation);
+            PrivateKey privateKey = readPrivateKey(PRIVATE_KEY_LOCATION);
 
             JwtClaimsBuilder claimsBuilder = Jwt.claims();
             long currentTimeInSecs = currentTimeInSecs();
@@ -44,18 +44,44 @@ public class TokenUtils {
             Set<String> groups = new HashSet<>();
             for (Role role : roles) groups.add(role.getName());
 
-            claimsBuilder.subject(username);
+            claimsBuilder.subject(email);
             claimsBuilder.issuedAt(currentTimeInSecs);
-            claimsBuilder.expiresAt(currentTimeInSecs + TOKEN_DURATION);
+            claimsBuilder.expiresAt(currentTimeInSecs + GlobalConstants.ACCESS_TOKEN_DURATION);
             claimsBuilder.groups(groups);
 
-            return claimsBuilder.jws().keyId(privateKeyLocation).sign(privateKey);
-
+            return claimsBuilder
+                .jws()
+                .keyId(PRIVATE_KEY_LOCATION)
+                .sign(privateKey);
         } catch (Exception e) {
             throw new GenerateTokenException();
         }
     }
 
+    public static String generateRefreshToken(String email, List<Role> roles) {
+        try {
+            PrivateKey privateKey = readPrivateKey(PRIVATE_KEY_LOCATION);
+            
+            long currentTimeInSecs = currentTimeInSecs();
+
+            Set<String> groups = new HashSet<>();
+            for (Role role : roles) groups.add(role.getName());
+            
+            return Jwt.claims()
+                .subject(email)
+                .issuedAt(currentTimeInSecs)
+                .expiresAt(currentTimeInSecs + GlobalConstants.REFRESH_TOKEN_DURATION)
+                .groups(groups)
+                .claim("type", "refresh")
+                .jws()
+                .keyId(PRIVATE_KEY_LOCATION)
+                .sign(privateKey);
+        } catch (Exception e) {
+            throw new GenerateTokenException();
+        }
+    }
+        
+        
     public static PrivateKey readPrivateKey(final String pemResName) throws Exception {
         try (InputStream contentIS = TokenUtils.class.getResourceAsStream(pemResName)) {
             byte[] tmp = new byte[4096];

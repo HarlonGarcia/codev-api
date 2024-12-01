@@ -12,6 +12,7 @@ import com.codev.domain.dto.view.metrics.UserMetricsDto;
 import com.codev.domain.exceptions.global.UniqueConstraintViolationException;
 import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.InvalidLoginException;
+import com.codev.domain.exceptions.users.InvalidRefreshTokenException;
 import com.codev.domain.exceptions.users.UserDeactivatedException;
 import com.codev.domain.exceptions.users.UserHasAdminRoleException;
 import com.codev.domain.model.Image;
@@ -22,18 +23,26 @@ import com.codev.domain.repository.UserRepository;
 import com.codev.utils.GlobalConstants;
 import com.codev.utils.helpers.DtoTransformer;
 import com.codev.utils.helpers.NullAwareBeanUtilsBean;
+
+import io.smallrye.jwt.auth.principal.JWTParser;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import jakarta.ws.rs.core.NewCookie;
 import lombok.RequiredArgsConstructor;
 
 import java.beans.IntrospectionException;
 import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
+
+import org.eclipse.microprofile.jwt.JsonWebToken;
 
 @ApplicationScoped
 @RequiredArgsConstructor
@@ -41,6 +50,9 @@ public class UserService {
 
     @PersistenceContext
     EntityManager entityManager;
+
+    @Inject
+    JWTParser jwtParser;
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
@@ -186,10 +198,38 @@ public class UserService {
         String passwordEncode = passwordEncoder.encode(authRequest.password);
 
         if (user != null && passwordEncode.equals(user.getPassword())) {
-            return new AuthResponse(TokenUtils.generateToken(user.getEmail(), user.getRoles()));
+            String accessToken = TokenUtils.generateToken(user.getEmail(), user.getRoles());
+            String refreshToken = TokenUtils.generateRefreshToken(user.getEmail(), user.getRoles());
+    
+            NewCookie refreshCookie = new NewCookie.Builder("refreshToken")
+                .value(refreshToken)
+                .path("/")
+                .httpOnly(true)
+                .maxAge((int) GlobalConstants.REFRESH_TOKEN_DURATION)
+                .build();
+
+            return new AuthResponse(accessToken, refreshCookie);
         } else {
             throw new InvalidLoginException();
         }
+    }
+
+    @Transactional
+    public AuthResponse refreshToken(String refreshToken) throws InvalidRefreshTokenException, Exception {
+        JsonWebToken jwt = jwtParser.parse(refreshToken);
+        String type = jwt.getClaim("type");
+
+        if (!"refresh".equals(type)) {
+            throw new InvalidRefreshTokenException();
+        }
+
+        String email = jwt.getSubject();
+        Set<String> groups = jwt.getGroups();
+        List<Role> roles = new ArrayList<Role>();
+
+        for (String item : groups) roles.add(new Role(item));
+
+        return new AuthResponse(TokenUtils.generateToken(email, roles));
     }
 
     @Transactional

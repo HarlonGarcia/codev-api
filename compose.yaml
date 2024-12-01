@@ -1,20 +1,19 @@
 version: '3.8'
 
 services:
-
-#    codev-db:
-#        image: postgres
-#        container_name: codev-db
-#        environment:
-#            POSTGRES_PASSWORD: postgres
-#            POSTGRES_USER: postgres
-#            POSTGRES_DB: codev-db
-#        ports:
-#            - "5432:5432"
-#        volumes:
-#            - db-data:/var/lib/postgresql/data
-#        networks:
-#            - codev-network
+    codev-db:
+        image: postgres
+        container_name: codev-db
+        environment:
+            POSTGRES_PASSWORD: postgres
+            POSTGRES_USER: postgres
+            POSTGRES_DB: codev-db
+        ports:
+            - "5432:5432"
+        volumes:
+            - db-data:/var/lib/postgresql/data
+        networks:
+            - codev-network
 
     codev-api:
         image: letscodev/codev-api:v8
@@ -25,30 +24,28 @@ services:
             PASSWORD: XHLlATqGZpnXfPICixQRrznPDAlifhcq
         ports:
             - "8081:8081"
-#        depends_on:
-#            - codev-db
         networks:
             - codev-network
-#
-#    frontend:
-#        image: letscodev/frontend
-#        container_name: codev-frontend
-#        ports:
-#        - "8000:80"
-#        networks:
-#        - codev-network
 
-## access on localhost:8081
-#    swagger-ui:
-#        image: swaggerapi/swagger-ui
-#        container_name: swagger_ui_container
-#        ports:
-#            - 8081:8081
-#        volumes:
-#            - ./doc:/usr/share/nginx/html/doc
-#        environment:
-#            PORT: 8081
-#            API_URL: doc/openapi.yaml
+    frontend:
+        image: letscodev/frontend
+        container_name: codev-frontend
+        ports:
+        - "8000:80"
+        networks:
+        - codev-network
+
+# Access on localhost:8081
+    swagger-ui:
+        image: swaggerapi/swagger-ui
+        container_name: swagger_ui_container
+        ports:
+            - 8081:8081
+        volumes:
+            - ./doc:/usr/share/nginx/html/doc
+        environment:
+            PORT: 8081
+            API_URL: doc/openapi.yaml
 
 volumes:
     db-data:

@@ -184,6 +184,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             .getResultList();
     }
 
+    @SuppressWarnings("unused")
     public Challenge createChallenge(Challenge challenge) {
         UUID challengeId = UUID.randomUUID();
 
@@ -212,11 +213,12 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
             List<Technology> fullTechnologies = fetchTechnologiesByIds(technologyIds);
             challenge.setTechnologies(new HashSet<>(fullTechnologies));
 
-            StringBuilder sqlChallengeTechnology = new StringBuilder("INSERT INTO tb_challenge_technology (id, challenge_id, technology_id) VALUES ");
+            StringBuilder challengeTechnologiesQuery = new StringBuilder("INSERT INTO tb_challenge_technology (id, challenge_id, technology_id) VALUES ");
             int index = 0;
 
             for (Technology tech : fullTechnologies) {
-                sqlChallengeTechnology.append("(:id")
+                challengeTechnologiesQuery
+                    .append("(:id")
                     .append(index)
                     .append(", :challengeId")
                     .append(index)
@@ -226,9 +228,9 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
                 index++;
             }
 
-            sqlChallengeTechnology.setLength(sqlChallengeTechnology.length() - 2);
+            challengeTechnologiesQuery.setLength(challengeTechnologiesQuery.length() - 2);
 
-            var query = entityManager.createNativeQuery(sqlChallengeTechnology.toString());
+            var query = entityManager.createNativeQuery(challengeTechnologiesQuery.toString());
 
             index = 0;
             for (Technology tech : fullTechnologies) {

@@ -5,6 +5,7 @@ import com.codev.api.security.auth.AuthResponse;
 import com.codev.domain.dto.form.UserDTOForm;
 import com.codev.domain.dto.form.UserFiltersDTOForm;
 import com.codev.domain.dto.form.UserUpdateDTOForm;
+import com.codev.domain.dto.view.AuthDTOView;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.dto.view.metrics.UserMetricsDto;
@@ -13,6 +14,7 @@ import com.codev.domain.exceptions.token.GenerateTokenException;
 import com.codev.domain.exceptions.users.*;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.UserService;
+
 import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
@@ -20,8 +22,8 @@ import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import lombok.RequiredArgsConstructor;
-import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 
+import org.eclipse.microprofile.openapi.annotations.tags.Tag;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,9 +33,7 @@ import java.util.UUID;
 @Tag(name = "User")
 @RequiredArgsConstructor
 public class UserResource {
-
     private final UserService userService;
-
     private final ChallengeService challengeService;
 
     @GET
@@ -92,7 +92,7 @@ public class UserResource {
     }
 
     @POST
-    @RolesAllowed({"USER"})
+    @PermitAll
     @Path("followed/{followedId}")
     public Response followUser(
         @PathParam("followedId") UUID followedId,
@@ -102,8 +102,8 @@ public class UserResource {
         return Response.ok(new UserIsAlreadyBeingFollowedResponse()).status(Response.Status.BAD_REQUEST).build();
     }
 
-    @POST
     @PermitAll
+    @POST
     @Path("/signup")
     public Response createUser(@Valid UserDTOForm userDTOForm) throws GenerateTokenException {
         AuthResponse authResponse = userService.createUser(userDTOForm);
@@ -133,16 +133,39 @@ public class UserResource {
     @Path("/login")
     public Response login(AuthRequest authRequest) {
         try {
-            return Response.ok(userService.login(authRequest)).build();
+            AuthResponse response = userService.login(authRequest);
 
+            return Response
+                .ok(new AuthDTOView(response))
+                .cookie(response.getRefreshCookie())
+                .build();
         } catch (InvalidLoginException e) {
             ExceptionResponse response = e.getExceptionResponse();
             return Response.ok(response).status(response.getStatusCode()).build();
         }
     }
 
+    @PermitAll
+    @POST
+    @Path("/refresh")
+    public Response refreshToken(@CookieParam("refreshToken") String refreshToken) {
+        try {
+            AuthResponse response = userService.refreshToken(refreshToken);
+
+            return Response.ok(new AuthDTOView(response)).build();
+        } catch (InvalidRefreshTokenException e) {
+            ExceptionResponse response = e.getExceptionResponse();
+
+            return Response.ok(response)
+                .status(response.getStatusCode())
+                .build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.UNAUTHORIZED).build();
+        }
+    }
+
+    @PermitAll
     @PUT
-    @RolesAllowed({"ADMIN", "USER"})
     @Path("/{userId}")
     public Response updateUser(
         @PathParam("userId") UUID userId,
