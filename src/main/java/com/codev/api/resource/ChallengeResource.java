@@ -13,7 +13,6 @@ import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
-import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -46,7 +45,7 @@ public class ChallengeResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed({"ADMIN", "USER"})
     public Response findChallenges(
         @QueryParam("page") Integer page,
         @QueryParam("size") Integer size,
@@ -87,7 +86,7 @@ public class ChallengeResource {
     }
 
     @GET
-    @PermitAll
+    @RolesAllowed({"ADMIN", "USER"})
     @Path("/{challengeId}")
     public Response findChallengeById(
         @PathParam("challengeId") UUID challengeId

@@ -92,7 +92,7 @@ public class UserResource {
     }
 
     @POST
-    @PermitAll
+    @RolesAllowed({"ADMIN", "USER"})
     @Path("followed/{followedId}")
     public Response followUser(
         @PathParam("followedId") UUID followedId,
@@ -164,7 +164,7 @@ public class UserResource {
         }
     }
 
-    @PermitAll
+    @RolesAllowed({"ADMIN", "USER"})
     @PUT
     @Path("/{userId}")
     public Response updateUser(

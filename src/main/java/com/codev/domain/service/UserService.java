@@ -204,6 +204,7 @@ public class UserService {
             NewCookie refreshCookie = new NewCookie.Builder("refreshToken")
                 .value(refreshToken)
                 .path("/")
+                .secure(false)
                 .httpOnly(true)
                 .maxAge((int) GlobalConstants.REFRESH_TOKEN_DURATION)
                 .build();
