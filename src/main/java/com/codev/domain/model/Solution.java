@@ -7,7 +7,6 @@ import lombok.Data;
 
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Entity
 @Data
@@ -32,12 +31,9 @@ public class Solution extends PanacheEntityBase {
     @Column(name = "deploy_url", length = 150)
     private String deployUrl;
 
-    @ManyToMany
-    @JoinTable(name = "tb_solution_image",
-        joinColumns = @JoinColumn(name = "solution_id"),
-        inverseJoinColumns = @JoinColumn(name = "image_id")
-    )
-    private List<Image> images;
+    @OneToOne(cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "image_id")
+    private Image image;
 
     @ManyToMany
     @JoinTable(name = "tb_like",
@@ -49,10 +45,7 @@ public class Solution extends PanacheEntityBase {
     public Solution(SolutionDTOForm solutionDTOForm) {
         this.repositoryUrl = solutionDTOForm.getRepositoryUrl();
         this.deployUrl = solutionDTOForm.getDeployUrl();
-        this.images = solutionDTOForm.getImages()
-            .stream()
-            .map(Image::new)
-            .collect(Collectors.toList());
+        this.image = new Image(solutionDTOForm.getImage());
     }
 
     public Solution(){}

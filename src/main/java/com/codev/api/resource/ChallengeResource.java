@@ -13,6 +13,8 @@ import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.model.Challenge;
 import com.codev.domain.service.ChallengeService;
 import com.codev.domain.service.SolutionService;
+
+import jakarta.annotation.security.PermitAll;
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.validation.Valid;
 import jakarta.ws.rs.*;
@@ -135,7 +137,7 @@ public class ChallengeResource {
     }
 
     @POST
-    @RolesAllowed({"USER"})
+    @PermitAll
     @Path("/solutions")
     public Response createSolution(@Valid SolutionDTOForm solutionDTOForm) {
         return Response.ok(solutionService.createSolution(solutionDTOForm)).build();

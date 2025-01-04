@@ -1,5 +1,6 @@
 package com.codev.domain.dto.view;
 
+import com.codev.domain.model.Image;
 import com.codev.domain.model.Solution;
 import com.codev.domain.model.User;
 import com.codev.utils.helpers.DtoTransformer;
@@ -22,6 +23,8 @@ public class SolutionDTOView {
 
     private long likes;
 
+    private Image image;
+
     private boolean liked;
 
     public SolutionDTOView(UUID challengeId, User author, String repositoryUrl, String deployUrl, long likes, boolean liked) {
@@ -31,6 +34,7 @@ public class SolutionDTOView {
         this.deployUrl = deployUrl;
         this.likes = likes;
         this.liked = liked;
+        this.image = new Image();
     }
 
     public SolutionDTOView(Solution solution) {

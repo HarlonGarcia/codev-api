@@ -4,7 +4,8 @@ import com.codev.domain.exceptions.global.ExceptionResponse;
 import com.codev.domain.exceptions.solutions.LikeNotAcceptedException;
 import com.codev.domain.exceptions.solutions.SolutionNotDeletedException;
 import com.codev.domain.service.SolutionService;
-import jakarta.annotation.security.RolesAllowed;
+
+import jakarta.annotation.security.PermitAll;
 import jakarta.ws.rs.*;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
@@ -23,7 +24,7 @@ public class SolutionResource {
     private final SolutionService solutionService;
 
     @POST
-    @RolesAllowed({"USER"})
+    @PermitAll
     @Path("/{solutionId}/add-like")
     public Response addLike(
             @PathParam("solutionId") UUID solutionId,
@@ -41,7 +42,7 @@ public class SolutionResource {
     }
 
     @DELETE
-    @RolesAllowed({"USER"})
+    @PermitAll
     @Path("/{solutionId}")
     public Response deleteSolution(
             @PathParam("solutionId") UUID solutionId,
@@ -58,7 +59,7 @@ public class SolutionResource {
     }
 
     @DELETE
-    @RolesAllowed({"USER"})
+    @PermitAll
     @Path("/{solutionId}/remove-like")
     public Response removeLike(
             @PathParam("solutionId") UUID solutionId,

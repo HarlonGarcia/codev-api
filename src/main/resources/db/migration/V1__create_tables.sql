@@ -92,14 +92,6 @@ CREATE TABLE public.tb_solution (
 ALTER TABLE public.tb_solution ADD CONSTRAINT fkgi69jr87ppade4m3hqlg8cpe2 FOREIGN KEY (author_id) REFERENCES public.tb_user(id);
 ALTER TABLE public.tb_solution ADD CONSTRAINT fkr0mmy0ns7jgai2rjetakmk54p FOREIGN KEY (challenge_id) REFERENCES public.tb_challenge(id);
 
-CREATE TABLE public.tb_solution_image (
-    solution_id uuid NOT NULL,
-    image_id uuid NOT NULL
-);
-
-ALTER TABLE public.tb_solution_image ADD CONSTRAINT fkcquysux4760mjt2qdnb59fm38 FOREIGN KEY (image_id) REFERENCES public.tb_image(id);
-ALTER TABLE public.tb_solution_image ADD CONSTRAINT fkctuum5udt0f1b2s6m6wf36h31 FOREIGN KEY (solution_id) REFERENCES public.tb_solution(id);
-
 CREATE TABLE public.tb_technology (
     id uuid NOT NULL,
     color varchar(6),
