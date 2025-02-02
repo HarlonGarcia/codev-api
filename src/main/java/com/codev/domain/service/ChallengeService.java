@@ -1,6 +1,7 @@
 package com.codev.domain.service;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
+import com.codev.domain.dto.generics.ItemsWithPagination;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.UserDTOView;
 import com.codev.domain.enums.ChallengeStatus;
@@ -35,7 +36,7 @@ public class ChallengeService {
 
     private final ImageService imageService;
 
-    public List<ChallengeDTOView> findChallenges(
+    public ItemsWithPagination<List<ChallengeDTOView>> findChallenges(
         Integer page,
         Integer size,
         ChallengeStatus status,
@@ -45,20 +46,26 @@ public class ChallengeService {
         OrderBy orderBy,
         UUID authorId
     ) {
+        ItemsWithPagination<List<Challenge>> response = challengeRepository.findChallenges(
+            page,
+            size,
+            status,
+            categoryId,
+            technologyId,
+            order,
+            orderBy,
+            authorId
+        );
 
-        return challengeRepository.findChallenges(
-                page,
-                size,
-                status,
-                categoryId,
-                technologyId,
-                order,
-                orderBy,
-                authorId
-            )
+        List<ChallengeDTOView> challenges = response.getItems()
             .stream()
             .map(ChallengeDTOView::new)
             .collect(Collectors.toList());
+
+        return new ItemsWithPagination<List<ChallengeDTOView>>(
+            challenges,
+            response.getPagination()
+        );
 
     }
 

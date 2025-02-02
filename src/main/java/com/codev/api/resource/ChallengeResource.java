@@ -2,6 +2,7 @@ package com.codev.api.resource;
 
 import com.codev.domain.dto.form.ChallengeDTOForm;
 import com.codev.domain.dto.form.SolutionDTOForm;
+import com.codev.domain.dto.generics.ItemsWithPagination;
 import com.codev.domain.dto.view.ChallengeDTOView;
 import com.codev.domain.dto.view.SolutionDTOView;
 import com.codev.domain.dto.view.UserDTOView;
@@ -58,9 +59,6 @@ public class ChallengeResource {
         @QueryParam("orderBy") String orderBy,
         @QueryParam("authorId") UUID authorId
     ){
-        page = page != null ? page : 0;
-        size = size != null ? size : 10;
-
         Order parsedOrder = Order.ASC;
         OrderBy parsedOrderBy = OrderBy.TITLE;
 
@@ -72,7 +70,7 @@ public class ChallengeResource {
             parsedOrderBy = OrderBy.valueOf(orderBy.toUpperCase());
         }
     
-        List<ChallengeDTOView> challenges =
+        ItemsWithPagination<List<ChallengeDTOView>> challenges =
             challengeService.findChallenges(
                 page,
                 size,

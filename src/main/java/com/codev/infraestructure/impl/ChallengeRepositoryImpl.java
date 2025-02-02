@@ -1,5 +1,6 @@
 package com.codev.infraestructure.impl;
 
+import com.codev.domain.dto.generics.ItemsWithPagination;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.enums.Order;
 import com.codev.domain.enums.OrderBy;
@@ -11,11 +12,14 @@ import com.codev.domain.model.Technology;
 import com.codev.domain.model.User;
 import com.codev.domain.repository.ChallengeRepository;
 import com.codev.utils.GlobalConstants;
+import com.codev.utils.Pagination;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityNotFoundException;
 import jakarta.persistence.NoResultException;
 import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import lombok.RequiredArgsConstructor;
 
@@ -265,7 +269,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
     }
 
     @Override
-    public List<Challenge> findChallenges(
+    public ItemsWithPagination<List<Challenge>> findChallenges(
         Integer page,
         Integer size,
         ChallengeStatus status,
@@ -275,10 +279,6 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         OrderBy orderBy,
         UUID authorId
     ) {
-        if (page < 0) {
-            throw new IllegalArgumentException("Page must be a positive integer.");
-        }
-
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<Challenge> criteriaQuery = criteriaBuilder.createQuery(Challenge.class);
 
@@ -315,7 +315,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         challengeRoot.fetch("technologies", JoinType.LEFT);
         challengeRoot.fetch("category", JoinType.LEFT);
         challengeRoot.fetch("image", JoinType.LEFT);
-
+    
         switch (orderBy) {
             case CREATED_AT:
                 if (order == Order.DESC) {
@@ -343,12 +343,36 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
                 }
         }
 
-        int firstResult = page * size;
+        TypedQuery<Challenge> query = entityManager.createQuery(criteriaQuery);
+        int itemsPerPage = size != null ? size : 10;
+        int currentPage = page != null && page >= 0 ? page : 0;
 
-        return new ArrayList<>(entityManager.createQuery(criteriaQuery)
-            .setFirstResult(firstResult)
-            .setMaxResults(size)
-            .getResultList());
+        if (page != null && page >= 0) {
+            query.setFirstResult(currentPage * itemsPerPage);
+            query.setMaxResults(size);
+        }
+    
+        List<Challenge> challenges = new ArrayList<>(query.getResultList());
+        Pagination pagination = new Pagination(currentPage, itemsPerPage, getTotal());
+
+        if (page == null) {
+            pagination.setPage(currentPage);
+            pagination.setSize(challenges.size());
+        }
+
+        return new ItemsWithPagination<List<Challenge>>(challenges, pagination);
+    }
+
+    public Long getTotal() {
+        CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+        CriteriaQuery<Long> totalQuery = criteriaBuilder.createQuery(Long.class);
+        Root<Challenge> root = totalQuery.from(Challenge.class);
+        
+        totalQuery.select(criteriaBuilder.count(root));
+        
+        TypedQuery<Long> totalTypedQuery = entityManager.createQuery(totalQuery);
+
+        return totalTypedQuery.getSingleResult();
     }
 
     @Override

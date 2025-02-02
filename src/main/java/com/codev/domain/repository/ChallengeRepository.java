@@ -1,5 +1,6 @@
 package com.codev.domain.repository;
 
+import com.codev.domain.dto.generics.ItemsWithPagination;
 import com.codev.domain.enums.ChallengeStatus;
 import com.codev.domain.enums.Order;
 import com.codev.domain.enums.OrderBy;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 public interface ChallengeRepository {
 
-    List<Challenge> findChallenges(
+    ItemsWithPagination<List<Challenge>> findChallenges(
         Integer page,
         Integer size,
         ChallengeStatus status,
