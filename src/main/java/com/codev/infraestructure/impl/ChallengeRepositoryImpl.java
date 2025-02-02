@@ -349,7 +349,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
 
         if (page != null && page >= 0) {
             query.setFirstResult(currentPage * itemsPerPage);
-            query.setMaxResults(size);
+            query.setMaxResults(itemsPerPage);
         }
     
         List<Challenge> challenges = new ArrayList<>(query.getResultList());
@@ -372,7 +372,7 @@ public class ChallengeRepositoryImpl implements ChallengeRepository {
         
         TypedQuery<Long> totalTypedQuery = entityManager.createQuery(totalQuery);
 
-        return totalTypedQuery.getSingleResult();
+        return totalTypedQuery.getSingleResult() - 1;
     }
 
     @Override
